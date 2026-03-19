@@ -676,7 +676,7 @@
                 const message = whatsappMessage.value.trim();
                 if (message) {
                     // Redirect to WhatsApp with the message
-                    const phoneNumber = '601234567890'; // Replace with your actual WhatsApp business number (without + and spaces)
+                    const phoneNumber = window.getConfig('WHATSAPP_PHONE_NUMBER', '601234567890');
                     const encodedMessage = encodeURIComponent(message);
                     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
                     
@@ -715,5 +715,7 @@
             });
         });
     </script>
+    <script src="assets/js/config.js"></script>
+    <script src="config.js"></script>
 </body>
 </html>

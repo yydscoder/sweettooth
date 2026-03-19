@@ -713,3 +713,85 @@ build.bat
 **Total Bundle Size Reduction: 47%**
 **Total Initial Page Weight Reduction: 70%**
 **Total Page Load Time Improvement: 52%**
+
+---
+
+## 🔒 Security & Secrets Management
+
+### Environment Variables
+
+Sensitive configuration (API keys, tokens, passwords) are **no longer hardcoded** in the source files. They are managed through environment variables:
+
+#### Files:
+| File | Purpose | Commit to Git? |
+|------|---------|----------------|
+| `.env.example` | Template with all available options | ✅ Yes |
+| `.env` | Your actual secrets | ❌ **NEVER** |
+| `Sweettooth/config.template.js` | Client-side config template | ✅ Yes |
+| `Sweettooth/config.js` | Your actual client-side config | ❌ **NEVER** |
+
+#### Setup Instructions:
+
+1. **Copy the template files:**
+   ```bash
+   cp .env.example .env
+   cp Sweettooth/config.template.js Sweettooth/config.js
+   ```
+
+2. **Edit `.env`** with your actual secrets (database passwords, API keys, etc.)
+
+3. **Edit `Sweettooth/config.js`** with client-side configuration:
+   ```javascript
+   window.ENV = {
+       MAPBOX_TOKEN: 'your-actual-mapbox-token',
+       WHATSAPP_PHONE_NUMBER: '601234567890',
+       API_URL: 'https://api.yoursite.com'
+   };
+   ```
+
+4. **Never commit** `.env` or `config.js` to version control
+
+### Secrets Removed from Codebase
+
+The following secrets were **previously hardcoded** and have been moved to secure configuration:
+
+| Secret | Previous Location | Status |
+|--------|-------------------|--------|
+| Mapbox Token | `checkout.html` | ✅ Moved to config |
+| WhatsApp Phone | `index.html`, `products.html`, `blog.html` | ✅ Moved to config |
+
+### ⚠️ IMPORTANT: Rotate Exposed Secrets
+
+The Mapbox token was **publicly exposed** in the codebase. You should:
+
+1. **Immediately rotate your Mapbox token:**
+   - Go to https://mapbox.com/account
+   - Revoke the old token
+   - Generate a new token
+   - Update your `config.js`
+
+2. **Update your WhatsApp number** if you want to use a different business number
+
+3. **Review git history** for any other exposed secrets:
+   ```bash
+   git log -p --all | grep -E "(api_key|secret|password|token)"
+   ```
+
+### .gitignore
+
+The `.gitignore` file prevents accidental commits of sensitive files:
+
+```
+.env
+*.env
+config.js
+```
+
+### Best Practices
+
+- ✅ Use environment variables for all secrets
+- ✅ Never commit `.env` or `config.js`
+- ✅ Rotate any previously exposed tokens
+- ✅ Use different tokens for development/production
+- ✅ Restrict API tokens by HTTP referrer where possible
+- ✅ Review code before committing for accidental secrets

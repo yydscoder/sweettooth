@@ -1311,7 +1311,7 @@
             function sendMessage() {
                 const message = whatsappMessage.value.trim();
                 if (message) {
-                    const phoneNumber = '601234567890';
+                    const phoneNumber = window.getConfig('WHATSAPP_PHONE_NUMBER', '601234567890');
                     const encodedMessage = encodeURIComponent(message);
                     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
                     window.open(whatsappUrl, '_blank');
@@ -1343,6 +1343,8 @@
             }
         });
     </script>
+    <script src="assets/js/config.js"></script>
+    <script src="config.js"></script>
     <script src="assets/js/cart.js"></script>
 </body>
 </html>

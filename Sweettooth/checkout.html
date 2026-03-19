@@ -11,7 +11,11 @@
     <!-- Mapbox API -->
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
-    
+
+    <!-- Configuration (load BEFORE other scripts) -->
+    <script src="assets/js/config.js"></script>
+    <script src="config.js"></script>
+
     <!-- API Integration -->
     <script src="api.js"></script>
 
@@ -906,9 +910,16 @@
             initMap();
         });
         
-        // Mapbox token (protected - will be handled server-side in production)
-        const MAPBOX_TOKEN = 'pk.eyJ1Ijoic3dlZXR0b290aDAyIiwiYSI6ImNtbTA2djN2eDAwb3MzZHB3bWNqbzZ2am8ifQ.-rMUDpQyTAsD_xImROFfyw';
+        // Mapbox token - loaded from secure config
+        // See Sweettooth/config.template.js for setup instructions
+        var MAPBOX_TOKEN = window.getConfig('MAPBOX_TOKEN', '');
         
+        // Warn if using default/empty token
+        if (!MAPBOX_TOKEN) {
+            console.warn('[Checkout] Mapbox token not configured. Maps may not work.');
+            console.warn('[Checkout] See Sweettooth/config.template.js for setup instructions.');
+        }
+
         // Initialize Mapbox
         function initMap() {
             if (typeof mapboxgl !== 'undefined') {
