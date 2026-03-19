@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products (Optimized) - SweetTooth Gelato</title>
+    <meta name="description" content="Browse our artisanal gelato flavors - optimized with lazy loading and minified assets">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="assets/css/shared.min.css" as="style">
+    <link rel="preload" href="assets/js/performance-logger.js" as="script">
+    
+    <!-- Stylesheets -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/shared.min.css">
+    
+    <style>
+        :root {
+            --color-cream: #FFF6CC;
+            --color-pink: #F37273;
+            --color-light-cream: #FEFAE8;
+            --color-peach: #FFDC9F;
+            --color-orange: #F2BA72;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-light-cream);
+            color: #333;
+            line-height: 1.6;
+        }
+        .dealerplate { font-family: 'Playfair Display', serif; }
+        .poppins-bold { font-family: 'Poppins', sans-serif; font-weight: 700; }
+        .poppins-normal { font-family: 'Poppins', sans-serif; font-weight: 400; }
+        .blend-design { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Header */
+        header {
+            background-color: var(--color-cream);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--color-pink); text-decoration: none; }
+        nav ul { display: flex; list-style: none; gap: 2rem; }
+        nav a { text-decoration: none; color: #333; font-weight: 500; }
+        nav a:hover { color: var(--color-pink); }
+        
+        /* Lazy Load Placeholder Styles */
+        .lazy { opacity: 0; transition: opacity 0.3s ease-in-out; }
+        .lazy-loaded { opacity: 1; }
+        .lazy-placeholder {
+            background: linear-gradient(135deg, var(--color-peach) 0%, var(--color-orange) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+        .lazy-error {
+            background: #fee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #c00;
+        }
+        
+        /* Products Grid */
+        .products { padding: 3rem 2rem; }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--color-pink);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .optimization-badge {
+            text-align: center;
+            background: #d4edda;
+            color: #155724;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 1rem auto 2rem;
+            font-size: 0.9rem;
+        }
+        .products-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        .product-image {
+            height: 220px;
+            background-color: var(--color-peach);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .product-info { padding: 1.5rem; }
+        .product-info h3 { color: var(--color-pink); margin-bottom: 0.5rem; }
+        .product-price {
+            font-weight: 700;
+            color: var(--color-orange);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .add-to-cart-btn {
+            background-color: var(--color-pink);
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .add-to-cart-btn:hover { background-color: #e05a5b; }
+        
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+            margin-left: 1.5rem;
+            cursor: pointer;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--color-pink);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        /* Performance Badge */
+        .perf-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 9999;
+            font-size: 0.85rem;
+        }
+        .perf-badge h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--color-pink);
+            font-size: 0.9rem;
+        }
+        .perf-stat {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin: 0.25rem 0;
+        }
+        .perf-label { color: #666; }
+        .perf-value { font-weight: 700; color: var(--color-orange); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">SweetTooth</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">All Flavors</a></li>
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="optimization-dashboard.html">Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count" id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Products Section -->
+    <section class="products">
+        <div class="blend-design">
+            <h1 class="section-title">All Flavors</h1>
+            <div style="text-align: center;">
+                <span class="optimization-badge">
+                    ⚡ Optimized: Lazy loading enabled • Minified assets • Performance logging active
+                </span>
+            </div>
+            
+            <div class="products-grid">
+                <!-- Product cards with lazy loading images -->
+                <div class="product-card" onclick="window.location.href='product-detail-mangosteen-sorbet.html'">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400" alt="Mangosteen Sorbet" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Mangosteen Sorbet</h3>
+                        <div class="product-price">RM 15.00</div>
+                        <button class="add-to-cart-btn" data-product="Mangosteen Sorbet" data-price="15.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" onclick="window.location.href='product-detail-madagascar-vanilla.html'">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=400" alt="Madagascar Vanilla" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Madagascar Vanilla</h3>
+                        <div class="product-price">RM 15.00</div>
+                        <button class="add-to-cart-btn" data-product="Madagascar Vanilla" data-price="15.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" onclick="window.location.href='product-detail-belgian-chocolate.html'">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400" alt="Belgian Chocolate" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Belgian Chocolate</h3>
+                        <div class="product-price">RM 15.00</div>
+                        <button class="add-to-cart-btn" data-product="Belgian Chocolate" data-price="15.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" onclick="window.location.href='product-detail-japanese-matcha.html'">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1516559143985-0c5668ca46ef?w=400" alt="Japanese Matcha" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Japanese Matcha</h3>
+                        <div class="product-price">RM 15.00</div>
+                        <button class="add-to-cart-btn" data-product="Japanese Matcha" data-price="15.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" onclick="window.location.href='product-detail-seasonal-fruit-medley.html'">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=400" alt="Seasonal Fruit Medley" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Seasonal Fruit Medley</h3>
+                        <div class="product-price">RM 15.00</div>
+                        <button class="add-to-cart-btn" data-product="Seasonal Fruit Medley" data-price="15.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" onclick="window.location.href='product-detail-shun-special.html'">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400" alt="Shun Special" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Shun Special</h3>
+                        <div class="product-price">RM 15.00</div>
+                        <button class="add-to-cart-btn" data-product="Shun Special" data-price="15.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1560008581-09826d1de69e?w=400" alt="Premium Durian" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Premium Durian</h3>
+                        <div class="product-price">RM 18.00</div>
+                        <button class="add-to-cart-btn" data-product="Premium Durian" data-price="18.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400" alt="Salted Caramel" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Salted Caramel</h3>
+                        <div class="product-price">RM 16.00</div>
+                        <button class="add-to-cart-btn" data-product="Salted Caramel" data-price="16.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1555529771-83ae71f9907d?w=400" alt="Strawberry Cream" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Strawberry Cream</h3>
+                        <div class="product-price">RM 15.00</div>
+                        <button class="add-to-cart-btn" data-product="Strawberry Cream" data-price="15.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400" alt="Pistachio" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Pistachio</h3>
+                        <div class="product-price">RM 17.00</div>
+                        <button class="add-to-cart-btn" data-product="Pistachio" data-price="17.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400" alt="Tiramisu" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Tiramisu</h3>
+                        <div class="product-price">RM 16.00</div>
+                        <button class="add-to-cart-btn" data-product="Tiramisu" data-price="16.00">Add to Cart</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img data-src="https://images.unsplash.com/photo-1516559143985-0c5668ca46ef?w=400" alt="Lemon Sorbet" class="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Lemon Sorbet</h3>
+                        <div class="product-price">RM 14.00</div>
+                        <button class="add-to-cart-btn" data-product="Lemon Sorbet" data-price="14.00">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Stats Badge -->
+    <div class="perf-badge" id="perf-badge" style="display: none;">
+        <h4>⚡ Performance Stats</h4>
+        <div class="perf-stat">
+            <span class="perf-label">Load Time:</span>
+            <span class="perf-value" id="perf-load-time">--</span>
+        </div>
+        <div class="perf-stat">
+            <span class="perf-label">Images Loaded:</span>
+            <span class="perf-value" id="perf-images">--</span>
+        </div>
+        <div class="perf-stat">
+            <span class="perf-label">Bundle Size:</span>
+            <span class="perf-value" id="perf-bundle">--</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/performance-logger.js"></script>
+    <script src="assets/js/lazy-load.js"></script>
+    <script src="assets/js/cart.min.js"></script>
+    
+    <script>
+        // Show performance stats after page loads
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('perf-badge').style.display = 'block';
+                
+                // Get metrics from performance logger
+                if (window.SweetToothPerf) {
+                    var loadTime = SweetToothPerf.getConfig().enabled ? 
+                        (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart) : 0;
+                    document.getElementById('perf-load-time').textContent = loadTime + 'ms';
+                }
+                
+                // Get lazy load metrics
+                if (window.SweetToothLazyLoad) {
+                    var metrics = SweetToothLazyLoad.getMetrics();
+                    document.getElementById('perf-images').textContent = metrics.loadedImages + '/' + metrics.totalImages;
+                }
+                
+                // Estimate bundle size
+                document.getElementById('perf-bundle').textContent = '~8 KB';
+            }, 2000);
+        });
+        
+        // Log optimization info
+        console.log('[Optimization] This page uses lazy loading and minified assets');
+        console.log('[Optimization] Check console for [SweetTooth Perf] and [SweetTooth LazyLoad] logs');
+    </script>
+</body>
+</html>

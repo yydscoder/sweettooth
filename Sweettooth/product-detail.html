@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="product-title">Product - SweetTooth Gelato</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="assets/css/shared.css">
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --color-cream: #FFF6CC;
+            --color-pink: #F37273;
+            --color-light-cream: #FEFAE8;
+            --color-peach: #FFDC9F;
+            --color-orange: #F2BA72;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-light-cream);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .dealerplate {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .poppins-bold {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+        .poppins-normal {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+
+        .blend-design {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Product Detail Specific */
+        .product-detail-container {
+            padding: 3rem 0;
+        }
+
+        .product-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .product-image {
+            flex: 1;
+            height: 400px;
+            background-color: var(--color-cream);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-image-placeholder {
+            text-align: center;
+            color: #777;
+            font-size: 1.1rem;
+        }
+
+        .product-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .product-info h1 {
+            font-size: 2.5rem;
+            color: var(--color-pink);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .product-price-large {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-pink);
+        }
+
+        .flavor-profile-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .flavor-profile-section h3 {
+            margin-bottom: 1rem;
+            color: var(--color-pink);
+        }
+
+        .flavor-profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .flavor-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .flavor-item h4 {
+            color: var(--color-pink);
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .product-header {
+                flex-direction: column;
+            }
+        }
+
+        /* Header & Cart Styles */
+        header {
+            background-color: var(--color-cream);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--color-pink);
+        }
+
+        .cart-icon {
+            position: relative;
+            margin-left: 1rem;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--color-pink);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .cart-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .cart-dropdown.active {
+            display: block;
+        }
+
+        .cart-header {
+            background: var(--color-pink);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-items-container {
+            padding: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-total {
+            text-align: right;
+            font-weight: 700;
+            margin: 1rem 0;
+            padding-top: 0.5rem;
+            border-top: 2px solid var(--color-pink);
+        }
+
+        .checkout-btn, .add-to-cart-btn {
+            background-color: var(--color-pink);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .checkout-btn:hover, .add-to-cart-btn:hover {
+            background-color: #e05a5b;
+        }
+
+        .empty-cart-message {
+            text-align: center;
+            padding: 2rem;
+            color: #777;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--color-pink);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10000;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--color-peach);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #555;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container blend-design">
+            <div class="logo">
+                <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 50px;">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="products.html">Flavors</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="feed.html">Feed</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon" onclick="toggleCartDropdown()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count" id="cart-count">0</span>
+
+                <!-- Cart Dropdown -->
+                <div class="cart-dropdown" id="cart-dropdown">
+                    <div class="cart-header">
+                        <h3 class="dealerplate">Your Cart</h3>
+                        <span style="cursor: pointer;" onclick="event.stopPropagation(); toggleCartDropdown()">&times;</span>
+                    </div>
+                    <div class="cart-items-container" id="cart-items-container">
+                        <div class="empty-cart-message">
+                            <p>🛒 Cart is empty</p>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add some delicious gelato!</p>
+                        </div>
+                    </div>
+                    <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;">
+                        <div id="cart-items-list"></div>
+                        <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
+                        <button class="checkout-btn poppins-bold" onclick="event.stopPropagation(); window.location.href='checkout.html'">Proceed to Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Product Detail -->
+    <main class="product-detail-container blend-design">
+        <div class="product-header">
+            <div class="product-image">
+                <div class="product-image-placeholder" id="product-image-placeholder">[Product Image]</div>
+            </div>
+            <div class="product-info">
+                <h1 id="product-title-detail">Product Name</h1>
+                <p class="product-description" id="product-description">Product description goes here.</p>
+                <div class="product-price-large" id="product-price">RM 15 per 100ml</div>
+                <button class="add-to-cart-btn poppins-bold" data-product="Product Name" data-price="15">Add to Cart</button>
+            </div>
+        </div>
+
+        <div class="flavor-profile-section">
+            <h3 class="dealerplate">Flavor Profile</h3>
+            <div class="flavor-profile-grid">
+                <div class="flavor-item">
+                    <h4>Taste</h4>
+                    <p>Sweet, tart, refreshing</p>
+                </div>
+                <div class="flavor-item">
+                    <h4>Texture</h4>
+                    <p>Creamy, smooth, velvety</p>
+                </div>
+                <div class="flavor-item">
+                    <h4>Ingredients</h4>
+                    <p>Seasonal fruit, cane sugar, milk, vanilla</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="blend-design">
+            <div class="footer-container">
+                <div class="footer-section">
+                    <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 60px; margin-bottom: 1rem;">
+                    <p class="poppins-normal">Premium artisanal gelato crafted with seasonal ingredients and unwavering commitment to quality.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="dealerplate">Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="our-story.html">Our Story</a></li>
+                        <li><a href="products.html">Flavors</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="feed.html">Feed</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="dealerplate">Connect With Us</h3>
+                    <ul>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">TikTok</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="mailto:info@sweettoothgelato.com.my">Email Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="dealerplate">Contact</h3>
+                    <ul>
+                        <li class="poppins-normal">Email: info@sweettoothgelato.com.my</li>
+                        <li class="poppins-normal">Phone: Coming Soon</li>
+                        <li class="poppins-normal">Address: Malaysia</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p class="poppins-normal">&copy; 2026 SweetTooth Gelato. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Shared Cart Logic -->
+    <script src="assets/js/cart.js"></script>
+
+    <!-- UI Script -->
+    <script>
+        function toggleCartDropdown() {
+            const dropdown = document.getElementById('cart-dropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('active');
+            }
+        }
+
+        // Close cart dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const cartIcon = document.querySelector('.cart-icon');
+            const dropdown = document.getElementById('cart-dropdown');
+            if (cartIcon && !cartIcon.contains(event.target) && dropdown && dropdown.classList.contains('active')) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Update product title and data attributes from URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var product = urlParams.get('product') || 'Product Name';
+        var price = urlParams.get('price') || '15';
+        document.getElementById('product-title-detail').textContent = product;
+        document.title = product + ' - SweetTooth Gelato';
+        var addBtn = document.querySelector('.add-to-cart-btn');
+        if (addBtn) {
+            addBtn.setAttribute('data-product', product);
+            addBtn.setAttribute('data-price', price);
+        }
+    </script>
+</body>
+</html>

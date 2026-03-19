@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Feed - SweetTooth Gelato</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/shared.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --color-cream: #FFF6CC;
+            --color-pink: #F37273;
+            --color-light-cream: #FEFAE8;
+            --color-peach: #FFDC9F;
+            --color-orange: #F2BA72;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-light-cream);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .dealerplate {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .poppins-bold {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+        .poppins-normal {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+
+        .blend-design {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--color-pink);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--color-cream);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--color-pink);
+        }
+
+        /* Cart Dropdown Styles */
+        .cart-icon {
+            position: relative;
+            margin-left: 1rem;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .cart-icon-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .cart-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+
+        .cart-dropdown.active {
+            display: block;
+        }
+
+        .cart-header {
+            background: var(--color-pink);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-items-container {
+            padding: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-total {
+            text-align: right;
+            font-weight: 700;
+            margin: 1rem 0;
+            padding-top: 0.5rem;
+            border-top: 2px solid var(--color-pink);
+        }
+
+        .checkout-btn {
+            background-color: var(--color-pink);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .view-cart-btn {
+            background-color: white;
+            color: var(--color-pink);
+            border: 2px solid var(--color-pink);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .empty-cart-message {
+            text-align: center;
+            padding: 2rem;
+            color: #777;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--color-pink);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Feed Section */
+        .feed-section {
+            padding: 5rem 2rem;
+            background-color: var(--color-light-cream);
+        }
+
+        .flavor-spotlight {
+            background: linear-gradient(135deg, var(--color-peach) 0%, var(--color-orange) 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flavor-spotlight::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .flavor-spotlight-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .flavor-spotlight h2 {
+            font-family: 'Playfair Display', serif;
+            color: white;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .flavor-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: white;
+        }
+
+        .flavor-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .flavor-image {
+            width: 250px;
+            height: 250px;
+            background-color: white;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .flavor-image-placeholder {
+            color: #777;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+            padding: 5rem 2rem;
+            background-color: var(--color-light-cream);
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .testimonials-section .section-title {
+            margin-bottom: 3rem;
+        }
+
+        .testimonials-carousel {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .testimonials-carousel .carousel-container {
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        .testimonials-carousel .carousel-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .testimonial-slide {
+            min-width: 100%;
+            padding: 3rem 2rem;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .testimonial-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .testimonial-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-peach) 0%, var(--color-orange) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .testimonial-name {
+            font-weight: 700;
+            color: var(--color-pink);
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .testimonial-location {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .stars {
+            color: #FFD700;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            letter-spacing: 0.2rem;
+        }
+
+        .testimonial-text {
+            font-size: 1rem;
+            color: #555;
+            max-width: 600px;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .testimonials-carousel .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .testimonials-carousel .carousel-btn {
+            background: var(--color-cream);
+            border: 2px solid var(--color-pink);
+            color: var(--color-pink);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .testimonials-carousel .carousel-btn:hover {
+            background: var(--color-pink);
+            color: white;
+        }
+
+        /* Feed Tabs */
+        .feed-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .feed-tab {
+            padding: 0.8rem 2rem;
+            border: 2px solid var(--color-pink);
+            border-radius: 30px;
+            background: white;
+            color: var(--color-pink);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .feed-tab.active {
+            background: var(--color-pink);
+            color: white;
+        }
+
+        .feed-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feed-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .feed-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .feed-item-image {
+            height: 300px;
+            background-color: var(--color-peach);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+        }
+
+        .feed-item-content {
+            padding: 1rem;
+        }
+
+        .feed-item-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        /* Instagram/TikTok Sections */
+        .instagram-section, .tiktok-section {
+            background: linear-gradient(135deg, var(--color-peach) 0%, var(--color-orange) 100%);
+            padding: 3rem;
+            border-radius: 15px;
+            margin-bottom: 3rem;
+            color: white;
+            text-align: center;
+        }
+
+        .social-placeholder {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .social-placeholder h3 {
+            color: var(--color-pink);
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--color-peach);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #555;
+            color: #aaa;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--color-pink);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .feed-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container blend-design">
+            <div class="logo">
+                <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 50px;">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#philosophy">Our Story</a></li>
+                    <li><a href="products.html">Flavors</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="feed.html">Feed</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <div class="cart-icon-wrapper" onclick="toggleCartDropdown()" style="display: flex; align-items: center; cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count" id="cart-count">0</span>
+                </div>
+
+                <!-- Cart Dropdown -->
+                <div class="cart-dropdown" id="cart-dropdown">
+                    <div class="cart-header">
+                        <h3 class="dealerplate">Your Cart</h3>
+                        <span style="cursor: pointer;" onclick="toggleCartDropdown()">&times;</span>
+                    </div>
+                    <div class="cart-items-container" id="cart-items-container">
+                        <div class="empty-cart-message">
+                            <p>🛒 Cart is empty</p>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add some delicious gelato!</p>
+                        </div>
+                    </div>
+                    <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;">
+                        <div id="cart-items-list"></div>
+                        <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
+                        <button class="checkout-btn poppins-bold" onclick="proceedToCheckout()">Proceed to Checkout</button>
+                        <button class="view-cart-btn poppins-bold" onclick="window.location.href='products.html'">View Full Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Notification Element -->
+    <div class="notification" id="notification">
+        <span id="notification-text"></span>
+    </div>
+
+
+    <!-- Testimonials Carousel -->
+    <section class="testimonials-section" aria-labelledby="testimonials-heading">
+        <div class="blend-design">
+            <h2 id="testimonials-heading" class="section-title">What Our Customers Say</h2>
+            <p class="poppins-normal" style="text-align: center; margin-bottom: 2rem; color: #555;">Hear from our satisfied customers</p>
+            
+            <div class="testimonials-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slides" id="testimonial-slides">
+                        <div class="testimonial-slide">
+                            <div class="testimonial-content">
+                                <div class="testimonial-avatar">A</div>
+                                <h3 class="testimonial-name">Aisha Rahman</h3>
+                                <p class="testimonial-location">Petaling Jaya, Malaysia</p>
+                                <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+                                <p class="testimonial-text">"The Mangosteen Sorbet is absolutely divine! It's like tasting summer in a cup. The freshness and balance of flavors are incredible."</p>
+                            </div>
+                        </div>
+
+                        <div class="testimonial-slide">
+                            <div class="testimonial-content">
+                                <div class="testimonial-avatar">L</div>
+                                <h3 class="testimonial-name">Lim Wei Chong</h3>
+                                <p class="testimonial-location">Kuala Lumpur, Malaysia</p>
+                                <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+                                <p class="testimonial-text">"As a gelato connoisseur, I'm impressed by SweetTooth's commitment to quality. The Madagascar Vanilla is rich and authentic - truly exceptional."</p>
+                            </div>
+                        </div>
+
+                        <div class="testimonial-slide">
+                            <div class="testimonial-content">
+                                <div class="testimonial-avatar">S</div>
+                                <h3 class="testimonial-name">Sarah Tan</h3>
+                                <p class="testimonial-location">Subang Jaya, Malaysia</p>
+                                <div class="stars" aria-label="4 out of 5 stars">★★★★☆</div>
+                                <p class="testimonial-text">"Love the seasonal approach! The Shun Special changes monthly and always surprises me with creative combinations. Delivery was prompt and packaging perfect."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-nav">
+                    <button class="carousel-btn" aria-label="Previous testimonial" id="prev-testimonial">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .707L5.697 8l5.657 5.646a.5.5 0 0 1-.707.707l-6-6a.5.5 0 0 1 0-.707l6-6a.5.5 0 0 1 .707 0z"/>
+                        </svg>
+                    </button>
+                    <button class="carousel-btn" aria-label="Next testimonial" id="next-testimonial">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 0 .707L10.303 8l-5.657 5.646a.5.5 0 0 1-.707-.707l5.657-5.646-5.657-5.646a.5.5 0 0 1 .707-.707z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feed Section -->
+    <section class="feed-section">
+        <div class="blend-design">
+            <div class="section-title">Follow Our Journey</div>
+            <p class="poppins-normal" style="text-align: center; margin-bottom: 3rem;">Stay updated with behind-the-scenes content, new flavors, and customer favorites</p>
+
+            <!-- Feed Tabs -->
+            <div class="feed-tabs">
+                <button class="feed-tab active" onclick="switchFeed('instagram')">Instagram</button>
+                <button class="feed-tab" onclick="switchFeed('tiktok')">TikTok</button>
+                <button class="feed-tab" onclick="switchFeed('all')">All Posts</button>
+            </div>
+
+            <!-- Instagram Section -->
+            <div id="instagram-feed" class="feed-container">
+                <div class="instagram-section">
+                    <h2 class="dealerplate">📸 Follow us on Instagram</h2>
+                    <p>@sweettoothgelato</p>
+                </div>
+
+                <div class="social-placeholder lazy-load">
+                    <h3 class="dealerplate">Instagram Feed Integration</h3>
+                    <p class="poppins-normal">This section will display your Instagram posts automatically</p>
+                    <p class="poppins-normal" style="margin-top: 1rem; color: #777;">To enable: Connect Instagram Basic Display API or use a service like Elfsight, SnapWidget, or LightWidget</p>
+                    <div style="margin-top: 2rem; padding: 1rem; background: var(--color-light-cream); border-radius: 10px;">
+                        <p style="font-size: 0.9rem;"><strong>Required Setup:</strong></p>
+                        <ul style="text-align: left; margin-top: 0.5rem; margin-left: 1rem;">
+                            <li>Instagram Business or Creator account</li>
+                            <li>Facebook App with Instagram Basic Display</li>
+                            <li>Access Token (refreshes every 60 days)</li>
+                            <li>Webhook for real-time updates (optional)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Placeholder Feed Items -->
+                <div class="feed-grid">
+                    <div class="feed-item lazy-load">
+                        <div class="feed-item-image">[Instagram Post 1]</div>
+                        <div class="feed-item-content">
+                            <p class="poppins-normal">Fresh batch of Mangosteen Sorbet ready! 🍧</p>
+                            <div class="feed-item-actions">
+                                <span>❤️ 234</span>
+                                <span>💬 45</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feed-item lazy-load">
+                        <div class="feed-item-image">[Instagram Post 2]</div>
+                        <div class="feed-item-content">
+                            <p class="poppins-normal">Behind the scenes at our kitchen 👨‍🍳</p>
+                            <div class="feed-item-actions">
+                                <span>❤️ 189</span>
+                                <span>💬 32</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feed-item lazy-load">
+                        <div class="feed-item-image">[Instagram Post 3]</div>
+                        <div class="feed-item-content">
+                            <p class="poppins-normal">New seasonal flavor coming soon! 🍓</p>
+                            <div class="feed-item-actions">
+                                <span>❤️ 312</span>
+                                <span>💬 67</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TikTok Feed -->
+            <div id="tiktok-feed" class="feed-container" style="display: none;">
+                <div class="tiktok-section">
+                    <h2 class="dealerplate">🎵 Follow us on TikTok</h2>
+                    <p>@sweettoothgelato</p>
+                </div>
+
+                <div class="social-placeholder">
+                    <h3 class="dealerplate">TikTok Feed Integration</h3>
+                    <p class="poppins-normal">This section will display your TikTok videos automatically</p>
+                    <p class="poppins-normal" style="margin-top: 1rem; color: #777;">To enable: Connect TikTok Display API or use a service like Elfsight, EmbedSocial, or Curator.io</p>
+                    <div style="margin-top: 2rem; padding: 1rem; background: var(--color-light-cream); border-radius: 10px;">
+                        <p style="font-size: 0.9rem;"><strong>Required Setup:</strong></p>
+                        <ul style="text-align: left; margin-top: 0.5rem; margin-left: 1rem;">
+                            <li>TikTok Business Account</li>
+                            <li>TikTok Developer Account</li>
+                            <li>Display API Access Token</li>
+                            <li>Video embed permissions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Placeholder Feed Items -->
+                <div class="feed-grid">
+                    <div class="feed-item">
+                        <div class="feed-item-image" style="height: 400px;">[TikTok Video 1]</div>
+                        <div class="feed-item-content">
+                            <p class="poppins-normal">Making gelato is an art 🎨🍦</p>
+                            <div class="feed-item-actions">
+                                <span>❤️ 1.2K</span>
+                                <span>💬 89</span>
+                                <span>🔗 234</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-item-image" style="height: 400px;">[TikTok Video 2]</div>
+                        <div class="feed-item-content">
+                            <p class="poppins-normal">POV: You tried our signature flavor 😍</p>
+                            <div class="feed-item-actions">
+                                <span>❤️ 2.5K</span>
+                                <span>💬 156</span>
+                                <span>🔗 567</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Posts Feed -->
+            <div id="all-feed" class="feed-container" style="display: none;">
+                <div class="feed-grid">
+                    <div class="feed-item">
+                        <div class="feed-item-image">[Post 1]</div>
+                        <div class="feed-item-content">
+                            <p class="poppins-normal">Fresh batch of Mangosteen Sorbet ready! 🍧</p>
+                            <div class="feed-item-actions">
+                                <span>📸 Instagram</span>
+                                <span>❤️ 234</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-item-image" style="height: 400px;">[Post 2]</div>
+                        <div class="feed-item-content">
+                            <p class="poppins-normal">Making gelato is an art 🎨🍦</p>
+                            <div class="feed-item-actions">
+                                <span>🎵 TikTok</span>
+                                <span>❤️ 1.2K</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-item-image">[Post 3]</div>
+                        <div class="feed-item-content">
+                            <p class="poppins-normal">Behind the scenes at our kitchen 👨‍🍳</p>
+                            <div class="feed-item-actions">
+                                <span>📸 Instagram</span>
+                                <span>❤️ 189</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-item-image" style="height: 400px;">[Post 4]</div>
+                        <div class="feed-item-content">
+                            <p class="poppins-normal">POV: You tried our signature flavor 😍</p>
+                            <div class="feed-item-actions">
+                                <span>🎵 TikTok</span>
+                                <span>❤️ 2.5K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="blend-design">
+            <div class="footer-container">
+                <div class="footer-section">
+                    <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 60px; margin-bottom: 1rem;">
+                    <p class="poppins-normal">Premium artisanal gelato crafted with seasonal ingredients and unwavering commitment to quality.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="dealerplate">Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#philosophy">Our Story</a></li>
+                        <li><a href="products.html">Flavors</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="feed.html">Feed</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="dealerplate">Connect With Us</h3>
+                    <ul>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">TikTok</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="mailto:info@sweettoothgelato.com.my">Email Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="dealerplate">Contact</h3>
+                    <ul>
+                        <li class="poppins-normal">Email: info@sweettoothgelato.com.my</li>
+                        <li class="poppins-normal">Phone: Coming Soon</li>
+                        <li class="poppins-normal">Address: Malaysia</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p class="poppins-normal">&copy; 2026 SweetTooth Gelato. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        let cart = [];
+
+        // Initialize cart from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            }
+            updateCart();
+        });
+
+        function addToCart(productName, price) {
+            // Check if product is already in cart
+            const existingItem = cart.find(item => item.name === productName);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    name: productName,
+                    price: parseFloat(price),
+                    quantity: 1
+                });
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Update cart display
+            updateCart();
+            
+            // Show notification
+            showNotification(`${productName} added to cart!`);
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+
+            if (!notification || !notificationText) return;
+
+            notificationText.textContent = message;
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateCart() {
+            const totalCount = cart.reduce((total, item) => total + item.quantity, 0);
+            const cartCountElement = document.getElementById('cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = totalCount;
+            }
+
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const cartItemsFilled = document.getElementById('cart-items-filled');
+            const cartItemsList = document.getElementById('cart-items-list');
+
+            if (cart.length === 0) {
+                if (cartItemsContainer) cartItemsContainer.style.display = 'block';
+                if (cartItemsFilled) cartItemsFilled.style.display = 'none';
+            } else {
+                if (cartItemsContainer) cartItemsContainer.style.display = 'none';
+                if (cartItemsFilled) cartItemsFilled.style.display = 'block';
+
+                let cartHTML = '';
+                let total = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+
+                    cartHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <span class="poppins-bold">${item.name}</span><br>
+                                <span class="poppins-normal">RM${item.price} x ${item.quantity}</span>
+                            </div>
+                            <div class="poppins-bold">RM${itemTotal.toFixed(2)}</div>
+                        </div>
+                    `;
+                });
+
+                if (cartItemsList) cartItemsList.innerHTML = cartHTML;
+                const cartTotalElement = document.getElementById('cart-total');
+                if (cartTotalElement) cartTotalElement.textContent = total.toFixed(2);
+            }
+        }
+
+        function toggleCartDropdown() {
+            const dropdown = document.getElementById('cart-dropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('active');
+            }
+        }
+
+        function proceedToCheckout() {
+            window.location.href = 'checkout.html';
+        }
+
+        // Close cart dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const cartIcon = document.querySelector('.cart-icon');
+            const dropdown = document.getElementById('cart-dropdown');
+
+            if (cartIcon && dropdown && !cartIcon.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Testimonial Carousel
+        function initTestimonialCarousel() {
+            const slides = document.getElementById('testimonial-slides');
+            if (!slides) return;
+            
+            const prevBtn = document.getElementById('prev-testimonial');
+            const nextBtn = document.getElementById('next-testimonial');
+            let currentIndex = 0;
+            const totalSlides = 3;
+
+            function showSlide(index) {
+                currentIndex = index;
+                slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                    showSlide(currentIndex);
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex + 1) % totalSlides;
+                    showSlide(currentIndex);
+                });
+            }
+
+            // Auto-rotate every 5 seconds
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % totalSlides;
+                showSlide(currentIndex);
+            }, 5000);
+        }
+
+        // Feed Tab Switching
+        function switchFeed(platform) {
+            const instagramFeed = document.getElementById('instagram-feed');
+            const tiktokFeed = document.getElementById('tiktok-feed');
+            const allFeed = document.getElementById('all-feed');
+            const tabs = document.querySelectorAll('.feed-tab');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            if (platform === 'instagram') {
+                instagramFeed.style.display = 'block';
+                tiktokFeed.style.display = 'none';
+                allFeed.style.display = 'none';
+                tabs[0].classList.add('active');
+            } else if (platform === 'tiktok') {
+                instagramFeed.style.display = 'none';
+                tiktokFeed.style.display = 'block';
+                allFeed.style.display = 'none';
+                tabs[1].classList.add('active');
+            } else {
+                instagramFeed.style.display = 'none';
+                tiktokFeed.style.display = 'none';
+                allFeed.style.display = 'block';
+                tabs[2].classList.add('active');
+            }
+        }
+
+        // Lazy Loading for Social Media Embeds
+        function initLazyLoading() {
+            const lazyElements = document.querySelectorAll('.lazy-load');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('loaded');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            lazyElements.forEach(el => observer.observe(el));
+        }
+
+        // Initialize all features when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initTestimonialCarousel();
+            initLazyLoading();
+
+            // Add accessibility enhancements
+            const feedTabs = document.querySelectorAll('.feed-tab');
+            feedTabs.forEach(tab => {
+                tab.setAttribute('role', 'tab');
+                tab.setAttribute('aria-selected', tab.classList.contains('active') ? 'true' : 'false');
+            });
+
+            const feedContainers = document.querySelectorAll('[id$="-feed"]');
+            feedContainers.forEach(container => {
+                container.setAttribute('role', 'tabpanel');
+            });
+        });
+    </script>
+    <script src="assets/js/cart.js"></script>
+</body>
+</html>

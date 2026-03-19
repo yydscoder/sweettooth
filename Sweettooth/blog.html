@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - SweetTooth Gelato</title>
+    
+    <!-- Google Fonts - Poppins and Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/shared.css">
+    <!-- Custom CSS -->
+    <style>
+        /* CSS Variables for SweetTooth Colors */
+        :root {
+            --color-cream: #FFF6CC; /* RGB 255 246 204 */
+            --color-pink: #F37273; /* RGB 243 114 115 */
+            --color-light-cream: #FEFAE8; /* RGB 254 250 232 */
+            --color-peach: #FFDC9F; /* RGB 255 220 160 */
+            --color-orange: #F2BA72; /* RGB 242 186 114 */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-light-cream);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Custom fonts */
+        .dealerplate {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .poppins-bold {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+        
+        .poppins-normal {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+        
+        /* Additional styles for blending design elements */
+        .blend-design {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--color-pink);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .highlight-text {
+            background: linear-gradient(120deg, var(--color-peach), var(--color-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--color-cream);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 50px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--color-pink);
+        }
+        
+        .cta-button {
+            background-color: var(--color-pink);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #e05a5b;
+        }
+        
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+            margin-left: 1rem;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--color-pink);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        /* Blog Section */
+        .blog {
+            padding: 5rem 2rem;
+            background-color: var(--color-light-cream);
+        }
+        
+        .blog-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .blog-header h2 {
+            font-size: 2.5rem;
+            color: var(--color-pink);
+            margin-bottom: 1rem;
+        }
+        
+        .blog-posts {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .blog-post {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .blog-post:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .post-image {
+            height: 200px;
+            background-color: var(--color-peach);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .post-image-placeholder {
+            color: #777;
+        }
+        
+        .post-content {
+            padding: 1.5rem;
+        }
+        
+        .post-content h3 {
+            color: var(--color-pink);
+            margin-bottom: 0.5rem;
+        }
+        
+        .post-meta {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .post-excerpt {
+            margin-bottom: 1rem;
+        }
+        
+        .read-more {
+            color: var(--color-pink);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .read-more:hover {
+            text-decoration: underline;
+        }
+        
+        /* Social Media Section */
+        .social-media {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-peach) 100%);
+        }
+        
+        .social-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .social-header h2 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .social-plugins {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .social-plugin {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-weight: 600;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            color: var(--color-peach);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #555;
+            color: #aaa;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .blog-posts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <!-- Notification Element -->
+    <div class="notification" id="notification">
+        <span id="notification-text"></span>
+    </div>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container blend-design">
+            <div class="logo">
+                <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 50px;">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#philosophy">Our Story</a></li>
+                    <li><a href="products.html">Flavors</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="feed.html">Feed</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon" onclick="toggleCartDropdown()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count" id="cart-count">0</span>
+
+                <!-- Cart Dropdown -->
+                <div class="cart-dropdown" id="cart-dropdown">
+                    <div class="cart-header">
+                        <h3 class="dealerplate">Your Cart</h3>
+                        <span style="cursor: pointer;" onclick="toggleCartDropdown()">&times;</span>
+                    </div>
+                    <div class="cart-items-container" id="cart-items-container">
+                        <div class="empty-cart-message">
+                            <p>🛒 Cart is empty</p>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add some delicious gelato!</p>
+                        </div>
+                    </div>
+                    <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;">
+                        <div id="cart-items-list"></div>
+                        <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
+                        <button class="checkout-btn poppins-bold" onclick="proceedToCheckout()">Proceed to Checkout</button>
+                        <button class="view-cart-btn poppins-bold" onclick="window.location.href='products.html'">View Full Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Blog Section -->
+    <section class="blog">
+        <div class="blend-design">
+            <div class="blog-header">
+                <h2 class="dealerplate">SweetTooth Blog</h2>
+                <p class="poppins-normal">Discover the stories behind our artisanal gelato creations</p>
+            </div>
+            
+            <div class="blog-posts">
+                <div class="blog-post">
+                    <div class="post-image">
+                        <div class="post-image-placeholder">[Mangosteen Feature]</div>
+                    </div>
+                    <div class="post-content">
+                        <h3 class="dealerplate">The Journey of Mangosteen Sorbet</h3>
+                        <div class="post-meta">Posted on February 10, 2026 | By SweetTooth Team</div>
+                        <p class="post-excerpt poppins-normal">Discover how we perfected our signature mangosteen sorbet, sourcing the finest seasonal fruits from local farmers in Malaysia.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                
+                <div class="blog-post">
+                    <div class="post-image">
+                        <div class="post-image-placeholder">[Seasonal Ingredients]</div>
+                    </div>
+                    <div class="post-content">
+                        <h3 class="dealerplate">Understanding Shun: Seasonal Ingredients</h3>
+                        <div class="post-meta">Posted on February 5, 2026 | By SweetTooth Team</div>
+                        <p class="post-excerpt poppins-normal">Learn about the Japanese concept of Shun and how we apply it to our gelato-making process, ensuring peak flavor and freshness.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                
+                <div class="blog-post">
+                    <div class="post-image">
+                        <div class="post-image-placeholder">[Artisanal Process]</div>
+                    </div>
+                    <div class="post-content">
+                        <h3 class="dealerplate">The Art of Artisanal Gelato</h3>
+                        <div class="post-meta">Posted on January 28, 2026 | By SweetTooth Team</div>
+                        <p class="post-excerpt poppins-normal">A deep dive into our traditional Italian techniques and how we've adapted them to create unique Asian-inspired flavors.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                
+                <div class="blog-post">
+                    <div class="post-image">
+                        <div class="post-image-placeholder">[Health Conscious]</div>
+                    </div>
+                    <div class="post-content">
+                        <h3 class="dealerplate">Balancing Health and Indulgence</h3>
+                        <div class="post-meta">Posted on January 20, 2026 | By SweetTooth Team</div>
+                        <p class="post-excerpt poppins-normal">Our philosophy on creating treats that are both delicious and mindful, without compromising on taste or quality.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                
+                <div class="blog-post">
+                    <div class="post-image">
+                        <div class="post-image-placeholder">[Campus Events]</div>
+                    </div>
+                    <div class="post-content">
+                        <h3 class="dealerplate">SweetTooth Goes to Campus</h3>
+                        <div class="post-meta">Posted on January 15, 2026 | By SweetTooth Team</div>
+                        <p class="post-excerpt poppins-normal">Recap of our recent events at Monash, Sunway, and INTI universities, bringing artisanal gelato to students.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                
+                <div class="blog-post">
+                    <div class="post-image">
+                        <div class="post-image-placeholder">[Ingredient Spotlight]</div>
+                    </div>
+                    <div class="post-content">
+                        <h3 class="dealerplate">Spotlight: Madagascar Vanilla</h3>
+                        <div class="post-meta">Posted on January 8, 2026 | By SweetTooth Team</div>
+                        <p class="post-excerpt poppins-normal">An exploration of our premium Madagascar vanilla beans and why they make the perfect base for our classic flavors.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Section -->
+    <section class="social-media">
+        <div class="social-container">
+            <div class="social-header">
+                <h2 class="dealerplate">Follow Our Journey</h2>
+                <p class="poppins-normal" style="color: white;">Stay updated with new flavors, events, and behind-the-scenes content</p>
+            </div>
+            
+            <div class="social-plugins">
+                <div class="social-plugin">
+                    <div>
+                    </div>
+                </div>
+                
+                <div class="social-plugin">
+                    <div>
+                        <h3 style="color: var(--color-pink); margin-bottom: 1rem;">TikTok Feed</h3>
+                        <p>TikTok Plugin Placeholder</p>
+                        <p>Will connect to TikTok API</p>
+                    </div>
+                </div>
+                
+                <div class="social-plugin">
+                    <div>
+                        <h3 style="color: var(--color-pink); margin-bottom: 1rem;">User Content</h3>
+                        <p>Customer Photos & Reviews</p>
+                        <p>Will connect to social APIs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="blend-design">
+            <div class="footer-container">
+                <div class="footer-section">
+                    <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 60px; margin-bottom: 1rem;">
+                    <p class="poppins-normal">Premium artisanal gelato crafted with seasonal ingredients and unwavering commitment to quality.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="dealerplate">Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#philosophy">Our Story</a></li>
+                        <li><a href="products.html">Flavors</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="index.html#events">Events</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="dealerplate">Connect With Us</h3>
+                    <ul>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">TikTok</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="mailto:info@sweettoothgelato.com.my">Email Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="dealerplate">Contact</h3>
+                    <ul>
+                        <li class="poppins-normal">Email: info@sweettoothgelato.com.my</li>
+                        <li class="poppins-normal">Phone: Coming Soon</li>
+                        <li class="poppins-normal">Address: Malaysia</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p class="poppins-normal">&copy; 2026 SweetTooth Gelato. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Chat Box -->
+    <div id="whatsapp-chatbox" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <!-- WhatsApp Button -->
+        <div id="whatsapp-button" style="display: flex; flex-direction: column; align-items: flex-end;">
+            <button id="whatsapp-toggle" style="background-color: #25D366; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="white">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.456-18.294a11.82 11.82 0 00-8.456-3.513c-6.502.003-11.78 5.281-11.78 11.785 0 2.258.633 4.376 1.758 6.184L1.356 23.9l6.305-1.654a11.88 11.88 0 006.188 1.76 11.816 11.816 0 0010.645-6.314 11.904 11.904 0 00-3.04-13.698"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- WhatsApp Chat Window -->
+        <div id="whatsapp-window" style="display: none; width: 350px; height: 450px; background-color: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-top: 10px; flex-direction: column; overflow: hidden;">
+            <div style="background-color: #25D366; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0; font-size: 1.2em;">SweetTooth Support</h3>
+                    <p style="margin: 0; font-size: 0.9em; opacity: 0.9;">Typically replies in a few minutes</p>
+                </div>
+                <button id="close-whatsapp" style="background: none; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
+            </div>
+            <div id="chat-messages" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #f0f0f0;">
+                <div style="background-color: #e5ffc1; padding: 10px; border-radius: 10px; margin-bottom: 10px; max-width: 80%;">
+                    Hello! 👋 How can we help you with our artisanal gelato today?
+                </div>
+            </div>
+            <div style="padding: 10px; background-color: #f0f0f0; display: flex;">
+                <input type="text" id="whatsapp-message" placeholder="Type a message..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; margin-right: 5px;">
+                <button id="send-whatsapp" style="background-color: #25D366; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cart functionality
+        let cart = [];
+
+        function addToCart(productName, price) {
+            const existingItem = cart.find(item => item.name === productName);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    name: productName,
+                    price: parseFloat(price),
+                    quantity: 1
+                });
+            }
+
+            updateCart();
+            showNotification(`${productName} added to cart!`);
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+
+            if (!notification || !notificationText) return;
+
+            notificationText.textContent = message;
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateCart() {
+            const totalCount = cart.reduce((total, item) => total + item.quantity, 0);
+            const cartCountElement = document.getElementById('cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = totalCount;
+            }
+
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const cartItemsFilled = document.getElementById('cart-items-filled');
+            const cartItemsList = document.getElementById('cart-items-list');
+
+            if (cart.length === 0) {
+                if (cartItemsContainer) cartItemsContainer.style.display = 'block';
+                if (cartItemsFilled) cartItemsFilled.style.display = 'none';
+            } else {
+                if (cartItemsContainer) cartItemsContainer.style.display = 'none';
+                if (cartItemsFilled) cartItemsFilled.style.display = 'block';
+
+                let cartHTML = '';
+                let total = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+
+                    cartHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <span class="poppins-bold">${item.name}</span><br>
+                                <span class="poppins-normal">RM${item.price} x ${item.quantity}</span>
+                            </div>
+                            <div class="poppins-bold">RM${itemTotal.toFixed(2)}</div>
+                        </div>
+                    `;
+                });
+
+                if (cartItemsList) cartItemsList.innerHTML = cartHTML;
+                const cartTotalElement = document.getElementById('cart-total');
+                if (cartTotalElement) cartTotalElement.textContent = total.toFixed(2);
+            }
+        }
+
+        function toggleCartDropdown() {
+            const dropdown = document.getElementById('cart-dropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('active');
+            }
+        }
+
+        function proceedToCheckout() {
+            // Save cart to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Redirect to checkout page
+            window.location.href = 'checkout.html';
+        }
+
+        // Close cart dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const cartIcon = document.querySelector('.cart-icon');
+            const dropdown = document.getElementById('cart-dropdown');
+
+            if (cartIcon && !cartIcon.contains(event.target) && dropdown && dropdown.classList.contains('active')) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Add event listeners to any "Add to Cart" buttons on this page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners to any "Add to Cart" buttons on this page
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productName = this.getAttribute('data-product');
+                    const price = this.getAttribute('data-price');
+                    addToCart(productName, price);
+                });
+            });
+
+            // Initialize cart from localStorage if available
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCart();
+            }
+        });
+
+        // WhatsApp Chat Box Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const whatsappToggle = document.getElementById('whatsapp-toggle');
+            const whatsappWindow = document.getElementById('whatsapp-window');
+            const closeWhatsapp = document.getElementById('close-whatsapp');
+            const sendWhatsapp = document.getElementById('send-whatsapp');
+            const whatsappMessage = document.getElementById('whatsapp-message');
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // Toggle chat window
+            whatsappToggle.addEventListener('click', function() {
+                if (whatsappWindow.style.display === 'none' || whatsappWindow.style.display === '') {
+                    whatsappWindow.style.display = 'flex';
+                } else {
+                    whatsappWindow.style.display = 'none';
+                }
+            });
+            
+            // Close chat window
+            closeWhatsapp.addEventListener('click', function() {
+                whatsappWindow.style.display = 'none';
+            });
+            
+            // Send message function
+            function sendMessage() {
+                const message = whatsappMessage.value.trim();
+                if (message) {
+                    // Redirect to WhatsApp with the message
+                    const phoneNumber = '601234567890'; // Replace with your actual WhatsApp business number (without + and spaces)
+                    const encodedMessage = encodeURIComponent(message);
+                    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+                    
+                    // Open WhatsApp in a new tab/window
+                    window.open(whatsappUrl, '_blank');
+                    
+                    // Clear input
+                    whatsappMessage.value = '';
+                    
+                    // Close the chat window after redirecting
+                    whatsappWindow.style.display = 'none';
+                }
+            }
+            
+            // Send message on button click
+            sendWhatsapp.addEventListener('click', sendMessage);
+            
+            // Send message on Enter key
+            whatsappMessage.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // WhatsApp Widget API Integration
+            // INSERT API HERE: Function to track WhatsApp clicks and gather customer data
+            function trackWhatsAppClick() {
+                // This function would send analytics data to your backend
+                // when someone clicks the WhatsApp widget
+                // Example: fetch('/api/track-whatsapp-click', { method: 'POST', ... })
+            }
+            
+            // Track when chat is opened
+            whatsappToggle.addEventListener('click', function() {
+                trackWhatsAppClick();
+            });
+        });
+    </script>
+    <script src="assets/js/cart.js"></script>
+</body>
+</html>

@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - SweetTooth Gelato</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/shared.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --color-cream: #FFF6CC;
+            --color-pink: #F37273;
+            --color-light-cream: #FEFAE8;
+            --color-peach: #FFDC9F;
+            --color-orange: #F2BA72;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-light-cream);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .dealerplate {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .poppins-bold {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+        .poppins-normal {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+
+        .blend-design {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--color-pink);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--color-cream);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--color-pink);
+        }
+
+        nav a.active {
+            color: var(--color-pink);
+            font-weight: 700;
+            border-bottom: 2px solid var(--color-pink);
+        }
+
+        .cart-icon {
+            position: relative;
+            margin-left: 1rem;
+            cursor: pointer;
+        }
+
+        .cart-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .cart-dropdown.active {
+            display: block;
+        }
+
+        .cart-header {
+            background: var(--color-pink);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-items-container {
+            padding: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-total {
+            text-align: right;
+            font-weight: 700;
+            margin: 1rem 0;
+            padding-top: 0.5rem;
+            border-top: 2px solid var(--color-pink);
+        }
+
+        .checkout-btn {
+            background-color: var(--color-pink);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .view-cart-btn {
+            background-color: white;
+            color: var(--color-pink);
+            border: 2px solid var(--color-pink);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .empty-cart-message {
+            text-align: center;
+            padding: 2rem;
+            color: #777;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--color-pink);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--color-pink);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Events Page Styles */
+        .events-page {
+            padding: 5rem 2rem;
+            background-color: var(--color-light-cream);
+        }
+
+        .events-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        .events-intro p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .events-carousel {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .carousel-container {
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .carousel-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .event-slide {
+            min-width: 100%;
+            padding: 3rem 2rem;
+            background: white;
+            text-align: center;
+        }
+
+        .event-card {
+            background: var(--color-light-cream);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .event-date {
+            font-weight: 700;
+            color: var(--color-pink);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .event-location {
+            color: #666;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .event-location-icon {
+            color: var(--color-pink);
+        }
+
+        .event-description {
+            color: #555;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .event-cta {
+            background-color: var(--color-pink);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .event-cta:hover {
+            background-color: #e05a5b;
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .carousel-btn {
+            background: var(--color-cream);
+            border: 2px solid var(--color-pink);
+            color: var(--color-pink);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background: var(--color-pink);
+            color: white;
+        }
+
+        /* Events Grid for all events */
+        .events-grid-section {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Event Calendar Styles */
+        .calendar-section {
+            padding: 5rem 2rem;
+            background-color: var(--color-light-cream);
+        }
+
+        .calendar-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            background: linear-gradient(135deg, var(--color-peach) 0%, var(--color-orange) 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .calendar-nav button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .calendar-nav button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: var(--color-cream);
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            padding: 1rem;
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            min-height: 60px;
+        }
+
+        .calendar-day:hover {
+            background: var(--color-cream);
+        }
+
+        .calendar-day.other-month {
+            color: #ccc;
+            background: #f9f9f9;
+        }
+
+        .calendar-day.today {
+            background: var(--color-pink);
+            color: white;
+            font-weight: 700;
+        }
+
+        .calendar-day.has-event {
+            border: 2px solid var(--color-pink);
+        }
+
+        .calendar-day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            width: 8px;
+            height: 8px;
+            background: var(--color-pink);
+            border-radius: 50%;
+        }
+
+        .calendar-day.today.has-event::after {
+            background: white;
+        }
+
+        .calendar-events-panel {
+            padding: 1.5rem;
+            background: var(--color-light-cream);
+            border-top: 2px solid var(--color-peach);
+        }
+
+        .calendar-events-panel h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--color-pink);
+            margin-bottom: 1rem;
+        }
+
+        .calendar-event-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid var(--color-pink);
+        }
+
+        .calendar-event-item h4 {
+            color: var(--color-pink);
+            margin-bottom: 0.3rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .calendar-event-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--color-peach);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #555;
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Event Card Styles - match product card aesthetic */
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .event-card h3.event-date {
+            color: var(--color-pink);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-location {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .event-location svg {
+            margin-right: 0.5rem;
+            color: var(--color-pink);
+        }
+
+        .event-description {
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .event-cta {
+            background-color: var(--color-pink);
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .event-cta:hover {
+            background-color: #e05a5b;
+        }
+    </style>
+
+    <!-- Notification Element -->
+    <div class="notification" id="notification">
+        <span id="notification-text"></span>
+    </div>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container blend-design">
+            <div class="logo">
+                <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 50px;">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="products.html">Flavors</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="feed.html">Feed</a></li>
+                    <li><a href="events.html" class="active">Events</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon" onclick="toggleCartDropdown()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count" id="cart-count">0</span>
+
+                <!-- Cart Dropdown -->
+                <div class="cart-dropdown" id="cart-dropdown">
+                    <div class="cart-header">
+                        <h3 class="dealerplate">Your Cart</h3>
+                        <span style="cursor: pointer;" onclick="event.stopPropagation(); toggleCartDropdown()">&times;</span>
+                    </div>
+                    <div class="cart-items-container" id="cart-items-container">
+                        <div class="empty-cart-message">
+                            <p>🛒 Cart is empty</p>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add some delicious gelato!</p>
+                        </div>
+                    </div>
+                    <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;">
+                        <div id="cart-items-list"></div>
+                        <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
+                        <button class="checkout-btn poppins-bold" onclick="proceedToCheckout()">Proceed to Checkout</button>
+                        <button class="view-cart-btn poppins-bold" onclick="window.location.href='checkout.html'">View Full Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Events Page -->
+    <section class="events-page">
+        <div class="blend-design">
+            <h1 class="section-title">Upcoming Events</h1>
+            <div class="events-intro">
+                <p class="poppins-normal">Join us at bazaars, school events, and campus festivals across Malaysia. Come taste our artisanal gelato and meet the SweetTooth team!</p>
+            </div>
+
+            <!-- Events Carousel -->
+            <div class="events-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slides" id="events-slides">
+                        <div class="event-slide">
+                            <div class="event-card">
+                                <h3 class="event-date dealerplate">March 15, 2026</h3>
+                                <div class="event-location">
+                                    <svg class="event-location-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M3.5 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2zm3.027 5.5A.5.5 0 0 0 6 8c0 .298.192.52.454.575a9.967 9.967 0 0 0 3.041.084.5.5 0 0 0 .454-.575 9.967 9.967 0 0 0-3.041-.084zM8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+                                    </svg>
+                                    Monash University, Penang Campus
+                                </div>
+                                <p class="event-description poppins-normal">Monthly campus events featuring our seasonal flavors and special promotions. Perfect opportunity to try our latest creations!</p>
+                                <button class="event-cta poppins-bold">Learn More</button>
+                            </div>
+                        </div>
+
+                        <div class="event-slide">
+                            <div class="event-card">
+                                <h3 class="event-date dealerplate">April 3, 2026</h3>
+                                <div class="event-location">
+                                    <svg class="event-location-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M3.5 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2zm3.027 5.5A.5.5 0 0 0 6 8c0 .298.192.52.454.575a9.967 9.967 0 0 0 3.041.084.5.5 0 0 0 .454-.575 9.967 9.967 0 0 0-3.041-.084zM8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+                                    </svg>
+                                    Sunway University, Subang Jaya
+                                </div>
+                                <p class="event-description poppins-normal">Quarterly food festivals with exclusive tasting sessions and limited-edition flavors. Don't miss our special event flavors!</p>
+                                <button class="event-cta poppins-bold">Learn More</button>
+                            </div>
+                        </div>
+
+                        <div class="event-slide">
+                            <div class="event-card">
+                                <h3 class="event-date dealerplate">May 22, 2026</h3>
+                                <div class="event-location">
+                                    <svg class="event-location-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M3.5 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2zm3.027 5.5A.5.5 0 0 0 6 8c0 .298.192.52.454.575a9.967 9.967 0 0 0 3.041.084.5.5 0 0 0 .454-.575 9.967 9.967 0 0 0-3.041-.084zM8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+                                    </svg>
+                                    INTI International University, Nilai
+                                </div>
+                                <p class="event-description poppins-normal">Student events & celebrations with special discounts for students and staff. Bring your student ID for exclusive deals!</p>
+                                <button class="event-cta poppins-bold">Learn More</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-nav">
+                    <button class="carousel-btn prev-btn" aria-label="Previous event">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .707L5.697 8l5.657 5.646a.5.5 0 0 1-.707.707l-6-6a.5.5 0 0 1 0-.707l6-6a.5.5 0 0 1 .707 0z"/>
+                        </svg>
+                    </button>
+                    <button class="carousel-btn next-btn" aria-label="Next event">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 0 .707L10.303 8l-5.657 5.646a.5.5 0 0 1-.707-.707l5.657-5.646-5.657-5.646a.5.5 0 0 1 .707-.707z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- All Events Grid -->
+    <section class="events-grid-section">
+        <div class="blend-design">
+            <h2 class="section-title">All Upcoming Events</h2>
+            <div class="events-grid">
+                <div class="event-card">
+                    <h3 class="event-date dealerplate">March 15, 2026</h3>
+                    <div class="event-location">
+                        <svg class="event-location-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M3.5 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2zm3.027 5.5A.5.5 0 0 0 6 8c0 .298.192.52.454.575a9.967 9.967 0 0 0 3.041.084.5.5 0 0 0 .454-.575 9.967 9.967 0 0 0-3.041-.084zM8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+                        </svg>
+                        Monash University, Penang Campus
+                    </div>
+                    <p class="event-description poppins-normal">Monthly campus events featuring our seasonal flavors and special promotions.</p>
+                    <button class="event-cta poppins-bold">Learn More</button>
+                </div>
+
+                <div class="event-card">
+                    <h3 class="event-date dealerplate">April 3, 2026</h3>
+                    <div class="event-location">
+                        <svg class="event-location-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M3.5 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2zm3.027 5.5A.5.5 0 0 0 6 8c0 .298.192.52.454.575a9.967 9.967 0 0 0 3.041.084.5.5 0 0 0 .454-.575 9.967 9.967 0 0 0-3.041-.084zM8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+                        </svg>
+                        Sunway University, Subang Jaya
+                    </div>
+                    <p class="event-description poppins-normal">Quarterly food festivals with exclusive tasting sessions and limited-edition flavors.</p>
+                    <button class="event-cta poppins-bold">Learn More</button>
+                </div>
+
+                <div class="event-card">
+                    <h3 class="event-date dealerplate">May 22, 2026</h3>
+                    <div class="event-location">
+                        <svg class="event-location-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M3.5 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2zm3.027 5.5A.5.5 0 0 0 6 8c0 .298.192.52.454.575a9.967 9.967 0 0 0 3.041.084.5.5 0 0 0 .454-.575 9.967 9.967 0 0 0-3.041-.084zM8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+                        </svg>
+                        INTI International University, Nilai
+                    </div>
+                    <p class="event-description poppins-normal">Student events & celebrations with special discounts for students and staff.</p>
+                    <button class="event-cta poppins-bold">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Calendar Section -->
+    <section class="calendar-section">
+        <div class="blend-design">
+            <h2 class="section-title">Event Calendar</h2>
+            <p class="poppins-normal" style="text-align: center; margin-bottom: 2rem; color: #555;">Find us at these upcoming events</p>
+            
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2 id="calendar-month-year">March 2026</h2>
+                    <div class="calendar-nav">
+                        <button id="prev-month" aria-label="Previous month">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .707L5.697 8l5.657 5.646a.5.5 0 0 1-.707.707l-6-6a.5.5 0 0 1 0-.707l6-6a.5.5 0 0 1 .707 0z"/>
+                            </svg>
+                        </button>
+                        <button id="next-month" aria-label="Next month">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 0 .707L10.303 8l-5.657 5.646a.5.5 0 0 1-.707-.707l5.657-5.646-5.657-5.646a.5.5 0 0 1 .707-.707z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="calendar-weekdays">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+                
+                <div class="calendar-days" id="calendar-days">
+                    <!-- Days will be generated by JavaScript -->
+                </div>
+                
+                <div class="calendar-events-panel">
+                    <h3>Selected Date Events</h3>
+                    <div id="selected-date-events">
+                        <p class="poppins-normal" style="color: #666;">Select a date to view events</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="blend-design">
+            <div class="footer-container">
+                <div class="footer-section">
+                    <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 60px; margin-bottom: 1rem;">
+                    <p class="poppins-normal">Premium artisanal gelato crafted with seasonal ingredients and unwavering commitment to quality.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="dealerplate">Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="our-story.html">Our Story</a></li>
+                        <li><a href="products.html">Flavors</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="feed.html">Feed</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="dealerplate">Connect With Us</h3>
+                    <ul>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">TikTok</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="mailto:info@sweettoothgelato.com.my">Email Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="dealerplate">Contact</h3>
+                    <ul>
+                        <li class="poppins-normal">Email: info@sweettoothgelato.com.my</li>
+                        <li class="poppins-normal">Phone: Coming Soon</li>
+                        <li class="poppins-normal">Address: Malaysia</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p class="poppins-normal">&copy; 2026 SweetTooth Gelato. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Events Carousel
+        function initEventsCarousel() {
+            const slides = document.getElementById('events-slides');
+            const prevBtn = document.querySelector('.events-carousel .carousel-btn.prev-btn');
+            const nextBtn = document.querySelector('.events-carousel .carousel-btn.next-btn');
+            let currentIndex = 0;
+            const totalSlides = 3;
+
+            function showSlide(index) {
+                currentIndex = index;
+                slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+
+            if (prevBtn && nextBtn) {
+                prevBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                    showSlide(currentIndex);
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex + 1) % totalSlides;
+                    showSlide(currentIndex);
+                });
+
+                // Auto-rotate every 5 seconds
+                setInterval(() => {
+                    currentIndex = (currentIndex + 1) % totalSlides;
+                    showSlide(currentIndex);
+                }, 5000);
+            }
+        }
+
+        // Initialize events carousel
+        document.addEventListener('DOMContentLoaded', function() {
+            initEventsCarousel();
+            initCalendar();
+        });
+
+        // Interactive Calendar
+        let currentCalendarDate = new Date(2026, 2, 1); // March 2026
+        let selectedCalendarDate = null;
+
+        // Dummy events data
+        const eventsData = [
+            { date: '2026-03-15', title: 'Monash University Event', location: 'Penang Campus', description: 'Monthly campus events featuring our seasonal flavors and special promotions.' },
+            { date: '2026-03-22', title: 'Weekend Bazaar', location: 'Bangsar Shopping Centre', description: 'Weekend bazaar with special discounts on all flavors.' },
+            { date: '2026-03-29', title: 'Food Festival', location: 'KL Convention Centre', description: 'Annual food festival featuring local artisans.' },
+            { date: '2026-04-03', title: 'Sunway University Event', location: 'Subang Jaya', description: 'Quarterly food festivals with exclusive tasting sessions and limited-edition flavors.' },
+            { date: '2026-04-12', title: 'Easter Special', location: 'The Gardens Mall', description: 'Easter celebration with special bunny-shaped gelato.' },
+            { date: '2026-04-26', title: 'Earth Day Event', location: 'Perdana Botanical Gardens', description: 'Eco-friendly event with sustainable packaging showcase.' },
+            { date: '2026-05-10', title: 'Mother\'s Day Special', location: 'Pavilion KL', description: 'Special Mother\'s Day promotions and gift sets.' },
+            { date: '2026-05-22', title: 'INTI International University', location: 'Nilai', description: 'Student events & celebrations with special discounts for students and staff.' },
+            { date: '2026-05-30', title: 'Weekend Market', location: 'Armenian Street, Penang', description: 'Heritage weekend market with local products.' }
+        ];
+
+        function initCalendar() {
+            renderCalendar();
+            
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+                renderCalendar();
+            });
+
+            document.getElementById('next-month').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+                renderCalendar();
+            });
+        }
+
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            // Update header
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('calendar-month-year').textContent = `${monthNames[month]} ${year}`;
+
+            // Get first day of month and total days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+            const calendarDays = document.getElementById('calendar-days');
+            calendarDays.innerHTML = '';
+
+            const today = new Date();
+
+            // Previous month days
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const dayEl = createDayElement(daysInPrevMonth - i, true, year, month);
+                calendarDays.appendChild(dayEl);
+            }
+
+            // Current month days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = today.getDate() === day && today.getMonth() === month && today.getFullYear() === year;
+                const dayEl = createDayElement(day, false, year, month, isToday);
+                calendarDays.appendChild(dayEl);
+            }
+
+            // Next month days
+            const totalCells = firstDay + daysInMonth;
+            const remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+            for (let day = 1; day <= remainingCells; day++) {
+                const dayEl = createDayElement(day, true, year, month);
+                calendarDays.appendChild(dayEl);
+            }
+        }
+
+        function createDayElement(day, isOtherMonth, year, month, isToday = false) {
+            const dayEl = document.createElement('div');
+            dayEl.className = 'calendar-day';
+            if (isOtherMonth) dayEl.classList.add('other-month');
+            if (isToday) dayEl.classList.add('today');
+
+            const dayNum = document.createElement('span');
+            dayNum.textContent = day;
+            dayEl.appendChild(dayNum);
+
+            // Check if this day has events
+            const checkMonth = isOtherMonth ? (day < 15 ? month - 1 : month + 1) : month;
+            const checkYear = checkMonth < 0 ? year - 1 : (checkMonth > 11 ? year + 1 : year);
+            const dateStr = `${checkYear}-${String(checkMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            
+            const hasEvent = eventsData.some(e => e.date === dateStr);
+            if (hasEvent) {
+                dayEl.classList.add('has-event');
+            }
+
+            dayEl.addEventListener('click', () => {
+                selectedCalendarDate = dateStr;
+                showEventsForDate(dateStr);
+                
+                // Remove selected class from all days
+                document.querySelectorAll('.calendar-day').forEach(d => d.style.background = '');
+                if (!isOtherMonth && !isToday) {
+                    dayEl.style.background = 'var(--color-peach)';
+                }
+            });
+
+            return dayEl;
+        }
+
+        function showEventsForDate(dateStr) {
+            const eventsPanel = document.getElementById('selected-date-events');
+            const events = eventsData.filter(e => e.date === dateStr);
+
+            if (events.length === 0) {
+                eventsPanel.innerHTML = '<p class="poppins-normal" style="color: #666;">No events scheduled for this date</p>';
+            } else {
+                eventsPanel.innerHTML = events.map(e => `
+                    <div class="calendar-event-item">
+                        <h4>${e.title}</h4>
+                        <p>📍 ${e.location}</p>
+                        <p>${e.description}</p>
+                    </div>
+                `).join('');
+            }
+        }
+    </script>
+    <script src="assets/js/cart.js"></script>
+</body>
+</html>

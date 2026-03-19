@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - SweetTooth Gelato</title>
+    
+    <!-- Google Fonts - Poppins and Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/shared.css">
+    <!-- Custom CSS -->
+    <style>
+        /* CSS Variables for SweetTooth Colors */
+        :root {
+            --color-cream: #FFF6CC; /* RGB 255 246 204 */
+            --color-pink: #F37273; /* RGB 243 114 115 */
+            --color-light-cream: #FEFAE8; /* RGB 254 250 232 */
+            --color-peach: #FFDC9F; /* RGB 255 220 160 */
+            --color-orange: #F2BA72; /* RGB 242 186 114 */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-light-cream);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Custom fonts */
+        .dealerplate {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .poppins-bold {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+        
+        .poppins-normal {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+        
+        /* Additional styles for blending design elements */
+        .blend-design {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--color-pink);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .highlight-text {
+            background: linear-gradient(120deg, var(--color-peach), var(--color-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--color-cream);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 50px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--color-pink);
+        }
+        
+        .cta-button {
+            background-color: var(--color-pink);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #e05a5b;
+        }
+        
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+            margin-left: 1rem;
+            cursor: pointer;
+        }
+        
+        .cart-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            margin-top: 10px;
+        }
+        
+        .cart-dropdown.active {
+            display: block;
+        }
+        
+        .cart-header {
+            background: var(--color-pink);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-items-container {
+            padding: 1rem;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-total {
+            text-align: right;
+            font-weight: 700;
+            margin: 1rem 0;
+            padding-top: 0.5rem;
+            border-top: 2px solid var(--color-pink);
+        }
+        
+        .checkout-btn {
+            background-color: var(--color-pink);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .view-cart-btn {
+            background-color: white;
+            color: var(--color-pink);
+            border: 2px solid var(--color-pink);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+        }
+        
+        .empty-cart-message {
+            text-align: center;
+            padding: 2rem;
+            color: #777;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--color-pink);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        
+        /* Products Section */
+        .products {
+            padding: 5rem 2rem;
+            background-color: var(--color-light-cream);
+        }
+        
+        .products-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .products-header h2 {
+            font-size: 2.5rem;
+            color: var(--color-pink);
+            margin-bottom: 1rem;
+        }
+        
+        .products-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            height: 200px;
+            background-color: var(--color-peach);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-image-placeholder {
+            color: #777;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-info h3 {
+            color: var(--color-pink);
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-price {
+            font-weight: 700;
+            color: var(--color-orange);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .add-to-cart-btn {
+            background-color: var(--color-pink);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .add-to-cart-btn:hover {
+            background-color: #e05a5b;
+        }
+        
+        /* Cart Modal */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cart-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close-cart {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        .cart-items {
+            margin: 1.5rem 0;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-total {
+            text-align: right;
+            font-weight: 700;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .checkout-btn {
+            background-color: var(--color-pink);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+            margin-top: 5rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            color: var(--color-peach);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #555;
+            color: #aaa;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <!-- Notification Element -->
+    <div class="notification" id="notification">
+        <span id="notification-text"></span>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container blend-design">
+            <div class="logo">
+                <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 50px;">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="products.html" class="active">Flavors</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="feed.html">Feed</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon" onclick="toggleCartDropdown()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count" id="cart-count">0</span>
+                
+                <!-- Cart Dropdown -->
+                <div class="cart-dropdown" id="cart-dropdown">
+                    <div class="cart-header">
+                        <h3 class="dealerplate">Your Cart</h3>
+                        <span class="cart-close" style="cursor: pointer;" onclick="event.stopPropagation(); toggleCartDropdown()">&times;</span>
+                    </div>
+                    <div class="cart-items-container" id="cart-items-container">
+                        <div class="empty-cart-message">
+                            <p>🛒 Cart is empty</p>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add some delicious gelato!</p>
+                        </div>
+                    </div>
+                    <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;">
+                        <div id="cart-items-list"></div>
+                        <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
+                        <button class="view-cart-btn poppins-bold" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Products Section -->
+    <section class="products">
+        <div class="blend-design">
+            <div class="section-title">Our Signature Flavors</div>
+            <p class="poppins-normal" style="text-align: center; margin-bottom: 3rem;">Each flavor perfected through our commitment to quality and seasonality</p>
+            
+            <div class="products-grid" id="products-grid">
+                <div class="product-card" onclick="window.location.href='product-detail-mangosteen-sorbet.html'" style="cursor: pointer;">
+                    <div class="product-image">
+                        <div class="product-image-placeholder">[Mangosteen Sorbet]</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="dealerplate">Mangosteen Sorbet</h3>
+                        <p class="poppins-normal">Seasonal delicacy crafted with peak-season mangosteens</p>
+                        <div class="product-price poppins-bold">RM 15 per 100ml</div>
+                        <button class="add-to-cart-btn poppins-bold" data-product="Mangosteen Sorbet" data-price="15">Add to Cart</button>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="window.location.href='product-detail-madagascar-vanilla.html'" style="cursor: pointer;">
+                    <div class="product-image">
+                        <div class="product-image-placeholder">[Madagascar Vanilla]</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="dealerplate">Madagascar Vanilla</h3>
+                        <p class="poppins-normal">Rich, creamy vanilla from premium Madagascar beans</p>
+                        <div class="product-price poppins-bold">RM 15 per 100ml</div>
+                        <button class="add-to-cart-btn poppins-bold" data-product="Madagascar Vanilla" data-price="15">Add to Cart</button>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="window.location.href='product-detail-seasonal-fruit-medley.html'" style="cursor: pointer;">
+                    <div class="product-image">
+                        <div class="product-image-placeholder">[Seasonal Fruit Medley]</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="dealerplate">Seasonal Fruit Medley</h3>
+                        <p class="poppins-normal">Rotating selection based on seasonal availability</p>
+                        <div class="product-price poppins-bold">RM 15 per 100ml</div>
+                        <button class="add-to-cart-btn poppins-bold" data-product="Seasonal Fruit Medley" data-price="15">Add to Cart</button>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="window.location.href='product-detail-shun-special.html'" style="cursor: pointer;">
+                    <div class="product-image">
+                        <div class="product-image-placeholder">[Shun Special]</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="dealerplate">Shun Special</h3>
+                        <p class="poppins-normal">Monthly rotating flavor featuring seasonal ingredients</p>
+                        <div class="product-price poppins-bold">RM 15 per 100ml</div>
+                        <button class="add-to-cart-btn poppins-bold" data-product="Shun Special" data-price="15">Add to Cart</button>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="window.location.href='product-detail-belgian-chocolate.html'" style="cursor: pointer;">
+                    <div class="product-image">
+                        <div class="product-image-placeholder">[Belgian Chocolate]</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="dealerplate">Belgian Chocolate</h3>
+                        <p class="poppins-normal">Rich, decadent chocolate made with premium Belgian cocoa</p>
+                        <div class="product-price poppins-bold">RM 15 per 100ml</div>
+                        <button class="add-to-cart-btn poppins-bold" data-product="Belgian Chocolate" data-price="15">Add to Cart</button>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="window.location.href='product-detail-japanese-matcha.html'" style="cursor: pointer;">
+                    <div class="product-image">
+                        <div class="product-image-placeholder">[Japanese Matcha]</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="dealerplate">Japanese Matcha</h3>
+                        <p class="poppins-normal">Authentic matcha from Uji, Kyoto with ceremonial grade powder</p>
+                        <div class="product-price poppins-bold">RM 15 per 100ml</div>
+                        <button class="add-to-cart-btn poppins-bold" data-product="Japanese Matcha" data-price="15">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="blend-design">
+            <div class="footer-container">
+                <div class="footer-section">
+                    <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 60px; margin-bottom: 1rem;">
+                    <p class="poppins-normal">Premium artisanal gelato crafted with seasonal ingredients and unwavering commitment to quality.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="dealerplate">Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#philosophy">Our Story</a></li>
+                        <li><a href="products.html">Flavors</a></li>
+                        <li><a href="index.html#events">Events</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="dealerplate">Connect With Us</h3>
+                    <ul>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">TikTok</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="mailto:info@sweettoothgelato.com.my">Email Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="dealerplate">Contact</h3>
+                    <ul>
+                        <li class="poppins-normal">Email: info@sweettoothgelato.com.my</li>
+                        <li class="poppins-normal">Phone: Coming Soon</li>
+                        <li class="poppins-normal">Address: Malaysia</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p class="poppins-normal">&copy; 2026 SweetTooth Gelato. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Chat Box -->
+    <div id="whatsapp-chatbox" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <!-- WhatsApp Button -->
+        <div id="whatsapp-button" style="display: flex; flex-direction: column; align-items: flex-end;">
+            <button id="whatsapp-toggle" style="background-color: #25D366; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="white">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.456-18.294a11.82 11.82 0 00-8.456-3.513c-6.502.003-11.78 5.281-11.78 11.785 0 2.258.633 4.376 1.758 6.184L1.356 23.9l6.305-1.654a11.88 11.88 0 006.188 1.76 11.816 11.816 0 0010.645-6.314 11.904 11.904 0 00-3.04-13.698"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- WhatsApp Chat Window -->
+        <div id="whatsapp-window" style="display: none; width: 350px; height: 450px; background-color: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-top: 10px; flex-direction: column; overflow: hidden;">
+            <div style="background-color: #25D366; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0; font-size: 1.2em;">SweetTooth Support</h3>
+                    <p style="margin: 0; font-size: 0.9em; opacity: 0.9;">Typically replies in a few minutes</p>
+                </div>
+                <button id="close-whatsapp" style="background: none; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
+            </div>
+            <div id="chat-messages" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #f0f0f0;">
+                <div style="background-color: #e5ffc1; padding: 10px; border-radius: 10px; margin-bottom: 10px; max-width: 80%;">
+                    Hello! 👋 How can we help you with our artisanal gelato today?
+                </div>
+            </div>
+            <div style="padding: 10px; background-color: #f0f0f0; display: flex;">
+                <input type="text" id="whatsapp-message" placeholder="Type a message..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; margin-right: 5px;">
+                <button id="send-whatsapp" style="background-color: #25D366; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/cart.js"></script>
+    <script>
+        
+        // WhatsApp Chat Box Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const whatsappToggle = document.getElementById('whatsapp-toggle');
+            const whatsappWindow = document.getElementById('whatsapp-window');
+            const closeWhatsapp = document.getElementById('close-whatsapp');
+            const sendWhatsapp = document.getElementById('send-whatsapp');
+            const whatsappMessage = document.getElementById('whatsapp-message');
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // Toggle chat window
+            whatsappToggle.addEventListener('click', function() {
+                if (whatsappWindow.style.display === 'none' || whatsappWindow.style.display === '') {
+                    whatsappWindow.style.display = 'flex';
+                } else {
+                    whatsappWindow.style.display = 'none';
+                }
+            });
+            
+            // Close chat window
+            closeWhatsapp.addEventListener('click', function() {
+                whatsappWindow.style.display = 'none';
+            });
+            
+            // Send message function
+            function sendMessage() {
+                const message = whatsappMessage.value.trim();
+                if (message) {
+                    // Redirect to WhatsApp with the message
+                    const phoneNumber = '601234567890'; // Replace with your actual WhatsApp business number (without + and spaces)
+                    const encodedMessage = encodeURIComponent(message);
+                    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+                    
+                    // Open WhatsApp in a new tab/window
+                    window.open(whatsappUrl, '_blank');
+                    
+                    // Clear input
+                    whatsappMessage.value = '';
+                    
+                    // Close the chat window after redirecting
+                    whatsappWindow.style.display = 'none';
+                }
+            }
+            
+            // Send message on button click
+            sendWhatsapp.addEventListener('click', sendMessage);
+            
+            // Send message on Enter key
+            whatsappMessage.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // WhatsApp Widget API Integration
+            // INSERT API HERE: Function to track WhatsApp clicks and gather customer data
+            function trackWhatsAppClick() {
+                // This function would send analytics data to your backend
+                // when someone clicks the WhatsApp widget
+                // Example: fetch('/api/track-whatsapp-click', { method: 'POST', ... })
+            }
+            
+            // Track when chat is opened
+            whatsappToggle.addEventListener('click', function() {
+                trackWhatsAppClick();
+            });
+        });
+    </script>
+</body>
+</html>
