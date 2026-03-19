@@ -13,8 +13,11 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
 
     <!-- Configuration (load BEFORE other scripts) -->
-    <script src="assets/js/config.js"></script>
-    <script src="config.js"></script>
+    <script src="assets/js/secure-config.js"></script>
+
+    <!-- Form Validation & Error Handling -->
+    <script src="assets/js/form-validation.js"></script>
+    <script src="assets/js/error-handler.js"></script>
 
     <!-- API Integration -->
     <script src="api.js"></script>
@@ -596,38 +599,40 @@
                     <!-- Delivery Section -->
                     <div class="delivery-section">
                         <h2 class="delivery-title">Delivery Information</h2>
-                        
-                        <div class="delivery-form">
-                            <div class="form-group">
-                                <label for="full-name">Full Name</label>
-                                <input type="text" id="full-name" class="form-control" placeholder="Enter your full name">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="phone">Phone Number</label>
-                                <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="email">Email Address</label>
-                                <input type="email" id="email" class="form-control" placeholder="Enter your email address">
-                            </div>
-                            
-                            <div class="form-group location-input">
-                                <label for="address">Delivery Address</label>
-                                <input type="text" id="address" class="form-control" placeholder="Enter your delivery address">
-                                <div class="location-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M3.5 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2zm3.027 5.5A.5.5 0 0 0 6 8c0 .298.192.52.454.575a9.967 9.967 0 0 0 3.041.084.5.5 0 0 0 .454-.575 9.967 9.967 0 0 0-3.041-.084zM8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
-                                    </svg>
+
+                        <form id="checkout-form">
+                            <div class="delivery-form">
+                                <div class="form-group">
+                                    <label for="full-name">Full Name</label>
+                                    <input type="text" id="full-name" name="fullName" class="form-control" placeholder="Enter your full name" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" required>
+                                </div>
+
+                                <div class="form-group location-input">
+                                    <label for="address">Delivery Address</label>
+                                    <input type="text" id="address" name="address" class="form-control" placeholder="Enter your delivery address" required>
+                                    <div class="location-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M3.5 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2zm3.027 5.5A.5.5 0 0 0 6 8c0 .298.192.52.454.575a9.967 9.967 0 0 0 3.041.084.5.5 0 0 0 .454-.575 9.967 9.967 0 0 0-3.041-.084zM8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="instructions">Delivery Instructions (Optional)</label>
+                                    <textarea id="instructions" name="instructions" class="form-control" rows="3" placeholder="Special instructions for delivery..."></textarea>
                                 </div>
                             </div>
-                            
-                            <div class="form-group">
-                                <label for="instructions">Delivery Instructions (Optional)</label>
-                                <textarea id="instructions" class="form-control" rows="3" placeholder="Special instructions for delivery..."></textarea>
-                            </div>
-                        </div>
+                        </form>
                         
                         <div class="map-container" id="map-container">
                             <div id="map" style="height: 100%; width: 100%;"></div>
@@ -909,15 +914,15 @@
             // Initialize Google Maps
             initMap();
         });
-        
+
         // Mapbox token - loaded from secure config
-        // See Sweettooth/config.template.js for setup instructions
-        var MAPBOX_TOKEN = window.getConfig('MAPBOX_TOKEN', '');
-        
+        // Set your token via /admin.html dashboard
+        var MAPBOX_TOKEN = window.SweetToothConfig ? window.SweetToothConfig.MAPBOX_TOKEN : '';
+
         // Warn if using default/empty token
         if (!MAPBOX_TOKEN) {
             console.warn('[Checkout] Mapbox token not configured. Maps may not work.');
-            console.warn('[Checkout] See Sweettooth/config.template.js for setup instructions.');
+            console.warn('[Checkout] Set your token at: /admin.html');
         }
 
         // Initialize Mapbox
@@ -1206,24 +1211,23 @@
         
         // Place order
         function placeOrder() {
-            // Validate form
-            if (!fullNameInput.value.trim()) {
-                showError('Please enter your full name.');
-                return;
+            // Clear previous errors
+            if (window.SweetToothValidation) {
+                SweetToothValidation.clearFormErrors(document.getElementById('checkout-form'));
             }
 
-            if (!phoneInput.value.trim()) {
-                showError('Please enter your phone number.');
-                return;
-            }
+            // Validate using form validation module
+            var validationRules = {
+                fullName: ['required', 'name'],
+                phone: ['required', 'phone'],
+                email: ['required', 'email'],
+                address: ['required', 'address']
+            };
 
-            if (!emailInput.value.trim()) {
-                showError('Please enter your email address.');
-                return;
-            }
-
-            if (!addressInput.value.trim()) {
-                showError('Please enter your delivery address.');
+            var validation = SweetToothValidation.validateAndShowErrors('checkout-form', validationRules);
+            
+            if (!validation.valid) {
+                showError('Please fix the errors above.');
                 return;
             }
 
@@ -1280,18 +1284,37 @@
                 notes: document.getElementById('instructions').value.trim()
             };
 
-            // Call API to place order
-            sweetToothAPI.placeOrder(orderData)
-                .then(function(order) {
-                    console.log('Order placed successfully:', order);
-                    showSuccess();
-                })
-                .catch(function(error) {
-                    console.error('Error placing order:', error);
-                    showError('There was an error placing your order. Please try again.');
-                    placeOrderBtn.disabled = false;
-                    placeOrderBtn.textContent = 'Place Order';
-                });
+            // Call API to place order with retry logic
+            var placeOrderPromise = function() {
+                return sweetToothAPI.placeOrder(orderData);
+            };
+
+            SweetToothErrorHandler.asyncWithRetry(placeOrderPromise, {
+                operationId: 'place_order',
+                maxRetries: 2,
+                timeout: 45000
+            })
+            .then(function(order) {
+                console.log('Order placed successfully:', order);
+                // Track analytics event
+                if (window.SweetToothConfig) {
+                    SweetToothConfig.trackEvent('checkout_completed', { orderId: order.id, total: order.total });
+                }
+                showSuccess();
+            })
+            .catch(function(error) {
+                console.error('Error placing order:', error);
+                var errorMsg = 'There was an error placing your order.';
+                if (error.retryCount > 0) {
+                    errorMsg += ' (Failed after ' + error.retryCount + ' attempts)';
+                }
+                if (error.message && error.message.includes('timed out')) {
+                    errorMsg = 'Request timed out. Please check your connection and try again.';
+                }
+                showError(errorMsg);
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.textContent = 'Place Order';
+            });
         }
         
         // Show success message
