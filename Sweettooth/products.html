@@ -473,7 +473,7 @@
                     <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;">
                         <div id="cart-items-list"></div>
                         <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
-                        <button class="view-cart-btn poppins-bold" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+                        <button class="view-cart-btn poppins-bold" onclick="event.stopPropagation(); proceedToCheckout()">Proceed to Checkout</button>
                     </div>
                 </div>
             </div>
@@ -645,9 +645,8 @@
         </div>
     </div>
 
-    <script src="assets/js/cart.js"></script>
     <script>
-        
+
         // WhatsApp Chat Box Functionality
         document.addEventListener('DOMContentLoaded', function() {
             const whatsappToggle = document.getElementById('whatsapp-toggle');
@@ -714,8 +713,19 @@
                 trackWhatsAppClick();
             });
         });
+
+        // Render products when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (window.SweetToothCart && SweetToothCart.renderProducts) {
+                    SweetToothCart.renderProducts('products-grid');
+                    console.log('[Products] Products rendered');
+                }
+            }, 100);
+        });
     </script>
     <script src="assets/js/secure-config.js"></script>
-    <script src="assets/js/cart.js"></script>
+    <script src="assets/js/cart.js?nocache=1"></script>
+    <script src="assets/js/lazy-load.js"></script>
 </body>
 </html>

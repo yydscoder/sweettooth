@@ -3,84 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seasonal Fruit Medley - SweetTooth Gelato</title>
-
+    <title id="page-title">Product - SweetTooth Gelato</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/shared.css">
-
     <style>
-        :root {
-            --color-cream: #FFF6CC;
-            --color-pink: #F37273;
-            --color-light-cream: #FEFAE8;
-            --color-peach: #FFDC9F;
-            --color-accent: #D05A1A;
-        }
-
+        :root { --color-cream: #FFF6CC; --color-pink: #F37273; --color-light-cream: #FEFAE8; --color-peach: #FFDC9F; --color-orange: #F2BA72; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--color-light-cream); color: #333; line-height: 1.6; }
         .dealerplate { font-family: 'Playfair Display', serif; }
-        .poppins-bold { font-weight: 700; }
-        .poppins-normal { font-weight: 400; }
+        .poppins-bold { font-family: 'Poppins', sans-serif; font-weight: 700; }
+        .poppins-normal { font-family: 'Poppins', sans-serif; font-weight: 400; }
         .blend-design { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
-        .product-detail-container { padding: 3rem 0; }
-        .breadcrumb { margin-bottom: 1.5rem; font-size: 0.9rem; color: #888; }
-        .breadcrumb a { color: var(--color-pink); text-decoration: none; }
-        .breadcrumb a:hover { text-decoration: underline; }
-
-        .product-header { display: flex; gap: 2rem; margin-bottom: 2rem; }
-        .product-image {
-            flex: 1; min-height: 400px;
-            background: linear-gradient(135deg, #FF8C42 0%, #FFBE76 50%, #FFE0A0 100%);
-            border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
-        }
-        .product-image-emoji { font-size: 8rem; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2)); }
-        .product-badge { position: absolute; top: 1rem; right: 1rem; background: white; color: var(--color-accent); font-weight: 700; font-size: 0.8rem; padding: 0.3rem 0.8rem; border-radius: 20px; }
-        .product-info { flex: 1; display: flex; flex-direction: column; gap: 1rem; }
-        .product-info h1 { font-size: 2.5rem; color: var(--color-accent); margin-bottom: 0.25rem; }
-        .product-subtitle { font-size: 1rem; color: #888; text-transform: uppercase; letter-spacing: 0.1em; }
-        .product-description { color: #555; font-size: 1.1rem; line-height: 1.8; }
-        .product-price-large { font-size: 2rem; font-weight: 700; color: var(--color-pink); }
-        .product-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .product-tag { background: #fff0e8; color: var(--color-accent); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-        .add-to-cart-btn { background-color: var(--color-pink); color: white; border: none; padding: 1rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 1.1rem; transition: background-color 0.3s, transform 0.1s; max-width: 300px; }
-        .add-to-cart-btn:hover { background-color: #e05a5b; transform: translateY(-1px); }
-
-        .flavor-profile-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #eee; }
-        .flavor-profile-section h3 { margin-bottom: 1.5rem; color: var(--color-accent); font-size: 1.5rem; }
-        .flavor-profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
-        .flavor-item { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 3px 12px rgba(0,0,0,0.06); border-top: 3px solid var(--color-accent); }
-        .flavor-item h4 { color: var(--color-accent); margin-bottom: 0.5rem; }
-        .flavor-item p { font-size: 0.95rem; color: #555; }
-
-        .seasonal-lineup { margin-top: 2.5rem; background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 3px 12px rgba(0,0,0,0.06); }
-        .seasonal-lineup h3 { color: var(--color-accent); margin-bottom: 1.5rem; font-size: 1.3rem; }
-        .season-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
-        .season-card { background: var(--color-light-cream); padding: 1rem; border-radius: 8px; text-align: center; }
-        .season-card .season-emoji { font-size: 2rem; margin-bottom: 0.5rem; }
-        .season-card h4 { font-size: 0.9rem; color: var(--color-accent); margin-bottom: 0.25rem; }
-        .season-card p { font-size: 0.8rem; color: #666; }
-
         header { background-color: var(--color-cream); padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         nav ul { display: flex; list-style: none; gap: 2rem; }
         nav a { text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s; }
-        nav a:hover { color: var(--color-pink); }
+        nav a:hover, nav a.active { color: var(--color-pink); }
         .cart-icon { position: relative; margin-left: 1rem; cursor: pointer; }
         .cart-count { position: absolute; top: -8px; right: -8px; background-color: var(--color-pink); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; }
         .cart-dropdown { position: absolute; top: 100%; right: 0; background: white; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); width: 320px; max-height: 400px; overflow-y: auto; display: none; z-index: 1000; margin-top: 10px; }
         .cart-dropdown.active { display: block; }
         .cart-header { background: var(--color-pink); color: white; padding: 1rem; border-radius: 10px 10px 0 0; display: flex; justify-content: space-between; align-items: center; }
         .cart-items-container { padding: 1rem; }
-        .cart-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
-        .cart-total { text-align: right; font-weight: 700; margin: 1rem 0; padding-top: 0.5rem; border-top: 2px solid var(--color-pink); }
-        .checkout-btn { background-color: var(--color-pink); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 5px; cursor: pointer; width: 100%; font-weight: 600; margin-bottom: 0.5rem; font-size: 1rem; transition: background-color 0.3s; }
-        .checkout-btn:hover { background-color: #e05a5b; }
         .empty-cart-message { text-align: center; padding: 2rem; color: #777; }
-        .notification { position: fixed; top: 80px; right: 20px; background: var(--color-pink); color: white; padding: 1rem 1.5rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 10000; font-weight: 700; }
-
-        footer { background-color: #333; color: white; padding: 3rem 2rem 1rem; }
+        .cart-items-filled { padding: 1rem; }
+        .cart-total { text-align: right; font-weight: 700; margin: 1rem 0; padding-top: 0.5rem; border-top: 2px solid var(--color-pink); }
+        .checkout-btn, .view-cart-btn { background-color: var(--color-pink); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 5px; cursor: pointer; width: 100%; font-weight: 600; margin-bottom: 0.5rem; }
+        .checkout-btn:hover { background-color: #e05a5b; }
+        .view-cart-btn { background-color: white; color: var(--color-pink); border: 2px solid var(--color-pink); }
+        .product-detail-container { padding: 4rem 0; min-height: 70vh; }
+        .back-link { display: inline-block; margin-bottom: 2rem; color: var(--color-pink); text-decoration: none; font-weight: 600; transition: color 0.3s; }
+        .back-link:hover { color: var(--color-orange); }
+        .product-main { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .product-image-wrapper {
+            background: linear-gradient(135deg, var(--color-peach), var(--color-orange));
+            border-radius: 20px;
+            overflow: hidden;
+            height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        .product-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .product-image-placeholder {
+            text-align: center;
+            color: #777;
+            font-size: 1.2rem;
+            z-index: 1;
+        }
+        .product-details { display: flex; flex-direction: column; gap: 1.5rem; }
+        .product-title { font-size: 3rem; color: var(--color-pink); line-height: 1.2; }
+        .product-tagline { font-size: 1.1rem; color: #666; font-style: italic; }
+        .product-price-large { font-size: 2.2rem; font-weight: 700; color: var(--color-orange); }
+        .product-description { color: #555; font-size: 1.1rem; line-height: 1.8; }
+        .add-to-cart-btn { background-color: var(--color-pink); color: white; border: none; padding: 1rem 2rem; border-radius: 50px; cursor: pointer; font-weight: 700; font-size: 1.1rem; transition: background-color 0.3s, transform 0.2s; margin-top: 1rem; }
+        .add-to-cart-btn:hover { background-color: #e05a5b; transform: translateY(-2px); }
+        .flavor-profile-section, .taste-notes-section, .ingredients-section { margin-top: 2rem; padding: 2.5rem; background: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
+        .flavor-profile-section h3, .taste-notes-section h3, .ingredients-section h3 { margin-bottom: 1.5rem; color: var(--color-pink); font-size: 1.8rem; }
+        .flavor-profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+        .flavor-item { background: var(--color-light-cream); padding: 1.5rem; border-radius: 15px; }
+        .flavor-item h4 { color: var(--color-pink); margin-bottom: 0.8rem; font-size: 1.1rem; }
+        .flavor-item p { color: #666; font-size: 0.95rem; line-height: 1.6; }
+        .taste-notes-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center; }
+        .taste-note-item h4 { color: var(--color-orange); margin-bottom: 0.5rem; }
+        .taste-note-item p { color: #666; font-size: 0.95rem; }
+        .ingredients-list { list-style: none; display: flex; flex-wrap: wrap; gap: 0.8rem; }
+        .ingredients-list li { background: var(--color-light-cream); padding: 0.6rem 1.2rem; border-radius: 30px; color: #555; font-size: 0.95rem; }
+        .dietary-info { margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+        .dietary-badge { background: var(--color-peach); color: #555; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        footer { background-color: #333; color: white; padding: 3rem 2rem 1rem; margin-top: 5rem; }
         .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
         .footer-section h3 { color: var(--color-peach); margin-bottom: 1rem; }
         .footer-section ul { list-style: none; }
@@ -88,14 +88,17 @@
         .footer-section a { color: #ccc; text-decoration: none; }
         .footer-section a:hover { color: white; }
         .copyright { text-align: center; padding-top: 2rem; border-top: 1px solid #555; color: #aaa; }
-
-        @media (max-width: 768px) { .product-header { flex-direction: column; } .product-info h1 { font-size: 1.8rem; } .product-image { min-height: 260px; } }
+        .notification { position: fixed; top: 80px; right: 20px; background: var(--color-pink); color: white; padding: 1rem 1.5rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 10000; font-family: 'Poppins', sans-serif; font-weight: 700; display: none; }
+        .notification.show { display: block; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @media (max-width: 768px) { .header-container { flex-direction: column; gap: 1rem; } .product-main { grid-template-columns: 1fr; } .product-title { font-size: 2rem; } .product-image-wrapper { height: 300px; } }
     </style>
 </head>
 <body>
+    <div class="notification" id="notification"><span id="notification-text"></span></div>
     <header>
         <div class="header-container blend-design">
-            <div class="logo"><img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height:50px;"></div>
+            <div class="logo"><img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 50px;"></div>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -111,122 +114,210 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                 <span class="cart-count" id="cart-count">0</span>
                 <div class="cart-dropdown" id="cart-dropdown">
-                    <div class="cart-header">
-                        <h3 class="dealerplate">Your Cart</h3>
-                        <span style="cursor:pointer;" onclick="event.stopPropagation(); toggleCartDropdown()">&times;</span>
-                    </div>
-                    <div class="cart-items-container" id="cart-items-container">
-                        <div class="empty-cart-message"><p>🛒 Cart is empty</p><p style="font-size:0.9rem;margin-top:0.5rem;">Add some delicious gelato!</p></div>
-                    </div>
-                    <div class="cart-items-filled" id="cart-items-filled" style="display:none;padding:1rem;">
-                        <div id="cart-items-list"></div>
-                        <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
-                        <button class="checkout-btn poppins-bold" onclick="event.stopPropagation(); window.location.href='checkout.html'">Proceed to Checkout</button>
-                    </div>
+                    <div class="cart-header"><h3 class="dealerplate">Your Cart</h3><span style="cursor: pointer;" onclick="event.stopPropagation(); toggleCartDropdown()">&times;</span></div>
+                    <div class="cart-items-container" id="cart-items-container"><div class="empty-cart-message"><p>🛒 Cart is empty</p><p style="font-size: 0.9rem; margin-top: 0.5rem;">Add some delicious gelato!</p></div></div>
+                    <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;"><div id="cart-items-list"></div><div class="cart-total">Total: RM<span id="cart-total">0.00</span></div><button class="checkout-btn poppins-bold" onclick="proceedToCheckout()">Proceed to Checkout</button><button class="view-cart-btn poppins-bold" onclick="window.location.href='checkout.html'">View Full Cart</button></div>
                 </div>
             </div>
         </div>
     </header>
-
     <main class="product-detail-container blend-design">
-        <div class="breadcrumb"><a href="products.html">Flavors</a> &rsaquo; Seasonal Fruit Medley</div>
-
-        <div class="product-header">
-            <div class="product-image">
-                <div class="product-image-emoji">🍓</div>
-                <span class="product-badge">Rotating</span>
-            </div>
-            <div class="product-info">
-                <p class="product-subtitle poppins-bold">Sorbet / Gelato &bull; Ever-Changing</p>
-                <h1 class="dealerplate">Seasonal Fruit Medley</h1>
-                <div class="product-tags">
-                    <span class="product-tag">Local Fruits</span>
-                    <span class="product-tag">Seasonal</span>
-                    <span class="product-tag">Rotating</span>
-                    <span class="product-tag">Always Fresh</span>
-                </div>
-                <p class="product-description poppins-normal">
-                    A love letter to Malaysia's extraordinary fruit calendar. This flavor changes with the harvest — sometimes a bright ciku sorbet, sometimes a silky rambutan gelato, or a blended tropical trifecta when the season is generous. Ask us what's in the bowl today. It won't be the same next month, and that's the whole point.
-                </p>
-                <div class="product-price-large poppins-bold">RM 15 <span style="font-size:1rem;font-weight:400;color:#888;">per 100ml</span></div>
-                <button class="add-to-cart-btn poppins-bold" data-product="Seasonal Fruit Medley" data-price="15">Add to Cart</button>
+        <a href="products.html" class="back-link">← Back to All Flavors</a>
+        <div class="product-main">
+            <div class="product-image-wrapper"><img id="product-image" src="" alt="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2;"><div class="product-image-placeholder" id="product-image-placeholder">[Product Image]</div></div>
+            <div class="product-details">
+                <h1 class="product-title dealerplate" id="product-title">Product Name</h1>
+                <p class="product-tagline" id="product-tagline">Artisanal gelato crafted with passion</p>
+                <div class="product-price-large" id="product-price">RM 15.00 per 100ml</div>
+                <p class="product-description" id="product-description">Product description goes here.</p>
+                <button class="add-to-cart-btn" id="add-to-cart-btn" data-product="" data-price="">Add to Cart</button>
+                <div class="dietary-info" id="dietary-info"></div>
             </div>
         </div>
-
         <div class="flavor-profile-section">
             <h3 class="dealerplate">Flavor Profile</h3>
             <div class="flavor-profile-grid">
-                <div class="flavor-item">
-                    <h4 class="poppins-bold">Taste</h4>
-                    <p class="poppins-normal">Bright, vibrant, tropical — intensely fruity with natural sweetness that changes every visit</p>
-                </div>
-                <div class="flavor-item">
-                    <h4 class="poppins-bold">Texture</h4>
-                    <p class="poppins-normal">Smooth sorbet or light gelato depending on the fruit selection — always fresh, never frozen long</p>
-                </div>
-                <div class="flavor-item">
-                    <h4 class="poppins-bold">Highlight</h4>
-                    <p class="poppins-normal">Every batch is unique — true seasonality means the flavor you love today is a limited edition</p>
-                </div>
-                <div class="flavor-item">
-                    <h4 class="poppins-bold">Ingredients</h4>
-                    <p class="poppins-normal">Rotating seasonal Malaysian fruits, cane sugar, citrus juice, and sometimes milk or cream</p>
-                </div>
+                <div class="flavor-item"><h4>Taste</h4><p id="taste-description"></p></div>
+                <div class="flavor-item"><h4>Texture</h4><p id="texture-description"></p></div>
+                <div class="flavor-item"><h4>Best Paired With</h4><p id="pairing-description"></p></div>
+                <div class="flavor-item"><h4>Intensity</h4><p id="intensity-description"></p></div>
             </div>
         </div>
-
-        <div class="seasonal-lineup">
-            <h3 class="dealerplate">What to Expect Through the Year</h3>
-            <div class="season-grid">
-                <div class="season-card">
-                    <div class="season-emoji">🍈</div>
-                    <h4 class="poppins-bold">Durian Season</h4>
-                    <p class="poppins-normal">Jun – Aug. Bold, custardy, unmistakably Malaysian.</p>
-                </div>
-                <div class="season-card">
-                    <div class="season-emoji">🍇</div>
-                    <h4 class="poppins-bold">Mangosteen Season</h4>
-                    <p class="poppins-normal">Apr – Jun. Floral, sweet-tart — the Queen of Fruits.</p>
-                </div>
-                <div class="season-card">
-                    <div class="season-emoji">🥭</div>
-                    <h4 class="poppins-bold">Mango Season</h4>
-                    <p class="poppins-normal">Mar – Jun. Harum manis — Malaysia's most aromatic.</p>
-                </div>
-                <div class="season-card">
-                    <div class="season-emoji">🍋</div>
-                    <h4 class="poppins-bold">Calamansi Blend</h4>
-                    <p class="poppins-normal">Year-round. Bright, tart, citrusy — a local staple.</p>
-                </div>
+        <div class="taste-notes-section">
+            <h3 class="dealerplate">Taste Notes</h3>
+            <div class="taste-notes-content">
+                <div class="taste-note-item"><h4>Initial</h4><p id="taste-initial"></p></div>
+                <div class="taste-note-item"><h4>Middle</h4><p id="taste-middle"></p></div>
+                <div class="taste-note-item"><h4>Finish</h4><p id="taste-finish"></p></div>
             </div>
+        </div>
+        <div class="ingredients-section">
+            <h3 class="dealerplate">Ingredients</h3>
+            <ul class="ingredients-list" id="ingredients-list"></ul>
         </div>
     </main>
-
     <footer id="contact">
         <div class="blend-design">
             <div class="footer-container">
-                <div class="footer-section"><img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height:60px;margin-bottom:1rem;"><p class="poppins-normal">Premium artisanal gelato crafted with seasonal ingredients and unwavering commitment to quality.</p></div>
-                <div class="footer-section"><h3 class="dealerplate">Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="products.html">Flavors</a></li><li><a href="events.html">Events</a></li></ul></div>
-                <div class="footer-section"><h3 class="dealerplate">Connect</h3><ul><li><a href="#">Instagram</a></li><li><a href="#">TikTok</a></li><li><a href="mailto:info@sweettoothgelato.com.my">Email Us</a></li></ul></div>
-                <div class="footer-section"><h3 class="dealerplate">Contact</h3><ul><li class="poppins-normal">Email: info@sweettoothgelato.com.my</li><li class="poppins-normal">Location: Malaysia</li></ul></div>
+                <div class="footer-section"><img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 60px; margin-bottom: 1rem;"><p class="poppins-normal">Premium artisanal gelato crafted with seasonal ingredients and unwavering commitment to quality.</p></div>
+                <div class="footer-section"><h3 class="dealerplate">Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="our-story.html">Our Story</a></li><li><a href="products.html">Flavors</a></li><li><a href="blog.html">Blog</a></li><li><a href="feed.html">Feed</a></li><li><a href="events.html">Events</a></li></ul></div>
+                <div class="footer-section"><h3 class="dealerplate">Connect With Us</h3><ul><li><a href="#">Instagram</a></li><li><a href="#">TikTok</a></li><li><a href="#">Facebook</a></li><li><a href="mailto:info@sweettoothgelato.com.my">Email Us</a></li></ul></div>
+                <div class="footer-section"><h3 class="dealerplate">Contact</h3><ul><li class="poppins-normal">Email: info@sweettoothgelato.com.my</li><li class="poppins-normal">Phone: Coming Soon</li><li class="poppins-normal">Address: Malaysia</li></ul></div>
             </div>
-            <div class="copyright"><p class="poppins-normal">&copy; 2026 SweetTooth Gelato. All rights reserved.</p></div>
+            <div class="copyright"><p class="poppins-normal">© 2026 SweetTooth Gelato. All rights reserved.</p></div>
         </div>
     </footer>
-
+    <script src="assets/js/secure-config.js"></script>
     <script src="assets/js/cart.js"></script>
+    <script src="assets/js/whatsapp-widget.js"></script>
     <script>
-        function toggleCartDropdown() {
-            const dropdown = document.getElementById('cart-dropdown');
-            if (dropdown) dropdown.classList.toggle('active');
+    console.log('[Product Detail Template] Script loaded');
+    try {
+    (function() {
+        console.log('[Product Detail Template] IIFE executing');
+        var productDatabase = {
+            'mangosteen-sorbet': { name: 'Mangosteen Sorbet', tagline: 'Tropical royalty in every scoop', description: 'Experience the exotic taste of Southeast Asia with our Mangosteen Sorbet. Made from hand-selected ripe mangosteens, this refreshing dairy-free option captures the delicate balance of sweet and tangy that makes the mangosteen known as the Queen of Fruits.', price: 15.00, image: 'Images/MangosteenSorbet.png', taste: 'Sweet and tangy with delicate floral undertones and a hint of citrus', texture: 'Light, refreshing, and silky smooth with a clean finish', pairing: 'Fresh tropical fruits, coconut desserts, light pastries', intensity: 'Light to medium', tasteInitial: 'Bright citrus notes with a gentle sweetness', tasteMiddle: 'Floral mangosteen flavor with subtle berry undertones', tasteFinish: 'Clean, refreshing finish with a hint of tropical tang', ingredients: ['Mangosteen puree', 'Cane sugar', 'Filtered water', 'Lemon juice', 'Natural pectin'], dietary: ['Dairy Free', 'Vegan', 'Gluten Free', 'Fat Free'] },
+            'madagascar-vanilla': { name: 'Madagascar Vanilla', tagline: 'Classic elegance from Madagascar', description: 'Our Madagascar Vanilla gelato showcases the world finest vanilla beans, sourced directly from small farms in Madagascar. The result is a rich, creamy gelato with deep vanilla flavor and the characteristic specks of real vanilla seeds.', price: 15.00, image: 'Images/MadagascarVanilla.png', taste: 'Rich, sweet vanilla with warm custard notes and subtle floral hints', texture: 'Ultra creamy, dense, and velvety smooth', pairing: 'Chocolate desserts, fresh berries, caramel, coffee', intensity: 'Medium to bold', tasteInitial: 'Sweet vanilla aroma with creamy dairy notes', tasteMiddle: 'Deep vanilla bean flavor with warm custard richness', tasteFinish: 'Long lasting vanilla warmth with subtle sweetness', ingredients: ['Fresh milk', 'Cream', 'Cane sugar', 'Madagascar vanilla beans', 'Egg yolks', 'Natural vanilla extract'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'seasonal-fruit-medley': { name: 'Seasonal Fruit Medley', tagline: 'A celebration of seasonal freshness', description: 'Our Seasonal Fruit Medley changes throughout the year to feature the freshest local Malaysian fruits. Each batch is crafted with hand-picked seasonal favorites, ensuring you experience the peak of flavor and natural sweetness.', price: 15.00, image: 'Images/SeasonalFruitMedley.png', taste: 'Bright, fruity, and naturally sweet with layers of tropical flavors', texture: 'Creamy with delicate fruit pieces for added texture', pairing: 'Light desserts, fresh fruit salads, afternoon tea', intensity: 'Light to medium', tasteInitial: 'Burst of fresh fruit sweetness with citrus highlights', tasteMiddle: 'Mixed tropical fruits with honeyed undertones', tasteFinish: 'Clean, refreshing finish with lingering fruit notes', ingredients: ['Seasonal fruits', 'Fresh milk', 'Cane sugar', 'Cream', 'Lemon juice', 'Natural fruit pectin'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'shun-special': { name: 'Shun Special', tagline: 'Japanese inspired seasonal perfection', description: 'Inspired by the Japanese concept of Shun, meaning the peak season for ingredients, this special creation changes based on what is at its absolute best. Each iteration represents our commitment to using ingredients at their optimal flavor.', price: 16.00, image: 'Images/ShunSpecial.png', taste: 'Complex, balanced, and refined with seasonal character', texture: 'Silky, refined, and perfectly balanced', pairing: 'Traditional Asian desserts, matcha sweets, seasonal fruits', intensity: 'Medium', tasteInitial: 'Subtle, refined sweetness with seasonal notes', tasteMiddle: 'Complex layered flavors showcasing the featured ingredient', tasteFinish: 'Elegant, lingering finish with balanced sweetness', ingredients: ['Seasonal premium ingredients', 'Fresh milk', 'Cane sugar', 'Cream', 'Natural flavorings'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'belgian-chocolate': { name: 'Belgian Chocolate', tagline: 'Decadent European chocolate indulgence', description: 'Indulge in the rich, luxurious taste of authentic Belgian chocolate. Our Belgian Chocolate gelato is made with premium cocoa from Belgium, creating an intensely chocolatey experience with perfect balance of sweetness and deep cocoa richness.', price: 16.00, image: 'Images/BelgianChocolate.png', taste: 'Deep, rich chocolate with notes of dark cocoa and subtle sweetness', texture: 'Dense, fudgy, and luxuriously smooth', pairing: 'Vanilla desserts, caramel, nuts, espresso', intensity: 'Bold', tasteInitial: 'Intense chocolate aroma with rich cocoa notes', tasteMiddle: 'Deep Belgian chocolate flavor with balanced sweetness', tasteFinish: 'Long lasting chocolate richness with subtle bitterness', ingredients: ['Fresh milk', 'Cream', 'Belgian cocoa powder', 'Dark chocolate', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'japanese-matcha': { name: 'Japanese Matcha', tagline: 'Authentic Japanese green tea elegance', description: 'Experience the refined taste of Japan with our authentic Matcha gelato. Made with ceremonial grade matcha powder imported from Uji, Japan, this gelato delivers the characteristic umami richness and vibrant green color of premium matcha.', price: 16.00, image: 'Images/JapaneseMatcha.png', taste: 'Earthy green tea with umami richness and subtle vegetal notes', texture: 'Creamy, fine textured, and smooth', pairing: 'Red bean desserts, mochi, sesame sweets, light fruits', intensity: 'Medium to bold', tasteInitial: 'Aromatic matcha with gentle grassy notes', tasteMiddle: 'Rich umami matcha flavor with creamy balance', tasteFinish: 'Clean, slightly bitter finish with lingering tea warmth', ingredients: ['Fresh milk', 'Cream', 'Ceremonial grade matcha powder', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'premium-durian': { name: 'Premium Durian', tagline: 'The king of fruits in gelato form', description: 'For true durian enthusiasts, our Premium Durian gelato features the legendary Musang King durian, known for its complex flavor profile and creamy texture. This bold creation captures the distinctive taste that has captivated Southeast Asia.', price: 18.00, image: 'Images/PremiumDurian.png', taste: 'Intensely creamy durian with sweet, custard like richness', texture: 'Ultra creamy, dense, and luxuriously smooth', pairing: 'Sticky rice, coconut desserts, tropical fruits', intensity: 'Very bold', tasteInitial: 'Distinctive durian aroma with sweet custard notes', tasteMiddle: 'Rich, complex durian flavor with buttery undertones', tasteFinish: 'Long lasting creamy finish with characteristic durian warmth', ingredients: ['Fresh milk', 'Cream', 'Musang King durian puree', 'Cane sugar', 'Egg yolks', 'Natural durian extract'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'salted-caramel': { name: 'Salted Caramel', tagline: 'Perfect balance of sweet and savory', description: 'Our Salted Caramel gelato achieves the perfect harmony between sweet caramel and flaky sea salt. Made with slow cooked caramel and finished with French sea salt, each bite delivers a sophisticated balance.', price: 16.00, image: 'Images/SaltedCaramel.png', taste: 'Rich caramel sweetness with savory salt crystals and buttery notes', texture: 'Smooth with delightful salt crystal bursts', pairing: 'Chocolate desserts, apple pie, coffee, nuts', intensity: 'Medium to bold', tasteInitial: 'Sweet caramel with hint of sea salt', tasteMiddle: 'Deep buttery caramel with savory salt balance', tasteFinish: 'Warm caramel finish with lingering salt complexity', ingredients: ['Fresh milk', 'Cream', 'Cane sugar', 'Butter', 'French sea salt', 'Egg yolks', 'Vanilla extract'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'strawberry-cream': { name: 'Strawberry Cream', tagline: 'Classic strawberry perfection', description: 'Our Strawberry Cream gelato features hand-picked ripe strawberries blended into a luscious cream base. The natural sweetness and slight tartness of fresh strawberries shine through in this timeless flavor.', price: 15.00, image: 'Images/StrawberryCream.png', taste: 'Sweet strawberry with gentle tartness and creamy richness', texture: 'Creamy with delicate strawberry pieces', pairing: 'Chocolate, vanilla desserts, fresh berries, shortbread', intensity: 'Light to medium', tasteInitial: 'Fresh strawberry sweetness with floral notes', tasteMiddle: 'Juicy strawberry flavor with creamy balance', tasteFinish: 'Clean, fruity finish with lingering berry sweetness', ingredients: ['Fresh milk', 'Cream', 'Fresh strawberries', 'Cane sugar', 'Lemon juice', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'pistachio': { name: 'Pistachio', tagline: 'Mediterranean nutty elegance', description: 'Our Pistachio gelato is crafted with premium Sicilian pistachios, known for their intense green color and rich, distinctive flavor. This sophisticated gelato offers a perfect balance of nutty richness and subtle sweetness.', price: 17.00, image: 'Images/Pistachio.png', taste: 'Rich, nutty pistachio with subtle sweetness and buttery notes', texture: 'Creamy, slightly grainy from real pistachios', pairing: 'Dark chocolate, honey desserts, dried fruits', intensity: 'Medium to bold', tasteInitial: 'Aromatic pistachio with gentle nutty sweetness', tasteMiddle: 'Deep pistachio flavor with buttery richness', tasteFinish: 'Long lasting nutty finish with subtle earthiness', ingredients: ['Fresh milk', 'Cream', 'Sicilian pistachio paste', 'Cane sugar', 'Egg yolks', 'Natural pistachio extract'], dietary: ['Gluten Free', 'Vegetarian', 'Contains Nuts'] },
+            'tiramisu': { name: 'Tiramisu', tagline: 'Italian coffee house classic', description: 'Experience Italy most beloved dessert in gelato form. Our Tiramisu gelato captures all the elements of the classic dessert: rich mascarpone, espresso soaked ladyfingers, and a dusting of cocoa.', price: 16.00, image: 'Images/Tiramisu.png', taste: 'Coffee and mascarpone with cocoa bitterness and sweet cream', texture: 'Creamy with delicate cake pieces', pairing: 'Espresso, chocolate desserts, amaretto', intensity: 'Medium to bold', tasteInitial: 'Espresso aroma with mascarpone sweetness', tasteMiddle: 'Coffee and cream with subtle cocoa notes', tasteFinish: 'Long lasting coffee finish with creamy sweetness', ingredients: ['Fresh milk', 'Cream', 'Mascarpone cheese', 'Espresso coffee', 'Ladyfinger biscuits', 'Cocoa powder', 'Cane sugar', 'Egg yolks'], dietary: ['Vegetarian', 'Contains Gluten', 'Contains Dairy'] },
+            'lemon-sorbet': { name: 'Lemon Sorbet', tagline: 'Refreshing citrus purity', description: 'Our Lemon Sorbet is the ultimate palate cleanser and refreshing treat. Made with freshly squeezed lemons and just enough sweetness to balance the natural citrus tartness, this dairy-free option delivers bright, zesty flavor.', price: 14.00, image: 'Images/LemonSorbet.png', taste: 'Bright, zesty lemon with perfect sweet tart balance', texture: 'Light, icy, and refreshingly crisp', pairing: 'Seafood dinners, light desserts, prosecco', intensity: 'Medium', tasteInitial: 'Zesty lemon citrus burst with bright acidity', tasteMiddle: 'Fresh lemon juice with balanced sweetness', tasteFinish: 'Clean, refreshing finish with lingering citrus', ingredients: ['Fresh lemon juice', 'Lemon zest', 'Cane sugar', 'Filtered water', 'Natural lemon oil'], dietary: ['Dairy Free', 'Vegan', 'Gluten Free', 'Fat Free'] },
+            'chocolate-chip': { name: 'Chocolate Chip', tagline: 'Playful chocolate indulgence', description: 'Our Chocolate Chip gelato combines smooth vanilla bean gelato with generous chunks of premium dark chocolate. This fun yet sophisticated flavor offers delightful surprises in every bite.', price: 15.00, image: 'Images/ChocolateChip.png', taste: 'Sweet vanilla with rich dark chocolate chunks', texture: 'Creamy with satisfying chocolate chip crunch', pairing: 'Brownies, cookies, caramel desserts', intensity: 'Medium', tasteInitial: 'Sweet vanilla with chocolate aroma', tasteMiddle: 'Creamy vanilla with bursts of dark chocolate', tasteFinish: 'Balanced chocolate vanilla finish', ingredients: ['Fresh milk', 'Cream', 'Cane sugar', 'Vanilla beans', 'Dark chocolate chips', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'coconut-sorbet': { name: 'Coconut Sorbet', tagline: 'Tropical paradise in every scoop', description: 'Transport yourself to a tropical beach with our Coconut Sorbet. Made from young Thai coconuts, this dairy-free delight captures the delicate sweetness and subtle nuttiness of fresh coconut water and meat.', price: 14.00, image: 'Images/CoconutSorbet.png', taste: 'Sweet coconut with subtle nutty undertones', texture: 'Light, smooth, and refreshingly icy', pairing: 'Tropical fruits, lime desserts, Asian sweets', intensity: 'Light to medium', tasteInitial: 'Fresh coconut aroma with gentle sweetness', tasteMiddle: 'Delicate coconut flavor with subtle nuttiness', tasteFinish: 'Clean, refreshing finish with tropical notes', ingredients: ['Young coconut water', 'Coconut meat', 'Cane sugar', 'Lime juice', 'Natural coconut extract'], dietary: ['Dairy Free', 'Vegan', 'Gluten Free', 'Fat Free'] },
+            'hazelnut': { name: 'Hazelnut', tagline: 'Italian nutty tradition', description: 'Our Hazelnut gelato celebrates the beloved Italian gianduja tradition. Made with premium Piedmont hazelnuts, this rich gelato delivers the distinctive roasted nut flavor that has made hazelnut a gelato favorite.', price: 17.00, image: 'Images/Hazelnut.png', taste: 'Rich roasted hazelnut with sweet, buttery notes', texture: 'Creamy, dense, and luxuriously smooth', pairing: 'Chocolate desserts, coffee, caramel', intensity: 'Bold', tasteInitial: 'Roasted hazelnut aroma with sweet undertones', tasteMiddle: 'Deep hazelnut flavor with buttery richness', tasteFinish: 'Long lasting nutty finish with roasted warmth', ingredients: ['Fresh milk', 'Cream', 'Piedmont hazelnut paste', 'Cane sugar', 'Egg yolks', 'Natural hazelnut extract'], dietary: ['Gluten Free', 'Vegetarian', 'Contains Nuts'] },
+            'raspberry-sorbet': { name: 'Raspberry Sorbet', tagline: 'Vibrant berry refreshment', description: 'Our Raspberry Sorbet captures the vibrant color and bold flavor of ripe raspberries. This dairy-free option delivers the perfect balance of sweet and tart that makes raspberries so captivating.', price: 15.00, image: 'Images/RaspberrySorbet.png', taste: 'Sweet tart raspberry with bright berry acidity', texture: 'Smooth, light, and refreshingly crisp', pairing: 'Chocolate desserts, vanilla gelato, light pastries', intensity: 'Medium', tasteInitial: 'Bright raspberry aroma with sweet berry notes', tasteMiddle: 'Fresh raspberry flavor with balanced tartness', tasteFinish: 'Clean, refreshing finish with lingering berry', ingredients: ['Fresh raspberries', 'Cane sugar', 'Lemon juice', 'Filtered water', 'Natural raspberry extract'], dietary: ['Dairy Free', 'Vegan', 'Gluten Free', 'Fat Free'] },
+            'vanilla-bean': { name: 'Vanilla Bean', tagline: 'Pure vanilla simplicity', description: 'Our Vanilla Bean gelato is a tribute to the pure, unadulterated flavor of real vanilla. Using whole vanilla beans from Madagascar, this classic flavor showcases the complex aromatic compounds that make vanilla one of the worlds most cherished flavors.', price: 15.00, image: 'Images/VanillaBean.png', taste: 'Pure sweet vanilla with floral and custard notes', texture: 'Creamy, smooth, with visible vanilla bean specks', pairing: 'Any dessert, fresh fruits, coffee', intensity: 'Medium', tasteInitial: 'Sweet vanilla aroma with floral hints', tasteMiddle: 'Pure vanilla bean flavor with creamy richness', tasteFinish: 'Long lasting vanilla warmth with subtle sweetness', ingredients: ['Fresh milk', 'Cream', 'Cane sugar', 'Whole Madagascar vanilla beans', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'dark-chocolate': { name: 'Dark Chocolate', tagline: 'Intense chocolate sophistication', description: 'For serious chocolate lovers, our Dark Chocolate gelato delivers an intense, sophisticated chocolate experience. Made with premium 70 percent dark chocolate, this gelato offers complex cocoa flavors with subtle bitterness.', price: 16.00, image: 'Images/DarkChocolate.png', taste: 'Intense dark chocolate with subtle bitterness and depth', texture: 'Dense, rich, and velvety smooth', pairing: 'Orange desserts, espresso, red wine reductions', intensity: 'Very bold', tasteInitial: 'Deep cocoa aroma with rich chocolate notes', tasteMiddle: 'Intense dark chocolate with complex cocoa layers', tasteFinish: 'Long lasting chocolate with pleasant bitter finish', ingredients: ['Fresh milk', 'Cream', '70% dark chocolate', 'Cocoa powder', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'almond-crunch': { name: 'Almond Crunch', tagline: 'Nutty perfection with crunchy bits', description: 'Our Almond Crunch gelato features toasted almond pieces in a creamy vanilla base. The perfect combination of smooth and crunchy.', price: 16.00, image: 'Images/AlmondCrunch.png', taste: 'Sweet almond with toasted nutty notes', texture: 'Creamy with crunchy almond pieces', pairing: 'Chocolate desserts, coffee, caramel', intensity: 'Medium', tasteInitial: 'Sweet vanilla with almond aroma', tasteMiddle: 'Toasted almond flavor with creamy base', tasteFinish: 'Crunchy almond finish', ingredients: ['Fresh milk', 'Cream', 'Cane sugar', 'Toasted almonds', 'Vanilla extract', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian', 'Contains Nuts'] },
+            'blueberry-cheesecake': { name: 'Blueberry Cheesecake', tagline: 'Classic dessert in gelato form', description: 'Experience the beloved dessert as gelato. Creamy cheesecake base with blueberry swirls and graham cracker pieces.', price: 17.00, image: 'Images/BlueberryCheesecake.png', taste: 'Tangy cheesecake with sweet blueberry', texture: 'Creamy with fruit swirls and cracker pieces', pairing: 'Fresh berries, coffee, dessert wines', intensity: 'Medium to bold', tasteInitial: 'Sweet blueberry with cream cheese', tasteMiddle: 'Tangy cheesecake flavor', tasteFinish: 'Graham cracker finish', ingredients: ['Fresh milk', 'Cream', 'Cream cheese', 'Blueberries', 'Graham crackers', 'Cane sugar', 'Egg yolks'], dietary: ['Vegetarian', 'Contains Gluten', 'Contains Dairy'] },
+            'cookies-and-cream': { name: 'Cookies and Cream', tagline: 'Classic cookie indulgence', description: 'Vanilla gelato loaded with chocolate cookie pieces. A timeless favorite that never disappoints.', price: 16.00, image: 'Images/CookiesAndCream.png', taste: 'Sweet vanilla with chocolate cookie', texture: 'Creamy with cookie chunks', pairing: 'Milk, coffee, chocolate desserts', intensity: 'Medium', tasteInitial: 'Sweet vanilla with cookie aroma', tasteMiddle: 'Chocolate cookie pieces in vanilla', tasteFinish: 'Cookie crumb finish', ingredients: ['Fresh milk', 'Cream', 'Cane sugar', 'Vanilla beans', 'Chocolate cookies', 'Egg yolks'], dietary: ['Vegetarian', 'Contains Gluten', 'Contains Dairy'] },
+            'dragon-fruit': { name: 'Dragon Fruit', tagline: 'Exotic tropical delight', description: 'Vibrant pink dragon fruit sorbet with a refreshing tropical taste. Dairy-free and naturally sweet.', price: 18.00, image: 'Images/DragonFruit.png', taste: 'Sweet tropical with subtle kiwi-like notes', texture: 'Light, refreshing sorbet', pairing: 'Tropical fruits, coconut, lime', intensity: 'Light to medium', tasteInitial: 'Sweet tropical fruit', tasteMiddle: 'Dragon fruit with berry notes', tasteFinish: 'Clean tropical finish', ingredients: ['Dragon fruit puree', 'Cane sugar', 'Filtered water', 'Lemon juice'], dietary: ['Dairy Free', 'Vegan', 'Gluten Free', 'Fat Free'] },
+            'earl-grey-tea': { name: 'Earl Grey Tea', tagline: 'Sophisticated tea-infused gelato', description: 'Premium Earl Grey tea infused into creamy gelato. A sophisticated flavor with bergamot citrus notes.', price: 15.00, image: 'Images/EarlGreyTea.png', taste: 'Tea with bergamot citrus and cream', texture: 'Smooth and creamy', pairing: 'Shortbread, scones, afternoon tea', intensity: 'Medium', tasteInitial: 'Bergamot citrus aroma', tasteMiddle: 'Earl Grey tea with cream', tasteFinish: 'Tea finish with citrus', ingredients: ['Fresh milk', 'Cream', 'Cane sugar', 'Earl Grey tea', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'fig-and-honey': { name: 'Fig and Honey', tagline: 'Mediterranean elegance', description: 'Sweet figs and golden honey in creamy gelato. A sophisticated Mediterranean-inspired flavor.', price: 17.00, image: 'Images/FigAndHoney.png', taste: 'Sweet fig with honey and cream', texture: 'Creamy with fig pieces', pairing: 'Walnuts, goat cheese, dessert wines', intensity: 'Medium', tasteInitial: 'Honey sweetness', tasteMiddle: 'Fig with honey', tasteFinish: 'Fig seeds and honey', ingredients: ['Fresh milk', 'Cream', 'Fresh figs', 'Honey', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'ginger-spice': { name: 'Ginger Spice', tagline: 'Warm spicy kick', description: 'Fresh ginger with warm spices in creamy gelato. A warming flavor with a pleasant spicy kick.', price: 15.00, image: 'Images/GingerSpice.png', taste: 'Spicy ginger with warm spices', texture: 'Smooth and creamy', pairing: 'Apple pie, pumpkin desserts, tea', intensity: 'Medium to bold', tasteInitial: 'Fresh ginger aroma', tasteMiddle: 'Ginger spice with cream', tasteFinish: 'Warm ginger finish', ingredients: ['Fresh milk', 'Cream', 'Fresh ginger', 'Cane sugar', 'Cinnamon', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'horchata': { name: 'Horchata', tagline: 'Traditional rice pudding gelato', description: 'Traditional Mexican horchata flavor with rice, cinnamon, and vanilla. Creamy and comforting.', price: 15.00, image: 'Images/Horchata.png', taste: 'Rice pudding with cinnamon and vanilla', texture: 'Creamy with rice texture', pairing: 'Churros, flan, coffee', intensity: 'Medium', tasteInitial: 'Cinnamon vanilla aroma', tasteMiddle: 'Rice pudding flavor', tasteFinish: 'Cinnamon finish', ingredients: ['Fresh milk', 'Cream', 'Rice', 'Cinnamon', 'Vanilla', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'irish-coffee': { name: 'Irish Coffee', tagline: 'Adult indulgence', description: 'Rich coffee gelato with Irish whiskey and cream. A sophisticated adult flavor.', price: 17.00, image: 'Images/IrishCoffee.png', taste: 'Coffee with whiskey and cream', texture: 'Smooth and creamy', pairing: 'Chocolate desserts, tiramisu', intensity: 'Bold', tasteInitial: 'Coffee and whiskey aroma', tasteMiddle: 'Irish coffee flavor', tasteFinish: 'Coffee cream finish', ingredients: ['Fresh milk', 'Cream', 'Espresso coffee', 'Irish whiskey', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian', 'Contains Alcohol'] },
+            'jackfruit-delight': { name: 'Jackfruit Delight', tagline: 'Tropical king of fruits', description: 'Sweet jackfruit in creamy gelato. A unique tropical flavor with complex fruity notes.', price: 16.00, image: 'Images/JackfruitDelight.png', taste: 'Sweet tropical jackfruit', texture: 'Creamy with fruit pieces', pairing: 'Coconut, mango, sticky rice', intensity: 'Medium to bold', tasteInitial: 'Tropical jackfruit aroma', tasteMiddle: 'Sweet jackfruit flavor', tasteFinish: 'Tropical fruit finish', ingredients: ['Fresh milk', 'Cream', 'Jackfruit puree', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'kiwi-lime': { name: 'Kiwi Lime', tagline: 'Zesty tropical refreshment', description: 'Fresh kiwi with zesty lime in refreshing sorbet. Perfect balance of sweet and tart.', price: 15.00, image: 'Images/KiwiLime.png', taste: 'Sweet kiwi with tart lime', texture: 'Light refreshing sorbet', pairing: 'Seafood, light desserts, prosecco', intensity: 'Medium', tasteInitial: 'Lime citrus burst', tasteMiddle: 'Kiwi with lime', tasteFinish: 'Clean tart finish', ingredients: ['Kiwi puree', 'Lime juice', 'Cane sugar', 'Filtered water'], dietary: ['Dairy Free', 'Vegan', 'Gluten Free', 'Fat Free'] },
+            'lavender-honey': { name: 'Lavender Honey', tagline: 'Floral elegance', description: 'Delicate lavender with golden honey. A floral, sophisticated flavor that is both calming and indulgent.', price: 17.00, image: 'Images/LavenderHoney.png', taste: 'Floral lavender with sweet honey', texture: 'Smooth and creamy', pairing: 'Shortbread, lemon desserts, tea', intensity: 'Medium', tasteInitial: 'Lavender floral aroma', tasteMiddle: 'Honey with lavender', tasteFinish: 'Floral honey finish', ingredients: ['Fresh milk', 'Cream', 'Lavender', 'Honey', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'mango-sticky-rice': { name: 'Mango Sticky Rice', tagline: 'Thai dessert classic', description: 'Inspired by the classic Thai dessert. Sweet mango with coconut and rice pudding.', price: 16.00, image: 'Images/MangoStickyRice.png', taste: 'Sweet mango with coconut rice', texture: 'Creamy with rice texture', pairing: 'Thai desserts, coconut, tea', intensity: 'Medium', tasteInitial: 'Sweet mango aroma', tasteMiddle: 'Mango with coconut rice', tasteFinish: 'Coconut finish', ingredients: ['Fresh milk', 'Cream', 'Mango puree', 'Coconut milk', 'Sticky rice', 'Cane sugar'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'nutella-swirl': { name: 'Nutella Swirl', tagline: 'Chocolate hazelnut heaven', description: 'Creamy gelato with Nutella swirls. For serious chocolate hazelnut lovers.', price: 17.00, image: 'Images/NutellaSwirl.png', taste: 'Chocolate hazelnut with cream', texture: 'Creamy with Nutella swirls', pairing: 'Bananas, waffles, coffee', intensity: 'Bold', tasteInitial: 'Hazelnut chocolate aroma', tasteMiddle: 'Nutella with cream', tasteFinish: 'Chocolate hazelnut finish', ingredients: ['Fresh milk', 'Cream', 'Nutella', 'Cane sugar', 'Egg yolks'], dietary: ['Vegetarian', 'Contains Nuts', 'Contains Dairy'] },
+            'orange-blossom': { name: 'Orange Blossom', tagline: 'Citrus floral elegance', description: 'Delicate orange blossom with citrus notes. A light, floral, sophisticated flavor.', price: 15.00, image: 'Images/OrangeBlossom.png', taste: 'Citrus with floral orange blossom', texture: 'Light and creamy', pairing: 'Light desserts, tea, champagne', intensity: 'Light to medium', tasteInitial: 'Orange blossom floral', tasteMiddle: 'Citrus with floral', tasteFinish: 'Floral citrus finish', ingredients: ['Fresh milk', 'Cream', 'Orange blossom water', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'peach-melba': { name: 'Peach Melba', tagline: 'Classic dessert inspiration', description: 'Inspired by the classic dessert. Peach with raspberry and vanilla.', price: 16.00, image: 'Images/PeachMelba.png', taste: 'Sweet peach with raspberry', texture: 'Creamy with fruit pieces', pairing: 'Light desserts, champagne, tea', intensity: 'Medium', tasteInitial: 'Peach aroma', tasteMiddle: 'Peach with raspberry', tasteFinish: 'Vanilla fruit finish', ingredients: ['Fresh milk', 'Cream', 'Peach puree', 'Raspberries', 'Vanilla', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'quince-paste': { name: 'Quince Paste', tagline: 'Iberian tradition', description: 'Sweet quince paste in creamy gelato. A traditional Iberian flavor with unique character.', price: 16.00, image: 'Images/QuincePaste.png', taste: 'Sweet quince with floral notes', texture: 'Creamy with quince pieces', pairing: 'Cheese, walnuts, dessert wines', intensity: 'Medium', tasteInitial: 'Quince floral aroma', tasteMiddle: 'Sweet quince flavor', tasteFinish: 'Floral quince finish', ingredients: ['Fresh milk', 'Cream', 'Quince paste', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'rocky-road': { name: 'Rocky Road', tagline: 'Chocolate marshmallow nutty', description: 'Chocolate gelato with marshmallows and nuts. The classic American favorite.', price: 17.00, image: 'Images/RockyRoad.png', taste: 'Chocolate with marshmallow and nuts', texture: 'Creamy with chunks', pairing: 'Coffee, brownies, ice cream sodas', intensity: 'Bold', tasteInitial: 'Chocolate aroma', tasteMiddle: 'Chocolate with marshmallow', tasteFinish: 'Nutty chocolate finish', ingredients: ['Fresh milk', 'Cream', 'Cocoa', 'Marshmallows', 'Walnuts', 'Cane sugar', 'Egg yolks'], dietary: ['Vegetarian', 'Contains Nuts'] },
+            'saffron-rose': { name: 'Saffron Rose', tagline: 'Persian luxury', description: 'Premium saffron with rose water. A luxurious Persian-inspired flavor.', price: 19.00, image: 'Images/SaffronRose.png', taste: 'Saffron with rose and cream', texture: 'Luxuriously smooth', pairing: 'Pistachio desserts, tea, honey', intensity: 'Medium to bold', tasteInitial: 'Saffron aroma', tasteMiddle: 'Rose with saffron', tasteFinish: 'Saffron rose finish', ingredients: ['Fresh milk', 'Cream', 'Saffron', 'Rose water', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'thai-tea': { name: 'Thai Tea', tagline: 'Asian cafe classic', description: 'Authentic Thai tea with condensed milk and spices. A Southeast Asian favorite.', price: 15.00, image: 'Images/ThaiTea.png', taste: 'Thai tea with condensed milk', texture: 'Smooth and creamy', pairing: 'Mango, coconut, Asian desserts', intensity: 'Medium', tasteInitial: 'Thai tea spice aroma', tasteMiddle: 'Thai tea with cream', tasteFinish: 'Spiced tea finish', ingredients: ['Fresh milk', 'Cream', 'Thai tea', 'Condensed milk', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'ube-purple-yam': { name: 'Ube Purple Yam', tagline: 'Filipino purple delight', description: 'Vibrant purple ube yam gelato. A beloved Filipino flavor with unique earthy sweetness.', price: 17.00, image: 'Images/UbePurpleYam.png', taste: 'Earthy ube with vanilla', texture: 'Creamy and smooth', pairing: 'Coconut, mango, sticky rice', intensity: 'Medium', tasteInitial: 'Ube earthy aroma', tasteMiddle: 'Purple yam with cream', tasteFinish: 'Earthy ube finish', ingredients: ['Fresh milk', 'Cream', 'Ube puree', 'Cane sugar', 'Vanilla', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'valrhona-chocolate': { name: 'Valrhona Chocolate', tagline: 'Premium French chocolate', description: 'Made with premium Valrhona chocolate from France. The ultimate chocolate experience.', price: 18.00, image: 'Images/ValrhonaChocolate.png', taste: 'Premium dark chocolate', texture: 'Dense and velvety', pairing: 'Espresso, red wine, berries', intensity: 'Very bold', tasteInitial: 'Premium chocolate aroma', tasteMiddle: 'Valrhona chocolate', tasteFinish: 'Long chocolate finish', ingredients: ['Fresh milk', 'Cream', 'Valrhona chocolate', 'Cocoa', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian'] },
+            'watermelon-mint': { name: 'Watermelon Mint', tagline: 'Summer refreshment', description: 'Fresh watermelon with cooling mint. The perfect summer refresher.', price: 14.00, image: 'Images/WatermelonMint.png', taste: 'Sweet watermelon with cool mint', texture: 'Light refreshing sorbet', pairing: 'Feta cheese, light salads, prosecco', intensity: 'Light', tasteInitial: 'Watermelon sweetness', tasteMiddle: 'Watermelon with mint', tasteFinish: 'Cool mint finish', ingredients: ['Watermelon juice', 'Fresh mint', 'Cane sugar', 'Lime juice', 'Filtered water'], dietary: ['Dairy Free', 'Vegan', 'Gluten Free', 'Fat Free'] },
+            'yuzu-citrus': { name: 'Yuzu Citrus', tagline: 'Japanese citrus elegance', description: 'Rare Japanese yuzu citrus with complex flavor. Unique and sophisticated.', price: 17.00, image: 'Images/YuzuCitrus.png', taste: 'Yuzu citrus with floral notes', texture: 'Light and refreshing', pairing: 'Seafood, light desserts, sake', intensity: 'Medium', tasteInitial: 'Yuzu citrus burst', tasteMiddle: 'Complex citrus flavor', tasteFinish: 'Clean citrus finish', ingredients: ['Yuzu juice', 'Cane sugar', 'Filtered water', 'Lemon juice'], dietary: ['Dairy Free', 'Vegan', 'Gluten Free', 'Fat Free'] },
+            'zabaione': { name: 'Zabaione', tagline: 'Italian custard classic', description: 'Classic Italian custard with Marsala wine. Rich, creamy, and sophisticated.', price: 16.00, image: 'Images/Zabaione.png', taste: 'Custard with Marsala wine', texture: 'Rich and creamy', pairing: 'Berries, biscotti, espresso', intensity: 'Medium to bold', tasteInitial: 'Custard vanilla aroma', tasteMiddle: 'Zabaione with Marsala', tasteFinish: 'Custard wine finish', ingredients: ['Fresh milk', 'Cream', 'Egg yolks', 'Marsala wine', 'Cane sugar', 'Vanilla'], dietary: ['Vegetarian', 'Contains Alcohol', 'Contains Dairy'] },
+            'apple-pie': { name: 'Apple Pie', tagline: 'American classic dessert', description: 'Spiced apple pie filling in creamy gelato. Like eating apple pie a la mode.', price: 16.00, image: 'Images/ApplePie.png', taste: 'Spiced apple with buttery crust', texture: 'Creamy with apple pieces', pairing: 'Caramel, coffee, autumn desserts', intensity: 'Medium', tasteInitial: 'Cinnamon apple aroma', tasteMiddle: 'Apple pie filling', tasteFinish: 'Buttery crust finish', ingredients: ['Fresh milk', 'Cream', 'Apple pie filling', 'Cinnamon', 'Cane sugar', 'Egg yolks'], dietary: ['Vegetarian', 'Contains Gluten', 'Contains Dairy'] },
+            'banana-foster': { name: 'Banana Foster', tagline: 'New Orleans classic', description: 'Bananas foster with rum and caramel. A New Orleans restaurant classic.', price: 16.00, image: 'Images/BananaFoster.png', taste: 'Banana with rum caramel', texture: 'Creamy with banana pieces', pairing: 'Chocolate, coffee, bread pudding', intensity: 'Medium to bold', tasteInitial: 'Banana caramel aroma', tasteMiddle: 'Banana foster flavor', tasteFinish: 'Rum caramel finish', ingredients: ['Fresh milk', 'Cream', 'Bananas', 'Rum', 'Caramel', 'Cane sugar', 'Egg yolks'], dietary: ['Vegetarian', 'Contains Alcohol', 'Contains Dairy'] },
+            'cherry-garcia': { name: 'Cherry Garcia', tagline: 'Cherry chocolate chunk', description: 'Cherry ice cream with chocolate chunks. A Grateful Dead inspired classic.', price: 17.00, image: 'Images/CherryGarcia.png', taste: 'Cherry with chocolate chunks', texture: 'Creamy with chocolate pieces', pairing: 'Brownies, coffee, rock concerts', intensity: 'Medium to bold', tasteInitial: 'Cherry aroma', tasteMiddle: 'Cherry with chocolate', tasteFinish: 'Chocolate cherry finish', ingredients: ['Fresh milk', 'Cream', 'Cherries', 'Dark chocolate chunks', 'Cane sugar', 'Egg yolks'], dietary: ['Vegetarian', 'Contains Dairy'] },
+            'date-walnut': { name: 'Date Walnut', tagline: 'Middle Eastern sweetness', description: 'Sweet dates with crunchy walnuts. A Middle Eastern inspired flavor.', price: 16.00, image: 'Images/DateWalnut.png', taste: 'Sweet date with walnut', texture: 'Creamy with chunks', pairing: 'Honey, tea, Middle Eastern desserts', intensity: 'Medium', tasteInitial: 'Date sweetness', tasteMiddle: 'Date with walnut', tasteFinish: 'Nutty date finish', ingredients: ['Fresh milk', 'Cream', 'Dates', 'Walnuts', 'Cane sugar', 'Egg yolks'], dietary: ['Vegetarian', 'Contains Nuts'] },
+            'espresso-fudge': { name: 'Espresso Fudge', tagline: 'Coffee chocolate powerhouse', description: 'Strong espresso with chocolate fudge. For serious coffee and chocolate lovers.', price: 16.00, image: 'Images/EspressoFudge.png', taste: 'Espresso with chocolate fudge', texture: 'Creamy with fudge pieces', pairing: 'Tiramisu, biscotti, espresso', intensity: 'Very bold', tasteInitial: 'Espresso aroma', tasteMiddle: 'Coffee with fudge', tasteFinish: 'Espresso chocolate finish', ingredients: ['Fresh milk', 'Cream', 'Espresso', 'Chocolate fudge', 'Cane sugar', 'Egg yolks'], dietary: ['Vegetarian', 'Contains Dairy'] },
+            'butter-pecan': { name: 'Butter Pecan', tagline: 'Southern classic', description: 'Buttery pecan gelato with toasted nuts. A Southern US classic.', price: 17.00, image: 'Images/ButterPecan.png', taste: 'Buttery with toasted pecan', texture: 'Creamy with nut pieces', pairing: 'Apple pie, bourbon, coffee', intensity: 'Medium to bold', tasteInitial: 'Butter pecan aroma', tasteMiddle: 'Toasted pecan with butter', tasteFinish: 'Nutty butter finish', ingredients: ['Fresh milk', 'Cream', 'Pecans', 'Butter', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian', 'Contains Nuts'] },
+            'black-sesame': { name: 'Black Sesame', tagline: 'Asian nutty tradition', description: 'Toasted black sesame with nutty flavor. A traditional Asian flavor with unique character.', price: 16.00, image: 'Images/BlackSesame.png', taste: 'Nutty toasted sesame', texture: 'Creamy with sesame texture', pairing: 'Red bean, mochi, green tea', intensity: 'Medium to bold', tasteInitial: 'Sesame nutty aroma', tasteMiddle: 'Black sesame flavor', tasteFinish: 'Toasted sesame finish', ingredients: ['Fresh milk', 'Cream', 'Black sesame paste', 'Cane sugar', 'Egg yolks'], dietary: ['Gluten Free', 'Vegetarian', 'Contains Sesame'] }
+        };
+
+        function getProductId() {
+            var path = window.location.pathname;
+            var match = path.match(/product-detail-(.+)\.html$/);
+            if (match) return match[1];
+            return null;
         }
-        document.addEventListener('click', function(event) {
-            const cartIcon = document.querySelector('.cart-icon');
-            const dropdown = document.getElementById('cart-dropdown');
-            if (cartIcon && !cartIcon.contains(event.target) && dropdown && dropdown.classList.contains('active')) {
-                dropdown.classList.remove('active');
+
+        function loadProductData() {
+            var productId = getProductId();
+            console.log('[Product Detail] Loading product:', productId);
+            
+            if (!productId || !productDatabase[productId]) {
+                console.log('[Product Detail] Product not found:', productId);
+                console.log('[Product Detail] Available products:', Object.keys(productDatabase));
+                document.querySelector('.product-detail-container').innerHTML = '<div style="text-align: center; padding: 4rem;"><h2 class="dealerplate" style="color: var(--color-pink);">Product Not Found</h2><p class="poppins-normal">Sorry, the product you are looking for does not exist.</p><a href="products.html" class="back-link" style="display: inline-block; margin-top: 1rem;">Browse All Flavors</a></div>';
+                return;
             }
-        });
+            
+            console.log('[Product Detail] Product found:', productDatabase[productId].name);
+            var p = productDatabase[productId];
+            document.getElementById('page-title').textContent = p.name + ' - SweetTooth Gelato';
+            document.getElementById('product-title').textContent = p.name;
+            document.getElementById('product-tagline').textContent = p.tagline;
+            document.getElementById('product-price').textContent = 'RM ' + p.price.toFixed(2) + ' per 100ml';
+            document.getElementById('product-description').textContent = p.description;
+
+            // Display product image
+            var productImg = document.getElementById('product-image');
+            var placeholder = document.getElementById('product-image-placeholder');
+            console.log('[Product Detail] Image path:', p.image);
+            console.log('[Product Detail] Image element:', productImg);
+            
+            if (p.image) {
+                productImg.src = p.image;
+                productImg.style.position = 'absolute';
+                productImg.style.top = '0';
+                productImg.style.left = '0';
+                productImg.style.width = '100%';
+                productImg.style.height = '100%';
+                productImg.style.objectFit = 'cover';
+                productImg.style.zIndex = '2';
+                productImg.style.display = 'block';
+                placeholder.style.display = 'none';
+                console.log('[Product Detail] Image set to:', p.image);
+                
+                // Add error handler
+                productImg.onerror = function() {
+                    console.log('[Product Detail] Image failed to load:', p.image);
+                    placeholder.style.display = 'block';
+                };
+                
+                // Add load handler
+                productImg.onload = function() {
+                    console.log('[Product Detail] Image loaded successfully:', p.image);
+                };
+            }
+            
+            document.getElementById('taste-description').textContent = p.taste;
+            document.getElementById('texture-description').textContent = p.texture;
+            document.getElementById('pairing-description').textContent = p.pairing;
+            document.getElementById('intensity-description').textContent = p.intensity;
+            document.getElementById('taste-initial').textContent = p.tasteInitial;
+            document.getElementById('taste-middle').textContent = p.tasteMiddle;
+            document.getElementById('taste-finish').textContent = p.tasteFinish;
+            var ingList = document.getElementById('ingredients-list');
+            ingList.innerHTML = '';
+            p.ingredients.forEach(function(ing) { var li = document.createElement('li'); li.textContent = ing; ingList.appendChild(li); });
+            var dietInfo = document.getElementById('dietary-info');
+            dietInfo.innerHTML = '';
+            p.dietary.forEach(function(badge) { var span = document.createElement('span'); span.className = 'dietary-badge'; span.textContent = badge; dietInfo.appendChild(span); });
+            document.getElementById('add-to-cart-btn').setAttribute('data-product', p.name);
+            document.getElementById('add-to-cart-btn').setAttribute('data-price', p.price.toFixed(2));
+        }
+
+        function toggleCartDropdown() { var dropdown = document.getElementById('cart-dropdown'); if (dropdown) dropdown.classList.toggle('active'); }
+        document.addEventListener('click', function(event) { var cartIcon = document.querySelector('.cart-icon'); var dropdown = document.getElementById('cart-dropdown'); if (cartIcon && !cartIcon.contains(event.target) && dropdown && dropdown.classList.contains('active')) { dropdown.classList.remove('active'); } });
+        
+        // Load product data
+        console.log('[Product Detail] ReadyState:', document.readyState, '- Calling loadProductData');
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadProductData);
+        } else {
+            // DOM already loaded, call immediately
+            loadProductData();
+        }
+    })();
+    } catch (e) {
+        console.error('[Product Detail Template] ERROR:', e);
+    }
     </script>
 </body>
 </html>
+

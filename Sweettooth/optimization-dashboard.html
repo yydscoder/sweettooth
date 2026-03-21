@@ -203,16 +203,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Optimization Dashboard</h1>
+        <h1>Optimization Dashboard</h1>
         <p style="text-align: center; color: #666;">Real-time performance monitoring and optimization results</p>
-        
+
         <div style="text-align: center; margin: 2rem 0;">
             <button class="btn" onclick="runPerformanceTest()">Run Performance Test</button>
             <button class="btn btn-secondary" onclick="toggleConsole()">Toggle Console</button>
             <button class="btn btn-secondary" onclick="clearLogs()">Clear Logs</button>
         </div>
-        
-        <h2>📊 Key Metrics</h2>
+
+        <h2>Key Metrics</h2>
         <div class="metrics-grid">
             <div class="metric-card">
                 <h3>Page Load Time</h3>
@@ -240,10 +240,10 @@
             </div>
         </div>
         
-        <h2>✅ Optimization Techniques Applied</h2>
+        <h2>Optimization Techniques Applied</h2>
         <div class="optimization-section">
             <div class="optimization-header">
-                <span class="optimization-icon">🖼️</span>
+                <span class="optimization-icon">Image</span>
                 <div>
                     <h3 style="margin: 0;">Image Lazy Loading</h3>
                     <p style="color: #666; font-size: 0.9rem;">Defer off-screen images using Intersection Observer API</p>
@@ -270,7 +270,7 @@
         
         <div class="optimization-section">
             <div class="optimization-header">
-                <span class="optimization-icon">📦</span>
+                <span class="optimization-icon">Bundle</span>
                 <div>
                     <h3 style="margin: 0;">Asset Minification</h3>
                     <p style="color: #666; font-size: 0.9rem;">Remove whitespace, comments, and optimize CSS/JS</p>
@@ -295,7 +295,7 @@
             </p>
         </div>
         
-        <h2>📋 File Size Comparison</h2>
+        <h2>File Size Comparison</h2>
         <table>
             <thead>
                 <tr>
@@ -329,7 +329,7 @@
             <div class="log-entry log-info">[System] Optimization dashboard initialized. Click "Run Performance Test" to see metrics.</div>
         </div>
         
-        <h2>🔬 How to Verify Results</h2>
+        <h2>How to Verify Results</h2>
         <div class="optimization-section">
             <ol style="padding-left: 1.5rem; line-height: 2;">
                 <li><strong>Open Browser DevTools</strong> (F12) and go to the Network tab</li>
@@ -343,130 +343,313 @@
     </div>
     
     <div class="console-panel" id="console-panel"></div>
-    
+
+    <script src="assets/js/lazy-load.js"></script>
+    <script src="assets/js/performance-logger.js"></script>
+    <script src="assets/js/optimization-manager.js"></script>
     <script>
         // Logging utilities
         var logHistory = [];
-        
+
         function addLog(message, type) {
             var container = document.getElementById('log-container');
             var consolePanel = document.getElementById('console-panel');
             var timestamp = new Date().toLocaleTimeString();
             var logClass = 'log-' + (type || 'info');
-            
+
             var logEntry = '<div class="log-entry ' + logClass + '">[' + timestamp + '] ' + message + '</div>';
             container.innerHTML += logEntry;
             consolePanel.innerHTML += logEntry;
-            
+
             // Auto-scroll to bottom
             container.scrollTop = container.scrollHeight;
             consolePanel.scrollTop = consolePanel.scrollHeight;
-            
+
             // Store in history
             logHistory.push({ timestamp: timestamp, message: message, type: type });
         }
-        
+
         function toggleConsole() {
             var panel = document.getElementById('console-panel');
             panel.classList.toggle('active');
         }
-        
+
         function clearLogs() {
             document.getElementById('log-container').innerHTML = '<div class="log-entry log-info">[System] Logs cleared</div>';
             document.getElementById('console-panel').innerHTML = '';
             logHistory = [];
         }
-        
+
         function formatBytes(bytes) {
+            if (bytes >= 1048576) {
+                return (bytes / 1048576).toFixed(2) + ' MB';
+            }
             if (bytes >= 1024) {
                 return (bytes / 1024).toFixed(2) + ' KB';
             }
             return bytes + ' bytes';
         }
-        
-        function getFileSizes() {
-            // Simulated file sizes (in production, these would be fetched from build report)
-            var files = {
-                css: { original: 5234, minified: 2891 },
-                js: { original: 9876, minified: 5123 }
+
+        // Get REAL file sizes by fetching them
+        function getRealFileSizes() {
+            var files = [
+                { name: 'shared.css', url: 'assets/css/shared.css' },
+                { name: 'shared.min.css', url: 'assets/css/shared.min.css' },
+                { name: 'cart.js', url: 'assets/js/cart.js' },
+                { name: 'cart.min.js', url: 'assets/js/cart.min.js' }
+            ];
+
+            var results = { css: {}, js: {} };
+
+            files.forEach(function(file) {
+                fetch(file.url, { method: 'HEAD' })
+                    .then(function(response) {
+                        var size = parseInt(response.headers.get('content-length') || '0');
+                        if (file.name.includes('css')) {
+                            if (file.name.includes('.min')) {
+                                results.css.minified = size;
+                            } else {
+                                results.css.original = size;
+                            }
+                        } else {
+                            if (file.name.includes('.min')) {
+                                results.js.minified = size;
+                            } else {
+                                results.js.original = size;
+                            }
+                        }
+                        updateFileTable(results);
+                    })
+                    .catch(function() {
+                        console.warn('Could not fetch:', file.url);
+                    });
+            });
+
+            return results;
+        }
+
+        function updateFileTable(files) {
+            if (files.css.original && files.css.minified) {
+                var cssSaved = files.css.original - files.css.minified;
+                var cssPercent = ((cssSaved / files.css.original) * 100).toFixed(1);
+                document.getElementById('css-original').textContent = formatBytes(files.css.original);
+                document.getElementById('css-minified').textContent = formatBytes(files.css.minified);
+                document.getElementById('css-saved').textContent = formatBytes(cssSaved);
+                document.getElementById('css-percent').textContent = cssPercent + '%';
+                addLog('CSS: ' + formatBytes(files.css.original) + ' → ' + formatBytes(files.css.minified) + ' (' + cssPercent + '% reduction)', 'success');
+            }
+
+            if (files.js.original && files.js.minified) {
+                var jsSaved = files.js.original - files.js.minified;
+                var jsPercent = ((jsSaved / files.js.original) * 100).toFixed(1);
+                document.getElementById('js-original').textContent = formatBytes(files.js.original);
+                document.getElementById('js-minified').textContent = formatBytes(files.js.minified);
+                document.getElementById('js-saved').textContent = formatBytes(jsSaved);
+                document.getElementById('js-percent').textContent = jsPercent + '%';
+                addLog('JS: ' + formatBytes(files.js.original) + ' → ' + formatBytes(files.js.minified) + ' (' + jsPercent + '% reduction)', 'success');
+            }
+        }
+
+        // Get REAL performance metrics from Performance API
+        function getRealPerformanceMetrics() {
+            var metrics = {};
+
+            if (window.performance) {
+                // Navigation timing
+                var navEntry = performance.getEntriesByType('navigation')[0];
+                if (navEntry) {
+                    metrics.loadTime = navEntry.loadEventEnd - navEntry.startTime;
+                    metrics.domContentLoaded = navEntry.domContentLoadedEventEnd - navEntry.startTime;
+                    metrics.firstByte = navEntry.responseStart - navEntry.startTime;
+                }
+
+                // Paint timing
+                var paintEntries = performance.getEntriesByType('paint');
+                paintEntries.forEach(function(entry) {
+                    if (entry.name === 'first-contentful-paint') {
+                        metrics.fcp = entry.startTime;
+                    }
+                });
+
+                // Resource timing
+                var resources = performance.getEntriesByType('resource');
+                metrics.resourceCount = resources.length;
+                metrics.totalResourceSize = 0;
+                metrics.imageCount = 0;
+
+                resources.forEach(function(resource) {
+                    if (resource.transferSize) {
+                        metrics.totalResourceSize += resource.transferSize;
+                    }
+                    if (resource.initiatorType === 'img' || resource.name.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+                        metrics.imageCount++;
+                    }
+                });
+            }
+
+            return metrics;
+        }
+
+        // Get REAL lazy load stats
+        function getRealLazyLoadStats() {
+            if (window.SweetToothLazyLoad) {
+                return window.SweetToothLazyLoad.getStats();
+            }
+
+            // Fallback: count images manually
+            var allImages = document.querySelectorAll('img');
+            var lazyImages = document.querySelectorAll('img[data-src], img[data-lazy], img[loading="lazy"]');
+            var loadedImages = document.querySelectorAll('img.lazy-loaded, img[src]:not([data-src])');
+
+            return {
+                total: allImages.length,
+                lazy: lazyImages.length,
+                loaded: loadedImages.length,
+                deferred: allImages.length - loadedImages.length,
+                enabled: lazyImages.length > 0
             };
-            return files;
         }
-        
-        function updateFileComparison() {
-            var files = getFileSizes();
-            
-            // CSS
-            document.getElementById('css-original').textContent = formatBytes(files.css.original);
-            document.getElementById('css-minified').textContent = formatBytes(files.css.minified);
-            document.getElementById('css-saved').textContent = formatBytes(files.css.original - files.css.minified);
-            document.getElementById('css-percent').textContent = ((files.css.original - files.css.minified) * 100 / files.css.original).toFixed(1) + '%';
-            
-            // JS
-            document.getElementById('js-original').textContent = formatBytes(files.js.original);
-            document.getElementById('js-minified').textContent = formatBytes(files.js.minified);
-            document.getElementById('js-saved').textContent = formatBytes(files.js.original - files.js.minified);
-            document.getElementById('js-percent').textContent = ((files.js.original - files.js.minified) * 100 / files.js.original).toFixed(1) + '%';
-            
-            addLog('File sizes loaded from build report', 'info');
+
+        // Calculate REAL optimization score
+        function calculateOptimizationScore() {
+            var score = 0;
+            var maxScore = 100;
+
+            // Check lazy loading (25 points)
+            var lazyStats = getRealLazyLoadStats();
+            if (lazyStats.enabled) {
+                score += 25;
+            }
+
+            // Check minification (25 points)
+            var minCss = document.querySelector('link[href*=".min.css"]');
+            var minJs = document.querySelector('script[src*=".min.js"]');
+            if (minCss || minJs) {
+                score += 25;
+            }
+
+            // Check caching (25 points)
+            var cacheEnabled = localStorage.getItem('sweettooth_optimization_config');
+            if (cacheEnabled) {
+                try {
+                    var config = JSON.parse(cacheEnabled);
+                    if (config.cachingEnabled) score += 25;
+                } catch(e) {}
+            }
+
+            // Check performance logging (25 points)
+            if (window.SweetToothPerf && window.SweetToothPerf.isEnabled()) {
+                score += 25;
+            }
+
+            return score;
         }
-        
+
+        // Update dashboard with REAL metrics
+        function updateDashboardWithRealMetrics() {
+            var metrics = getRealPerformanceMetrics();
+            var lazyStats = getRealLazyLoadStats();
+            var optScore = calculateOptimizationScore();
+
+            // Update metric cards safely (check if elements exist)
+            if (metrics.loadTime) {
+                var el = document.getElementById('page-load-time');
+                if (el) el.textContent = metrics.loadTime.toFixed(2) + ' ms';
+            }
+
+            if (metrics.totalResourceSize) {
+                var el = document.getElementById('page-weight');
+                if (el) el.textContent = formatBytes(metrics.totalResourceSize);
+            }
+
+            var imgEl = document.getElementById('image-loading');
+            if (imgEl) imgEl.textContent = lazyStats.loaded + ' / ' + lazyStats.total;
+
+            if (metrics.resourceCount) {
+                var jsSize = metrics.totalResourceSize * 0.3; // Estimate
+                var el = document.getElementById('bundle-size');
+                if (el) el.textContent = formatBytes(jsSize);
+            }
+        }
+
         function runPerformanceTest() {
             addLog('=== PERFORMANCE TEST STARTED ===', 'info');
+
+            // Get REAL metrics
+            var metrics = getRealPerformanceMetrics();
+            var lazyStats = getRealLazyLoadStats();
+            var optScore = calculateOptimizationScore();
+
+            addLog('Page Load Time: ' + (metrics.loadTime || 0).toFixed(2) + ' ms', 'success');
+            addLog('DOM Content Loaded: ' + (metrics.domContentLoaded || 0).toFixed(2) + ' ms', 'info');
+            addLog('First Contentful Paint: ' + (metrics.fcp || 0).toFixed(2) + ' ms', 'info');
+            addLog('Resources Loaded: ' + metrics.resourceCount + ' files', 'info');
+            addLog('Total Resource Size: ' + formatBytes(metrics.totalResourceSize || 0), 'info');
+            addLog('Images: ' + lazyStats.loaded + ' loaded, ' + lazyStats.deferred + ' deferred', 'success');
+            addLog('Optimization Score: ' + optScore + '/100', 'success');
+
+            // Update UI with real values (safely)
+            var el;
+            el = document.getElementById('page-load-time');
+            if (el) el.textContent = (metrics.loadTime || 0).toFixed(2) + ' ms';
             
-            // Simulate performance metrics
-            var startTime = performance.now();
+            el = document.getElementById('page-weight');
+            if (el) el.textContent = formatBytes(metrics.totalResourceSize || 0);
             
-            setTimeout(function() {
-                var loadTime = (Math.random() * 500 + 800).toFixed(2);
-                document.getElementById('page-load-time').textContent = loadTime + ' ms';
-                document.getElementById('page-load-improvement').textContent = '↓ ~40% faster';
-                document.getElementById('page-load-improvement').style.display = 'inline-block';
-                addLog('Page Load Time: ' + loadTime + ' ms (40% improvement)', 'success');
-            }, 500);
+            el = document.getElementById('image-loading');
+            if (el) el.textContent = lazyStats.loaded + ' / ' + lazyStats.total;
             
-            setTimeout(function() {
-                var weight = (Math.random() * 200 + 450).toFixed(2);
-                document.getElementById('page-weight').textContent = weight + ' KB';
-                document.getElementById('page-weight-improvement').textContent = '↓ ~55% smaller';
-                document.getElementById('page-weight-improvement').style.display = 'inline-block';
-                addLog('Page Weight: ' + weight + ' KB (55% reduction)', 'success');
-            }, 1000);
-            
-            setTimeout(function() {
-                var lazyLoaded = Math.floor(Math.random() * 8 + 5);
-                var total = Math.floor(Math.random() * 5 + 12);
-                document.getElementById('image-loading').textContent = lazyLoaded + ' / ' + total;
-                document.getElementById('image-improvement').textContent = '↓ ~70% deferred';
-                document.getElementById('image-improvement').style.display = 'inline-block';
-                addLog('Images: ' + lazyLoaded + ' loaded, ' + (total - lazyLoaded) + ' deferred', 'success');
-            }, 1500);
-            
-            setTimeout(function() {
-                var bundleSize = (Math.random() * 3 + 5).toFixed(2);
-                document.getElementById('bundle-size').textContent = bundleSize + ' KB';
-                document.getElementById('bundle-improvement').textContent = '↓ ~55% smaller';
-                document.getElementById('bundle-improvement').style.display = 'inline-block';
-                addLog('Bundle Size: ' + bundleSize + ' KB (55% reduction)', 'success');
-                addLog('=== PERFORMANCE TEST COMPLETED ===', 'success');
-            }, 2000);
-            
-            addLog('Gathering metrics...', 'info');
+            el = document.getElementById('bundle-size');
+            if (el && metrics.totalResourceSize) el.textContent = formatBytes(metrics.totalResourceSize * 0.3);
+
+            // Calculate improvements based on lazy load
+            if (lazyStats.total > 0 && lazyStats.deferred > 0) {
+                var improvement = ((lazyStats.deferred / lazyStats.total) * 100).toFixed(0);
+                el = document.getElementById('page-load-improvement');
+                if (el) {
+                    el.textContent = '↓ ' + improvement + '% deferred';
+                    el.style.display = 'inline-block';
+                }
+                el = document.getElementById('image-improvement');
+                if (el) {
+                    el.textContent = '↓ ' + improvement + '% deferred';
+                    el.style.display = 'inline-block';
+                }
+            }
+
+            addLog('=== PERFORMANCE TEST COMPLETED ===', 'success');
         }
-        
+
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             addLog('Dashboard initialized', 'info');
-            updateFileComparison();
-            
+
+            // Try to get real file sizes
+            getRealFileSizes();
+
+            // Update with real metrics after a short delay
+            setTimeout(updateDashboardWithRealMetrics, 500);
+
             // Check if performance logger is available
             if (window.SweetToothPerf) {
                 addLog('Performance logger detected', 'success');
+                var report = window.SweetToothPerf.getReport();
+                addLog('Page views tracked: ' + report.pageViews, 'info');
             }
-            
+
             // Check if lazy loader is available
             if (window.SweetToothLazyLoad) {
                 addLog('Lazy loader detected', 'success');
+                var stats = window.SweetToothLazyLoad.getStats();
+                addLog('Images tracked: ' + stats.total + ' (' + stats.deferred + ' deferred)', 'info');
+            }
+
+            // Check optimization manager
+            if (window.SweetToothOptimization) {
+                addLog('Optimization manager detected', 'success');
+                var config = window.SweetToothOptimization.getConfig();
+                addLog('Lazy Load: ' + (config.lazyLoadEnabled ? 'Enabled' : 'Disabled'), 'info');
+                addLog('Caching: ' + (config.cachingEnabled ? 'Enabled' : 'Disabled'), 'info');
             }
         });
         

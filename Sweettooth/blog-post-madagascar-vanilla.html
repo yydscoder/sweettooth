@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Blog - SweetTooth Gelato</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/shared.css">
+    <style>
+        :root { --color-cream: #FFF6CC; --color-pink: #F37273; --color-light-cream: #FEFAE8; --color-peach: #FFDC9F; --color-orange: #F2BA72; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--color-light-cream); color: #333; line-height: 1.8; }
+        .dealerplate { font-family: 'Playfair Display', serif; }
+        .poppins-bold { font-family: 'Poppins', sans-serif; font-weight: 700; }
+        .poppins-normal { font-family: 'Poppins', sans-serif; font-weight: 400; }
+        .blend-design { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: var(--color-cream); padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        nav ul { display: flex; list-style: none; gap: 2rem; }
+        nav a { text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s; }
+        nav a:hover, nav a.active { color: var(--color-pink); }
+        .cart-icon { position: relative; margin-left: 1rem; cursor: pointer; }
+        .cart-count { position: absolute; top: -8px; right: -8px; background-color: var(--color-pink); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; }
+        .cart-dropdown { position: absolute; top: 100%; right: 0; background: white; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); width: 320px; max-height: 400px; overflow-y: auto; display: none; z-index: 1000; margin-top: 10px; }
+        .cart-dropdown.active { display: block; }
+        .cart-header { background: var(--color-pink); color: white; padding: 1rem; border-radius: 10px 10px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .cart-items-container { padding: 1rem; }
+        .empty-cart-message { text-align: center; padding: 2rem; color: #777; }
+        .cart-items-filled { padding: 1rem; }
+        .cart-total { text-align: right; font-weight: 700; margin: 1rem 0; padding-top: 0.5rem; border-top: 2px solid var(--color-pink); }
+        .checkout-btn, .view-cart-btn { background-color: var(--color-pink); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 5px; cursor: pointer; width: 100%; font-weight: 600; margin-bottom: 0.5rem; }
+        .checkout-btn:hover { background-color: #e05a5b; }
+        .view-cart-btn { background-color: white; color: var(--color-pink); border: 2px solid var(--color-pink); }
+        .blog-post-container { padding: 4rem 0; min-height: 70vh; }
+        .back-link { display: inline-block; margin-bottom: 2rem; color: var(--color-pink); text-decoration: none; font-weight: 600; transition: color 0.3s; }
+        .back-link:hover { color: var(--color-orange); }
+        .blog-article { background: white; border-radius: 20px; padding: 3rem; box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
+        .blog-header-image { height: 350px; background: linear-gradient(135deg, var(--color-peach), var(--color-orange)); border-radius: 15px; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; }
+        .blog-header-image-placeholder { color: #777; font-size: 1.2rem; }
+        .blog-meta { color: #999; font-size: 0.9rem; margin-bottom: 1rem; }
+        .blog-title { font-size: 2.8rem; color: var(--color-pink); margin-bottom: 1.5rem; line-height: 1.3; }
+        .blog-author { color: #666; font-size: 1rem; margin-bottom: 2rem; font-style: italic; }
+        .blog-content { color: #555; font-size: 1.1rem; line-height: 2; }
+        .blog-content h2 { color: var(--color-pink); font-size: 1.8rem; margin: 2.5rem 0 1rem; }
+        .blog-content h3 { color: var(--color-orange); font-size: 1.4rem; margin: 2rem 0 0.8rem; }
+        .blog-content p { margin-bottom: 1.5rem; }
+        .blog-content ul, .blog-content ol { margin-bottom: 1.5rem; padding-left: 2rem; }
+        .blog-content li { margin-bottom: 0.5rem; }
+        .blog-share { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #eee; }
+        .blog-share h4 { color: var(--color-pink); margin-bottom: 1rem; }
+        .share-links { display: flex; gap: 1rem; }
+        .share-link { background: var(--color-light-cream); color: #555; padding: 0.6rem 1.2rem; border-radius: 30px; text-decoration: none; font-size: 0.9rem; transition: background-color 0.3s; }
+        .share-link:hover { background: var(--color-peach); }
+        .related-posts { margin-top: 3rem; padding-top: 2rem; }
+        .related-posts h3 { color: var(--color-pink); margin-bottom: 1.5rem; }
+        footer { background-color: #333; color: white; padding: 3rem 2rem 1rem; margin-top: 5rem; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .footer-section h3 { color: var(--color-peach); margin-bottom: 1rem; }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 0.5rem; }
+        .footer-section a { color: #ccc; text-decoration: none; }
+        .footer-section a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 2rem; border-top: 1px solid #555; color: #aaa; }
+        @media (max-width: 768px) { .header-container { flex-direction: column; gap: 1rem; } .blog-article { padding: 2rem 1.5rem; } .blog-title { font-size: 2rem; } .blog-header-image { height: 200px; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container blend-design">
+            <div class="logo"><img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 50px;"></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="products.html">Flavors</a></li>
+                    <li><a href="blog.html" class="active">Blog</a></li>
+                    <li><a href="feed.html">Feed</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon" onclick="toggleCartDropdown()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                <span class="cart-count" id="cart-count">0</span>
+                <div class="cart-dropdown" id="cart-dropdown">
+                    <div class="cart-header"><h3 class="dealerplate">Your Cart</h3><span style="cursor: pointer;" onclick="event.stopPropagation(); toggleCartDropdown()">&times;</span></div>
+                    <div class="cart-items-container" id="cart-items-container"><div class="empty-cart-message"><p>🛒 Cart is empty</p><p style="font-size: 0.9rem; margin-top: 0.5rem;">Add some delicious gelato!</p></div></div>
+                    <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;"><div id="cart-items-list"></div><div class="cart-total">Total: RM<span id="cart-total">0.00</span></div><button class="checkout-btn poppins-bold" onclick="proceedToCheckout()">Proceed to Checkout</button><button class="view-cart-btn poppins-bold" onclick="window.location.href='checkout.html'">View Full Cart</button></div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="blog-post-container blend-design">
+        <a href="blog.html" class="back-link">← Back to Blog</a>
+        <article class="blog-article">
+            <div class="blog-header-image"><div class="blog-header-image-placeholder" id="blog-image-placeholder">[Blog Post Image]</div></div>
+            <div class="blog-meta" id="blog-date"></div>
+            <h1 class="blog-title dealerplate" id="blog-title"></h1>
+            <div class="blog-author" id="blog-author"></div>
+            <div class="blog-content" id="blog-content"></div>
+            <div class="blog-share">
+                <h4 class="poppins-bold">Share this post</h4>
+                <div class="share-links">
+                    <a href="#" class="share-link">Facebook</a>
+                    <a href="#" class="share-link">Twitter</a>
+                    <a href="#" class="share-link">Instagram</a>
+                    <a href="#" class="share-link">Copy Link</a>
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer id="contact">
+        <div class="blend-design">
+            <div class="footer-container">
+                <div class="footer-section"><img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 60px; margin-bottom: 1rem;"><p class="poppins-normal">Premium artisanal gelato crafted with seasonal ingredients and unwavering commitment to quality.</p></div>
+                <div class="footer-section"><h3 class="dealerplate">Quick Links</h3><ul><li><a href="index.html">Home</a></li><li><a href="our-story.html">Our Story</a></li><li><a href="products.html">Flavors</a></li><li><a href="blog.html">Blog</a></li><li><a href="feed.html">Feed</a></li><li><a href="events.html">Events</a></li></ul></div>
+                <div class="footer-section"><h3 class="dealerplate">Connect With Us</h3><ul><li><a href="#">Instagram</a></li><li><a href="#">TikTok</a></li><li><a href="#">Facebook</a></li><li><a href="mailto:info@sweettoothgelato.com.my">Email Us</a></li></ul></div>
+                <div class="footer-section"><h3 class="dealerplate">Contact</h3><ul><li class="poppins-normal">Email: info@sweettoothgelato.com.my</li><li class="poppins-normal">Phone: Coming Soon</li><li class="poppins-normal">Address: Malaysia</li></ul></div>
+            </div>
+            <div class="copyright"><p class="poppins-normal">© 2026 SweetTooth Gelato. All rights reserved.</p></div>
+        </div>
+    </footer>
+    <script src="assets/js/secure-config.js"></script>
+    <script src="assets/js/cart.js"></script>
+    <script src="assets/js/whatsapp-widget.js"></script>
+    <script>
+    (function() {
+        var blogPosts = {
+            'mangosteen-feature': { title: 'The Journey of Mangosteen Sorbet', date: 'February 10, 2026', author: 'SweetTooth Team', content: '<p>Discover how we perfected our signature mangosteen sorbet, sourcing the finest seasonal fruits from local farmers in Malaysia.</p><h2>The Queen of Fruits</h2><p>The mangosteen, often called the Queen of Fruits in Southeast Asia, is a tropical delicacy prized for its perfect balance of sweetness and acidity. Our journey began with a simple question: how can we capture the essence of this exquisite fruit in gelato form?</p><h2>Sourcing the Best</h2><p>We partnered with local Malaysian farmers who have cultivated mangosteen trees for generations. These farmers understand the delicate nature of the fruit and know exactly when each mangosteen reaches its peak ripeness. Only the finest fruits make it into our gelato.</p><h2>The Art of Sorbet Making</h2><p>Creating a sorbet that honors the mangosteen required careful consideration. We wanted to preserve the fruit natural flavor without overwhelming it with sweetness. Our recipe uses minimal ingredients: fresh mangosteen puree, cane sugar, filtered water, and a touch of lemon juice to brighten the flavor.</p><h2>Seasonal Availability</h2><p>Mangosteen is a seasonal fruit, typically available from April to September in Malaysia. During these months, we offer our Mangosteen Sorbet as a limited edition flavor. This seasonality ensures that every scoop delivers the authentic taste of perfectly ripe mangosteen.</p><h2>Taste Profile</h2><p>Our Mangosteen Sorbet offers a refreshing experience with initial notes of bright citrus, followed by the distinctive floral sweetness of mangosteen, and finishing with a clean, slightly tangy aftertaste. The texture is light and silky, making it an ideal palate cleanser or light dessert option.</p>' },
+            'seasonal-ingredients': { title: 'Understanding Shun: Seasonal Ingredients', date: 'February 5, 2026', author: 'SweetTooth Team', content: '<p>Learn about the Japanese concept of Shun and how we apply it to our gelato making process, ensuring peak flavor and freshness.</p><h2>What is Shun</h2><p>In Japanese culinary tradition, Shun refers to the peak season when an ingredient reaches its optimal flavor and nutritional value. This concept recognizes that ingredients have a specific window of time when they are at their absolute best.</p><h2>Applying Shun to Gelato</h2><p>At SweetTooth, we have embraced the philosophy of Shun in our gelato making. Rather than relying on frozen or preserved ingredients year round, we commit to using fresh, seasonal produce at its peak. This means our flavor offerings change throughout the year.</p><h2>The Benefits of Seasonality</h2><p>Using ingredients at their Shun offers multiple advantages. The flavor is more intense and complex. The nutritional content is higher. The environmental impact is lower, as seasonal produce often comes from local sources. And perhaps most importantly, it creates a connection between our customers and the natural rhythms of the seasons.</p><h2>Our Seasonal Calendar</h2><p>In spring, we feature flavors like Strawberry Cream using freshly picked berries. Summer brings Mangosteen Sorbet and Coconut Sorbet. Autumn introduces richer flavors featuring harvested nuts like Pistachio and Hazelnut. Winter offers comforting options like Belgian Chocolate and Madagascar Vanilla.</p><h2>The Shun Special</h2><p>Our Shun Special flavor changes regularly based on what ingredients are at their peak. This limited edition offering showcases our commitment to seasonality and gives customers the opportunity to experience truly exceptional flavors that cannot be replicated outside their specific season.</p>' },
+            'artisanal-gelato': { title: 'The Art of Artisanal Gelato', date: 'January 28, 2026', author: 'SweetTooth Team', content: '<p>A deep dive into our traditional Italian techniques and how we have adapted them to create unique Asian inspired flavors.</p><h2>The Italian Tradition</h2><p>Gelato differs from ice cream in several important ways. It contains less fat, has less air incorporated during churning, and is served at a slightly warmer temperature. These characteristics give gelato its signature dense, creamy texture and intense flavor.</p><h2>Traditional Techniques</h2><p>We begin with the traditional Italian methods passed down through generations. Our base is made fresh daily using high quality milk and cream. We use natural stabilizers like egg yolks and natural pectins rather than artificial additives. Each batch is churned slowly to achieve the perfect texture.</p><h2>Asian Inspiration</h2><p>While honoring Italian tradition, we have embraced the diverse flavors of Asia. Malaysia multicultural heritage provides endless inspiration. From Japanese Matcha to Thai Coconut, from Malaysian Durian to Chinese Lychee, our flavors reflect the rich culinary tapestry of our region.</p><h2>Ingredient Selection</h2><p>The foundation of exceptional gelato is exceptional ingredients. We source vanilla beans from Madagascar, cocoa from Belgium, matcha from Uji Japan, and pistachios from Sicily. For our Asian flavors, we work with local suppliers who understand these ingredients intimately.</p><h2>The Craft Process</h2><p>Each flavor requires its own approach. Delicate fruit sorbets need gentle handling to preserve fresh flavor. Rich chocolate gelato benefits from aging the base to develop depth. Nut based flavors require careful balancing to avoid overwhelming richness. Our gelato makers bring years of experience to these decisions.</p>' },
+            'health-indulgence': { title: 'Balancing Health and Indulgence', date: 'January 20, 2026', author: 'SweetTooth Team', content: '<p>Our philosophy on creating treats that are both delicious and mindful, without compromising on taste or quality.</p><h2>The Balance Philosophy</h2><p>We believe that indulgence and wellness can coexist. Enjoying gelato should be a pleasurable experience that nourishes both body and soul. This philosophy guides our approach to recipe development and ingredient selection.</p><h2>Natural Ingredients</h2><p>Every ingredient in our gelato serves a purpose. We use real fruit, not artificial flavorings. We sweeten with cane sugar rather than high fructose corn syrup. We avoid artificial colors, preservatives, and stabilizers. This commitment to natural ingredients means you know exactly what you are enjoying.</p><h2>Dairy Free Options</h2><p>Our sorbet selection offers delicious dairy free alternatives. Made with water and fruit rather than milk and cream, sorbets provide a lighter option without sacrificing flavor. Our Mangosteen, Lemon, Coconut, and Raspberry sorbets are all naturally dairy free and vegan.</p><h2>Portion Mindfulness</h2><p>Gelato is meant to be savored, not consumed in large quantities. The intense flavor and creamy texture mean that a small serving provides deep satisfaction. We offer our gelato in modest portions that encourage mindful enjoyment rather than mindless consumption.</p><h2>Quality Over Quantity</h2><p>We would rather you enjoy a small scoop of exceptional gelato than a large portion of mediocre product. This belief drives our commitment to quality ingredients and careful craftsmanship. Every scoop represents our dedication to creating something truly special.</p>' },
+            'campus-events': { title: 'SweetTooth Goes to Campus', date: 'January 15, 2026', author: 'SweetTooth Team', content: '<p>Recap of our recent events at Monash, Sunway, and INTI universities, bringing artisanal gelato to students.</p><h2>Bringing Gelato to Students</h2><p>This month, we took our gelato on the road, visiting three major universities in Malaysia. Our goal was simple: introduce students to the difference that artisanal gelato makes and gather feedback on flavors that appeal to younger palates.</p><h2>Monash University</h2><p>Our first stop was Monash University Malaysia. We set up a pop up stall in the student center and offered samples of our most popular flavors. The response was overwhelming. Students particularly enjoyed our Belgian Chocolate and Salted Caramel flavors. Many expressed appreciation for the less sweet profile compared to commercial ice cream.</p><h2>Sunway University</h2><p>At Sunway, we focused on gathering feedback on potential new flavors. Students suggested exciting ideas including Gula Melaka, Pandan Coconut, and Cendol inspired gelato. These suggestions have been added to our development pipeline. We appreciate the creative input from the Sunway community.</p><h2>INTI International University</h2><p>Our final stop was INTI, where we partnered with the culinary program to give students insight into professional gelato production. Our head gelato maker demonstrated techniques and shared knowledge about flavor balancing. We hope to inspire the next generation of culinary professionals.</p><h2>Student Discounts</h2><p>To thank participating universities, we are launching a student discount program. Valid student IDs receive fifteen percent off all purchases at our retail locations. We look forward to continuing these campus visits and building relationships with university communities.</p>' },
+            'madagascar-vanilla': { title: 'Spotlight: Madagascar Vanilla', date: 'January 8, 2026', author: 'SweetTooth Team', content: '<p>An exploration of our premium Madagascar vanilla beans and why they make the perfect base for our classic flavors.</p><h2>The Vanilla Standard</h2><p>Vanilla is the most popular ice cream flavor worldwide, and for good reason. Quality vanilla gelato showcases the complex flavor profile of real vanilla beans. It also serves as the foundation for many other flavors, making vanilla quality crucial to overall product excellence.</p><h2>Why Madagascar</h2><p>Madagascar produces approximately eighty percent of the world vanilla supply. The island unique climate and soil conditions create vanilla beans with exceptionally high vanillin content. This results in the classic sweet, creamy vanilla flavor that consumers recognize and love.</p><h2>Our Sourcing Partners</h2><p>We work directly with vanilla farming cooperatives in Madagascar. These partnerships ensure fair compensation for farmers and give us visibility into the entire supply chain. We can trace every vanilla bean back to the specific farm where it was grown.</p><h2>Processing and Quality</h2><p>After harvest, vanilla beans undergo a months long curing process that develops their characteristic flavor and aroma. We use only Grade A vanilla beans, which have higher moisture content and more intense flavor than extract grade beans. Our gelato contains visible vanilla bean specks, proof of real vanilla usage.</p><h2>Vanilla in Our Flavors</h2><p>Our Madagascar Vanilla stands alone as a customer favorite. It also serves as the base for our Chocolate Chip and Strawberry Cream flavors. The quality of our vanilla elevates every flavor that contains it. We believe that even customers who do not typically choose vanilla will appreciate the difference that premium vanilla makes.</p>' }
+        };
+
+        function getPostId() {
+            var path = window.location.pathname;
+            var match = path.match(/blog-post-(.+)\.html$/);
+            if (match) return match[1];
+            return null;
+        }
+
+        function loadBlogPost() {
+            var postId = getPostId();
+            if (!postId || !blogPosts[postId]) {
+                document.querySelector('.blog-post-container').innerHTML = '<div style="text-align: center; padding: 4rem;"><h2 class="dealerplate" style="color: var(--color-pink);">Post Not Found</h2><p class="poppins-normal">Sorry, the blog post you are looking for does not exist.</p><a href="blog.html" class="back-link" style="display: inline-block; margin-top: 1rem;">Back to Blog</a></div>';
+                return;
+            }
+            var post = blogPosts[postId];
+            document.getElementById('page-title').textContent = post.title + ' - SweetTooth Gelato';
+            document.getElementById('blog-title').textContent = post.title;
+            document.getElementById('blog-date').textContent = 'Posted on ' + post.date;
+            document.getElementById('blog-author').textContent = 'By ' + post.author;
+            document.getElementById('blog-content').innerHTML = post.content;
+        }
+
+        function toggleCartDropdown() { var dropdown = document.getElementById('cart-dropdown'); if (dropdown) dropdown.classList.toggle('active'); }
+        document.addEventListener('click', function(event) { var cartIcon = document.querySelector('.cart-icon'); var dropdown = document.getElementById('cart-dropdown'); if (cartIcon && !cartIcon.contains(event.target) && dropdown && dropdown.classList.contains('active')) { dropdown.classList.remove('active'); } });
+        document.addEventListener('DOMContentLoaded', loadBlogPost);
+    })();
+    </script>
+</body>
+</html>
+

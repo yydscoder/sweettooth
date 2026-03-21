@@ -906,41 +906,7 @@
     </footer>
 
     <script>
-        // Cart functionality
-        let cart = [];
-
-        // Initialize cart from localStorage
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedCart = localStorage.getItem('cart');
-            if (savedCart) {
-                cart = JSON.parse(savedCart);
-            }
-            updateCart();
-        });
-
-        function addToCart(productName, price) {
-            // Check if product is already in cart
-            const existingItem = cart.find(item => item.name === productName);
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    name: productName,
-                    price: parseFloat(price),
-                    quantity: 1
-                });
-            }
-
-            // Save to localStorage
-            localStorage.setItem('cart', JSON.stringify(cart));
-            
-            // Update cart display
-            updateCart();
-            
-            // Show notification
-            showNotification(`${productName} added to cart!`);
-        }
+        // Cart functionality is now handled by cart.js
 
         function showNotification(message) {
             const notification = document.getElementById('notification');
@@ -954,48 +920,6 @@
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
-        }
-
-        function updateCart() {
-            const totalCount = cart.reduce((total, item) => total + item.quantity, 0);
-            const cartCountElement = document.getElementById('cart-count');
-            if (cartCountElement) {
-                cartCountElement.textContent = totalCount;
-            }
-
-            const cartItemsContainer = document.getElementById('cart-items-container');
-            const cartItemsFilled = document.getElementById('cart-items-filled');
-            const cartItemsList = document.getElementById('cart-items-list');
-
-            if (cart.length === 0) {
-                if (cartItemsContainer) cartItemsContainer.style.display = 'block';
-                if (cartItemsFilled) cartItemsFilled.style.display = 'none';
-            } else {
-                if (cartItemsContainer) cartItemsContainer.style.display = 'none';
-                if (cartItemsFilled) cartItemsFilled.style.display = 'block';
-
-                let cartHTML = '';
-                let total = 0;
-
-                cart.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    total += itemTotal;
-
-                    cartHTML += `
-                        <div class="cart-item">
-                            <div>
-                                <span class="poppins-bold">${item.name}</span><br>
-                                <span class="poppins-normal">RM${item.price} x ${item.quantity}</span>
-                            </div>
-                            <div class="poppins-bold">RM${itemTotal.toFixed(2)}</div>
-                        </div>
-                    `;
-                });
-
-                if (cartItemsList) cartItemsList.innerHTML = cartHTML;
-                const cartTotalElement = document.getElementById('cart-total');
-                if (cartTotalElement) cartTotalElement.textContent = total.toFixed(2);
-            }
         }
 
         function toggleCartDropdown() {
@@ -1118,6 +1042,6 @@
             });
         });
     </script>
-    <script src="assets/js/cart.js"></script>
+    <script src="assets/js/cart.js?v=2"></script>
 </body>
 </html>

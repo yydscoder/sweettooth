@@ -1,7 +1,7 @@
 /**
  * SweetTooth Gelato - Environment Configuration Template
  *
- * ⚠️ SECURITY NOTICE:
+ * SECURITY NOTICE:
  * This template file is for reference ONLY. Do NOT fill in real API keys here.
  * 
  * To configure sensitive values securely:

@@ -1,28 +1,117 @@
+console.log('[Cart.js] LOADED');
 // SweetTooth Gelato - Shared Cart
 // localStorage-persistent, works on all pages.
 // Fixed: race condition, price manipulation, floating point, XSS, cross-tab sync, notifications
 
-// Trusted product catalog - source of truth for prices (in cents to avoid floating point issues)
-var PRODUCT_CATALOG = {
-    'Mangosteen Sorbet': 1500,
-    'Madagascar Vanilla': 1500,
-    'Seasonal Fruit Medley': 1500,
-    'Shun Special': 1500,
-    'Belgian Chocolate': 1500,
-    'Japanese Matcha': 1500,
-    'Premium Durian': 1800,
-    'Salted Caramel': 1600,
-    'Strawberry Cream': 1500,
-    'Pistachio': 1700,
-    'Tiramisu': 1600,
-    'Lemon Sorbet': 1400,
-    'Chocolate Chip': 1500,
-    'Coconut Sorbet': 1400,
-    'Hazelnut': 1700,
-    'Raspberry Sorbet': 1500,
-    'Vanilla Bean': 1500,
-    'Dark Chocolate': 1600
+// Default product catalog (in cents to avoid floating point issues)
+// This is merged with CMS products if available
+// Images are stored locally in Images/ folder with exact file names
+var DEFAULT_PRODUCT_CATALOG = {
+    // Original 18 flavors
+    'Mangosteen Sorbet': { price: 1500, image: 'Images/MangosteenSorbet.png' },
+    'Madagascar Vanilla': { price: 1500, image: 'Images/MadagascarVanilla.png' },
+    'Seasonal Fruit Medley': { price: 1500, image: 'Images/SeasonalFruitMedley.png' },
+    'Shun Special': { price: 1600, image: 'Images/ShunSpecial.png' },
+    'Belgian Chocolate': { price: 1600, image: 'Images/BelgianChocolate.png' },
+    'Japanese Matcha': { price: 1600, image: 'Images/JapaneseMatcha.png' },
+    'Premium Durian': { price: 1800, image: 'Images/PremiumDurian.png' },
+    'Salted Caramel': { price: 1600, image: 'Images/SaltedCaramel.png' },
+    'Strawberry Cream': { price: 1500, image: 'Images/StrawberryCream.png' },
+    'Pistachio': { price: 1700, image: 'Images/Pistachio.png' },
+    'Tiramisu': { price: 1600, image: 'Images/Tiramisu.png' },
+    'Lemon Sorbet': { price: 1400, image: 'Images/LemonSorbet.png' },
+    'Chocolate Chip': { price: 1500, image: 'Images/ChocolateChip.png' },
+    'Coconut Sorbet': { price: 1400, image: 'Images/CoconutSorbet.png' },
+    'Hazelnut': { price: 1700, image: 'Images/Hazelnut.png' },
+    'Raspberry Sorbet': { price: 1500, image: 'Images/RaspberrySorbet.png' },
+    'Vanilla Bean': { price: 1500, image: 'Images/VanillaBean.png' },
+    'Dark Chocolate': { price: 1600, image: 'Images/DarkChocolate.png' },
+    // Additional 32 flavors
+    'Almond Crunch': { price: 1600, image: 'Images/AlmondCrunch.png' },
+    'Blueberry Cheesecake': { price: 1700, image: 'Images/BlueberryCheesecake.png' },
+    'Cookies and Cream': { price: 1600, image: 'Images/CookiesAndCream.png' },
+    'Dragon Fruit': { price: 1800, image: 'Images/DragonFruit.png' },
+    'Earl Grey Tea': { price: 1500, image: 'Images/EarlGreyTea.png' },
+    'Fig and Honey': { price: 1700, image: 'Images/FigAndHoney.png' },
+    'Ginger Spice': { price: 1500, image: 'Images/GingerSpice.png' },
+    'Horchata': { price: 1500, image: 'Images/Horchata.png' },
+    'Irish Coffee': { price: 1700, image: 'Images/IrishCoffee.png' },
+    'Jackfruit Delight': { price: 1600, image: 'Images/JackfruitDelight.png' },
+    'Kiwi Lime': { price: 1500, image: 'Images/KiwiLime.png' },
+    'Lavender Honey': { price: 1700, image: 'Images/LavenderHoney.png' },
+    'Mango Sticky Rice': { price: 1600, image: 'Images/MangoStickyRice.png' },
+    'Nutella Swirl': { price: 1700, image: 'Images/NutellaSwirl.png' },
+    'Orange Blossom': { price: 1500, image: 'Images/OrangeBlossom.png' },
+    'Peach Melba': { price: 1600, image: 'Images/PeachMelba.png' },
+    'Quince Paste': { price: 1600, image: 'Images/QuincePaste.png' },
+    'Rocky Road': { price: 1700, image: 'Images/RockyRoad.png' },
+    'Saffron Rose': { price: 1900, image: 'Images/SaffronRose.png' },
+    'Thai Tea': { price: 1500, image: 'Images/ThaiTea.png' },
+    'Ube Purple Yam': { price: 1700, image: 'Images/UbePurpleYam.png' },
+    'Valrhona Chocolate': { price: 1800, image: 'Images/ValrhonaChocolate.png' },
+    'Watermelon Mint': { price: 1400, image: 'Images/WatermelonMint.png' },
+    'Yuzu Citrus': { price: 1700, image: 'Images/YuzuCitrus.png' },
+    'Zabaione': { price: 1600, image: 'Images/Zabaione.png' },
+    'Apple Pie': { price: 1600, image: 'Images/ApplePie.png' },
+    'Banana Foster': { price: 1600, image: 'Images/BananaFoster.png' },
+    'Cherry Garcia': { price: 1700, image: 'Images/CherryGarcia.png' },
+    'Date Walnut': { price: 1600, image: 'Images/DateWalnut.png' },
+    'Espresso Fudge': { price: 1600, image: 'Images/EspressoFudge.png' },
+    'Butter Pecan': { price: 1700, image: 'Images/ButterPecan.png' },
+    'Black Sesame': { price: 1600, image: 'Images/BlackSesame.png' }
 };
+
+// Product catalog - merged from default and CMS
+var PRODUCT_CATALOG = {};
+var PRODUCT_IMAGES = {};
+
+// Initialize product catalog from CMS if available
+function initProductCatalog() {
+    // Start with default catalog
+    for (var key in DEFAULT_PRODUCT_CATALOG) {
+        var item = DEFAULT_PRODUCT_CATALOG[key];
+        if (typeof item === 'object' && item.price) {
+            PRODUCT_CATALOG[key] = item.price;
+            if (item.image) {
+                PRODUCT_IMAGES[key] = item.image;
+            }
+        } else {
+            PRODUCT_CATALOG[key] = item;
+        }
+    }
+
+    // Merge with CMS products if available
+    if (window.SweetToothConfig && typeof SweetToothConfig.getCMSData === 'function') {
+        try {
+            var cmsData = SweetToothConfig.getCMSData();
+            if (cmsData && cmsData.products) {
+                for (var name in cmsData.products) {
+                    var product = cmsData.products[name];
+                    if (product && product.price) {
+                        PRODUCT_CATALOG[name] = product.price;
+                        if (product.image) {
+                            PRODUCT_IMAGES[name] = product.image;
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('[Cart] Failed to load CMS products:', e);
+        }
+    }
+}
+
+// Initialize catalog immediately
+initProductCatalog();
+
+// Debug logging (disabled by default for production)
+var CART_DEBUG = false;
+function cartLog() {
+    if (!CART_DEBUG || !window.console || !console.log) return;
+    console.log.apply(console, arguments);
+}
+cartLog('[Cart] PRODUCT_IMAGES loaded:', Object.keys(PRODUCT_IMAGES).length, 'images');
+cartLog('[Cart] First 5 images:', Object.keys(PRODUCT_IMAGES).slice(0, 5).map(function(k) { return k + ': ' + PRODUCT_IMAGES[k]; }));
 
 // Default price if product not in catalog (in cents)
 var DEFAULT_PRICE_CENTS = 1500;
@@ -68,7 +157,10 @@ function loadCart() {
                     return {
                         product: item.product,
                         priceCents: getTrustedPrice(item.product),
-                        quantity: Math.max(1, item.quantity || 1)
+                        quantity: (function(qty) {
+                            var parsed = parseInt(qty, 10);
+                            return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+                        })(item.quantity)
                     };
                 });
             }
@@ -98,7 +190,7 @@ function addToCart(productName, priceHint) {
         return;
     }
 
-    // Get trusted price - ignore the priceHint from DOM (prevents manipulation)
+    // Get trusted price - ignore the priceHint from DOM (prevents manipulation from dev tools or anyone unauthorized/scriptkiddies)
     var trustedPriceCents = getTrustedPrice(productName);
 
     var found = false;
@@ -138,7 +230,7 @@ function removeFromCart(productName) {
     }
 }
 
-// Update cart quantity
+// Update cart quantity in increments of 1, remove if the quantity drops to 0 or lower 
 function updateCartQuantity(productName, delta) {
     for (var i = 0; i < cart.length; i++) {
         if (cart[i].product === productName) {
@@ -233,11 +325,27 @@ function showCartNotification(message) {
 // Toggle cart dropdown
 function toggleCartDropdown() {
     var d = document.getElementById('cart-dropdown');
-    if (d) d.classList.toggle('active');
+    if (!d) return;
+    d.classList.toggle('active');
+
+    var icon = document.querySelector('.cart-icon');
+    if (icon) {
+        icon.setAttribute('aria-expanded', d.classList.contains('active') ? 'true' : 'false');
+    }
 }
 
+// Close cart dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    var cartIcon = document.querySelector('.cart-icon');
+    var dropdown = document.getElementById('cart-dropdown');
+    
+    if (cartIcon && dropdown && !cartIcon.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.classList.remove('active');
+    }
+});
+
 // Validate cart and proceed to checkout
-function proceedToCheckout() {
+function proceedToCheckout() { console.log('[Cart] proceedToCheckout called');
     if (!cart || cart.length === 0) {
         showCartNotification('Your cart is empty!');
         return;
@@ -307,6 +415,18 @@ function cartInit() {
     document.addEventListener('click', function(e) {
         var btn = e.target;
 
+        // Handle cart icon toggle (supports pages without inline onclick)
+        // IMPORTANT: Only toggle if click is on cart-icon itself, NOT inside the dropdown
+        var cartToggle = btn.closest ? btn.closest('.cart-icon') : null;
+        var insideDropdown = btn.closest ? btn.closest('.cart-dropdown') : null;
+        
+        if (cartToggle && !insideDropdown) {
+            e.stopPropagation();
+            e.preventDefault();
+            toggleCartDropdown();
+            return;
+        }
+
         // Handle add-to-cart buttons
         if (!btn.classList.contains('add-to-cart-btn') && btn.parentElement && btn.parentElement.classList.contains('add-to-cart-btn')) {
             btn = btn.parentElement;
@@ -349,11 +469,100 @@ function cartInit() {
         var cartIcon = document.querySelector('.cart-icon');
         var dropdown = document.getElementById('cart-dropdown');
         if (dropdown && dropdown.classList.contains('active')) {
-            if (!cartIcon || !cartIcon.contains(e.target)) {
+            if ((!cartIcon || !cartIcon.contains(e.target)) && !dropdown.contains(e.target)) {
                 dropdown.classList.remove('active');
             }
         }
     }, true); // useCapture=true so we intercept BEFORE the card onclick fires
+}
+
+// Get product image from CMS
+function getProductImage(productName) {
+    return PRODUCT_IMAGES[productName] || null;
+}
+
+// Get all products from catalog
+function getAllProducts() {
+    var products = [];
+    for (var name in PRODUCT_CATALOG) {
+        products.push({
+            name: name,
+            price: PRODUCT_CATALOG[name],
+            priceRM: (PRODUCT_CATALOG[name] / 100).toFixed(2),
+            image: PRODUCT_IMAGES[name] || null
+        });
+    }
+    return products;
+}
+
+// Convert product name to URL slug
+function nameToSlug(name) {
+    return name.toLowerCase().replace(/\s+/g, '-').replace(/'/g, '');
+}
+
+// Render products to a container element
+function renderProducts(containerId, options) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+
+    var products = getAllProducts();
+    cartLog('[Cart] renderProducts: Rendering', products.length, 'products');
+    cartLog('[Cart] First 3 products:', products.slice(0, 3).map(function(p) { return p.name + ' -> ' + p.image; }));
+    
+    var maxProducts = options && options.limit ? Math.min(options.limit, products.length) : products.length;
+
+    container.innerHTML = '';
+
+    for (var i = 0; i < maxProducts; i++) {
+        var product = products[i];
+        var card = document.createElement('div');
+        card.className = 'product-card';
+
+        var slug = nameToSlug(product.name);
+        var productUrl = 'product-detail-' + slug + '.html';
+
+        var imageHtml = '';
+        if (product.image) {
+            // Check if lazy loading is enabled in admin dashboard
+            var lazyLoadEnabled = true;
+            try {
+                var stored = localStorage.getItem('sweettooth_optimization_config');
+                if (stored) {
+                    var optConfig = JSON.parse(stored);
+                    lazyLoadEnabled = optConfig.lazyLoadEnabled !== false;
+                }
+            } catch (e) { console.warn('[Cart] Could not check lazy load setting:', e); }
+            
+            if (lazyLoadEnabled) {
+                // Use lazy loading - image won't load until scrolled into view
+                imageHtml = '<a href="' + productUrl + '"><img data-src="' + product.image + '" alt="' + sanitizeHTML(product.name) + '" style="width: 100%; height: 200px; object-fit: cover;" class="lazy-image"></a>';
+            } else {
+                // Load image immediately (lazy load disabled)
+                imageHtml = '<a href="' + productUrl + '"><img src="' + product.image + '" alt="' + sanitizeHTML(product.name) + '" style="width: 100%; height: 200px; object-fit: cover;"></a>';
+            }
+        } else {
+            imageHtml = '<a href="' + productUrl + '" style="text-decoration: none;"><div class="product-image"><div class="product-image-placeholder">[' + sanitizeHTML(product.name) + ']</div></div></a>';
+        }
+
+        card.innerHTML =
+            imageHtml +
+            '<div class="product-info">' +
+                '<h3 class="dealerplate"><a href="' + productUrl + '" style="text-decoration: none; color: inherit;">' + sanitizeHTML(product.name) + '</a></h3>' +
+                '<div class="product-price poppins-bold">RM ' + product.priceRM + ' per 100ml</div>' +
+                '<button class="add-to-cart-btn poppins-bold" data-product="' + sanitizeHTML(product.name) + '" data-price="' + product.priceRM + '">Add to Cart</button>' +
+            '</div>';
+
+        container.appendChild(card);
+    }
+    
+    cartLog('[Cart] Rendered ' + maxProducts + ' products with lazy loading images');
+    
+    // Reinitialize lazy loader to pick up new images
+    if (window.SweetToothLazyLoad) {
+        setTimeout(function() {
+            window.SweetToothLazyLoad.init();
+        }, 100);
+    }
 }
 
 // Initialize when DOM is ready
@@ -362,3 +571,16 @@ if (document.readyState === 'loading') {
 } else {
     cartInit();
 }
+
+// Export functions for external use
+window.SweetToothCart = {
+    addToCart: addToCart,
+    removeFromCart: removeFromCart,
+    updateCartQuantity: updateCartQuantity,
+    getProductImage: getProductImage,
+    getAllProducts: getAllProducts,
+    renderProducts: renderProducts,
+    getCart: function() { return cart; },
+    centsToRM: centsToRM
+};
+

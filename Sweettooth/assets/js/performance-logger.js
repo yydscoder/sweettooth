@@ -1,213 +1,229 @@
 /**
- * Performance Logger for SweetTooth Gelato
- * Tracks and logs performance metrics before/after optimizations
+ * SweetTooth Gelato - Performance Logger
+ * Tracks and logs performance metrics
  */
 
 (function() {
     'use strict';
 
-    // Logger configuration
     var config = {
         enabled: true,
-        logPrefix: '[SweetTooth Perf]',
-        storageKey: 'sweettooth_perf_logs'
+        logToConsole: true,
+        storageKey: 'sweettooth_perf_metrics'
     };
 
-    // Performance metrics storage
     var metrics = {
-        startTime: null,
-        domContentLoaded: null,
-        windowLoaded: null,
-        resourceTimings: [],
-        customTimings: {},
-        memoryUsage: null
+        pageLoadTime: 0,
+        domContentLoaded: 0,
+        firstContentfulPaint: 0,
+        timeToInteractive: 0,
+        resourceCount: 0,
+        totalResourceSize: 0,
+        imageCount: 0,
+        lazyLoadedImages: 0
     };
 
-    // Initialize logger
+    var startTime = performance.now();
+
+    // Initialize performance tracking
     function init() {
-        if (!config.enabled) return;
+        if (!config.enabled) {
+            console.log('[SweetTooth Perf] Performance logging disabled');
+            return;
+        }
 
-        metrics.startTime = performance.now();
+        console.log('[SweetTooth Perf] Performance logger initialized');
 
-        // Track DOM events
+        // Track DOMContentLoaded
         document.addEventListener('DOMContentLoaded', function() {
-            metrics.domContentLoaded = performance.now();
-            logMetric('DOMContentLoaded', metrics.domContentLoaded);
+            metrics.domContentLoaded = performance.now() - startTime;
+            log('DOMContentLoaded', metrics.domContentLoaded.toFixed(2) + ' ms');
         });
 
+        // Track page load
         window.addEventListener('load', function() {
-            metrics.windowLoaded = performance.now();
-            logMetric('Window Load', metrics.windowLoaded);
-            logFullReport();
+            metrics.pageLoadTime = performance.now() - startTime;
+            log('Page Load', metrics.pageLoadTime.toFixed(2) + ' ms');
+            calculateResourceMetrics();
+            saveMetrics();
+            
+            // Output comprehensive performance report to console
+            setTimeout(function() {
+                console.log('');
+                console.log('===============================================================');
+                console.log('     SweetTooth Performance Report');
+                console.log('===============================================================');
+                console.log('  Page Load Time:        ' + metrics.pageLoadTime.toFixed(2) + ' ms');
+                console.log('  DOM Content Loaded:    ' + metrics.domContentLoaded.toFixed(2) + ' ms');
+                console.log('  First Contentful Paint:' + metrics.firstContentfulPaint.toFixed(2) + ' ms');
+                console.log('  Resources Loaded:      ' + metrics.resourceCount + ' files');
+                console.log('  Total Data Transfer:   ' + formatBytes(metrics.totalResourceSize));
+                console.log('  Images:                ' + metrics.imageCount);
+                console.log('===============================================================');
+                console.log('  Tip: Open admin.html -> Performance tab to see live metrics');
+                console.log('===============================================================');
+                console.log('');
+            }, 500);
         });
 
-        // Collect resource timings
+        // Track First Contentful Paint using Performance API
         if (window.performance && performance.getEntriesByType) {
-            metrics.resourceTimings = performance.getEntriesByType('resource');
-        }
-
-        // Track memory usage (Chrome only)
-        if (performance.memory) {
-            metrics.memoryUsage = {
-                usedJSHeapSize: performance.memory.usedJSHeapSize,
-                totalJSHeapSize: performance.memory.totalJSHeapSize
-            };
-        }
-
-        console.log(config.logPrefix + ' Performance logger initialized');
-    }
-
-    // Log individual metric
-    function logMetric(name, value) {
-        console.log(config.logPrefix + ' ' + name + ': ' + value.toFixed(2) + 'ms');
-    }
-
-    // Mark custom timing point
-    function mark(name) {
-        if (!config.enabled) return;
-        metrics.customTimings[name] = performance.now();
-        console.log(config.logPrefix + ' Mark: ' + name);
-    }
-
-    // Measure between two marks
-    function measure(startMark, endMark, name) {
-        if (!config.enabled) return null;
-        var start = metrics.customTimings[startMark];
-        var end = metrics.customTimings[endMark] || performance.now();
-        if (start === undefined) {
-            console.warn(config.logPrefix + ' Start mark not found: ' + startMark);
-            return null;
-        }
-        var duration = end - start;
-        logMetric(name || (startMark + ' to ' + endMark), duration);
-        return duration;
-    }
-
-    // Get resource loading summary
-    function getResourceSummary() {
-        if (!metrics.resourceTimings.length) return 'No resource timings available';
-
-        var summary = {
-            totalResources: metrics.resourceTimings.length,
-            totalSize: 0,
-            byType: {}
-        };
-
-        metrics.resourceTimings.forEach(function(resource) {
-            var size = resource.transferSize || 0;
-            summary.totalSize += size;
-
-            var type = resource.initiatorType || 'unknown';
-            if (!summary.byType[type]) {
-                summary.byType[type] = { count: 0, size: 0 };
-            }
-            summary.byType[type].count++;
-            summary.byType[type].size += size;
-        });
-
-        return summary;
-    }
-
-    // Log full performance report
-    function logFullReport() {
-        if (!config.enabled) return;
-
-        console.group(config.logPrefix + ' === PERFORMANCE REPORT ===');
-
-        // Page load times
-        console.log(config.logPrefix + ' Page Load Metrics:');
-        console.log(config.logPrefix + '   - Time to Interactive: ' + metrics.domContentLoaded.toFixed(2) + 'ms');
-        console.log(config.logPrefix + '   - Full Page Load: ' + metrics.windowLoaded.toFixed(2) + 'ms');
-
-        // Resource summary
-        var resourceSummary = getResourceSummary();
-        console.log(config.logPrefix + ' Resource Summary:');
-        if (typeof resourceSummary === 'object') {
-            console.log(config.logPrefix + '   - Total Resources: ' + resourceSummary.totalResources);
-            console.log(config.logPrefix + '   - Total Transfer Size: ' + (resourceSummary.totalSize / 1024).toFixed(2) + ' KB');
-
-            for (var type in resourceSummary.byType) {
-                if (resourceSummary.byType.hasOwnProperty(type)) {
-                    var item = resourceSummary.byType[type];
-                    console.log(config.logPrefix + '   - ' + type + ': ' + item.count + ' files, ' + (item.size / 1024).toFixed(2) + ' KB');
+            var paintEntries = performance.getEntriesByType('paint');
+            paintEntries.forEach(function(entry) {
+                if (entry.name === 'first-contentful-paint') {
+                    metrics.firstContentfulPaint = entry.startTime;
+                    log('First Contentful Paint', entry.startTime.toFixed(2) + ' ms');
                 }
-            }
+            });
         }
 
-        // Memory usage
-        if (metrics.memoryUsage) {
-            console.log(config.logPrefix + ' Memory Usage:');
-            console.log(config.logPrefix + '   - JS Heap: ' + (metrics.memoryUsage.usedJSHeapSize / 1024 / 1024).toFixed(2) + ' MB');
-        }
-
-        // Navigation timing
-        if (window.performance && performance.timing) {
-            var timing = performance.timing;
-            console.log(config.logPrefix + ' Navigation Timing:');
-            console.log(config.logPrefix + '   - DNS Lookup: ' + (timing.domainLookupEnd - timing.domainLookupStart) + 'ms');
-            console.log(config.logPrefix + '   - TCP Connection: ' + (timing.connectEnd - timing.connectStart) + 'ms');
-            console.log(config.logPrefix + '   - Time to First Byte: ' + (timing.responseStart - timing.requestStart) + 'ms');
-            console.log(config.logPrefix + '   - DOM Processing: ' + (timing.domComplete - timing.domLoading) + 'ms');
-        }
-
-        console.groupEnd();
-
-        // Store logs for later analysis
-        storeLogs();
+        // Track resources
+        trackResources();
     }
 
-    // Store logs in localStorage
-    function storeLogs() {
+    // Track resource loading
+    function trackResources() {
+        if (window.performance && performance.getEntriesByType) {
+            var resources = performance.getEntriesByType('resource');
+            metrics.resourceCount = resources.length;
+
+            resources.forEach(function(resource) {
+                if (resource.transferSize) {
+                    metrics.totalResourceSize += resource.transferSize;
+                }
+                if (resource.initiatorType === 'img') {
+                    metrics.imageCount++;
+                }
+            });
+
+            log('Resources loaded', metrics.resourceCount + ' files, ' + formatBytes(metrics.totalResourceSize));
+        }
+    }
+
+    // Calculate resource metrics after load
+    function calculateResourceMetrics() {
+        metrics.timeToInteractive = performance.now() - startTime;
+        log('Time to Interactive', metrics.timeToInteractive.toFixed(2) + ' ms');
+    }
+
+    // Log performance message
+    function log(label, value) {
+        if (!config.enabled || !config.logToConsole) return;
+
+        var timestamp = new Date().toLocaleTimeString();
+        console.log('[SweetTooth Perf] [' + timestamp + '] ' + label + ': ' + value);
+    }
+
+    // Format bytes to human readable
+    function formatBytes(bytes) {
+        if (bytes >= 1048576) {
+            return (bytes / 1048576).toFixed(2) + ' MB';
+        }
+        if (bytes >= 1024) {
+            return (bytes / 1024).toFixed(2) + ' KB';
+        }
+        return bytes + ' bytes';
+    }
+
+    // Save metrics to localStorage
+    function saveMetrics() {
         try {
-            var logs = {
+            var data = {
+                metrics: metrics,
                 timestamp: new Date().toISOString(),
-                domContentLoaded: metrics.domContentLoaded,
-                windowLoaded: metrics.windowLoaded,
-                resourceCount: metrics.resourceTimings.length,
-                customTimings: metrics.customTimings
+                url: window.location.href
             };
 
-            var existingLogs = JSON.parse(localStorage.getItem(config.storageKey) || '[]');
-            existingLogs.push(logs);
+            var existing = localStorage.getItem(config.storageKey);
+            var history = existing ? JSON.parse(existing) : [];
+            history.push(data);
 
-            // Keep only last 10 logs
-            if (existingLogs.length > 10) {
-                existingLogs = existingLogs.slice(-10);
+            // Keep only last 100 entries
+            if (history.length > 100) {
+                history = history.slice(-100);
             }
 
-            localStorage.setItem(config.storageKey, JSON.stringify(existingLogs));
+            localStorage.setItem(config.storageKey, JSON.stringify(history));
+            log('Metrics saved to storage', '');
         } catch (e) {
-            console.warn(config.logPrefix + ' Failed to store logs:', e);
+            console.warn('[SweetTooth Perf] Failed to save metrics:', e);
         }
     }
 
-    // Get optimization comparison data
-    function getComparisonData() {
+    // Get metrics from storage
+    function getHistory() {
         try {
-            var logs = JSON.parse(localStorage.getItem(config.storageKey) || '[]');
-            return logs;
+            var existing = localStorage.getItem(config.storageKey);
+            return existing ? JSON.parse(existing) : [];
         } catch (e) {
+            console.warn('[SweetTooth Perf] Failed to get history:', e);
             return [];
         }
     }
 
-    // Clear stored logs
-    function clearLogs() {
-        localStorage.removeItem(config.storageKey);
-        console.log(config.logPrefix + ' Logs cleared');
+    // Get current metrics
+    function getMetrics() {
+        return Object.assign({}, metrics);
     }
 
-    // Expose API globally
+    // Get performance report
+    function getReport() {
+        var history = getHistory();
+        var pageViews = history.length;
+
+        // Calculate averages
+        var avgLoadTime = 0;
+        var avgFCP = 0;
+        if (history.length > 0) {
+            var totalLoad = 0;
+            var totalFCP = 0;
+            history.forEach(function(entry) {
+                if (entry.metrics) {
+                    totalLoad += entry.metrics.pageLoadTime || 0;
+                    totalFCP += entry.metrics.firstContentfulPaint || 0;
+                }
+            });
+            avgLoadTime = totalLoad / history.length;
+            avgFCP = totalFCP / history.length;
+        }
+
+        return {
+            pageViews: pageViews,
+            averageLoadTime: avgLoadTime.toFixed(2),
+            averageFCP: avgFCP.toFixed(2),
+            currentMetrics: metrics
+        };
+    }
+
+    // Clear metrics
+    function clearMetrics() {
+        localStorage.removeItem(config.storageKey);
+        console.log('[SweetTooth Perf] Metrics cleared');
+    }
+
+    // Enable/disable logging
+    function setEnabled(enabled) {
+        config.enabled = enabled;
+        console.log('[SweetTooth Perf] Performance logging ' + (enabled ? 'enabled' : 'disabled'));
+    }
+
+    // Expose API
     window.SweetToothPerf = {
         init: init,
-        mark: mark,
-        measure: measure,
-        logReport: logFullReport,
-        getComparisonData: getComparisonData,
-        clearLogs: clearLogs,
-        getConfig: function() { return config; }
+        log: log,
+        getMetrics: getMetrics,
+        getHistory: getHistory,
+        getReport: getReport,
+        clearMetrics: clearMetrics,
+        setEnabled: setEnabled,
+        isEnabled: function() { return config.enabled; },
+        formatBytes: formatBytes
     };
 
     // Auto-initialize
-    init();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();

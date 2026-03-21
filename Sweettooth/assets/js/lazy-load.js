@@ -1,214 +1,237 @@
 /**
- * Lazy Loading Module for SweetTooth Gelato
- * Implements image lazy loading using Intersection Observer API
- * with performance logging for before/after comparison
+ * SweetTooth Gelato - Lazy Load Images
+ * Loads images only when they enter the viewport using Intersection Observer API
  */
 
 (function() {
     'use strict';
 
-    // Configuration
+    // Load saved configuration from admin dashboard
+    var savedConfig = {};
+    var configLoaded = false;
+    
+    try {
+        // Try optimization manager key first
+        var stored = localStorage.getItem('sweettooth_optimization_config');
+        if (stored) {
+            savedConfig = JSON.parse(stored);
+            configLoaded = true;
+            console.log('[SweetTooth LazyLoad] Loaded from optimization_config:', savedConfig);
+        }
+        
+        // Also check secure-config key
+        if (!configLoaded) {
+            stored = localStorage.getItem('sweettooth_config');
+            if (stored) {
+                var fullConfig = JSON.parse(stored);
+                if (fullConfig && fullConfig.PERFORMANCE_SETTINGS) {
+                    savedConfig = fullConfig.PERFORMANCE_SETTINGS;
+                    configLoaded = true;
+                    console.log('[SweetTooth LazyLoad] Loaded from secure_config:', savedConfig);
+                }
+            }
+        }
+    } catch (e) {
+        console.warn('[SweetTooth LazyLoad] Could not load config:', e);
+    }
+
+    // Configuration - reads from admin dashboard settings
     var config = {
-        rootMargin: '50px', // Start loading 50px before element enters viewport
-        threshold: 0.01,    // Trigger when 1% of image is visible
-        placeholderClass: 'lazy-placeholder',
-        loadedClass: 'lazy-loaded',
-        imageSelector: 'img[data-src]',
-        loggingEnabled: true,
-        logPrefix: '[SweetTooth LazyLoad]'
+        enabled: configLoaded ? (savedConfig.lazyLoadEnabled !== false) : true,
+        rootMargin: '50px',
+        threshold: 0.01,
+        placeholderColor: '#FFDC9F',
+        fadeInDuration: 300
     };
 
-    // Metrics tracking
-    var metrics = {
-        totalImages: 0,
-        loadedImages: 0,
-        imagesSkipped: 0,
-        observerStartTime: null,
-        observerInitTime: null,
-        totalLoadTime: 0
-    };
+    console.log('[SweetTooth LazyLoad] Final config:', config);
+    console.log('[SweetTooth LazyLoad] Lazy load is:', config.enabled ? 'ENABLED' : 'DISABLED');
 
-    // Performance logging - Before optimization baseline
-    function logBeforeOptimization() {
-        if (!config.loggingEnabled) return;
-
-        var images = document.querySelectorAll('img:not([loading="lazy"])');
-        console.log(config.logPrefix + ' === BEFORE OPTIMIZATION BASELINE ===');
-        console.log(config.logPrefix + ' Total images on page: ' + images.length);
-        console.log(config.logPrefix + ' Images loading immediately (no lazy load): ' + images.length);
-        console.log(config.logPrefix + ' Estimated initial page weight: Calculating...');
-
-        var totalSize = 0;
-        images.forEach(function(img) {
-            var src = img.src || img.dataset.src;
-            if (src) {
-                // Estimate based on typical image sizes
-                totalSize += 150; // Assume average 150KB per image
-            }
-        });
-        console.log(config.logPrefix + ' Estimated initial image payload: ~' + totalSize + ' KB');
-        console.log(config.logPrefix + ' =========================================');
-    }
-
-    // Intersection Observer callback
-    function onIntersection(entries, observer) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                var img = entry.target;
-                loadImage(img);
-                observer.unobserve(img);
-            }
-        });
-    }
-
-    // Load a single image
-    function loadImage(img) {
-        var startTime = performance.now();
-        var src = img.dataset.src;
-
-        if (!src) return;
-
-        // Add placeholder class
-        img.classList.add(config.placeholderClass);
-
-        // Create new image to preload
-        var tempImg = new Image();
-        tempImg.onload = function() {
-            img.src = src;
-            img.classList.remove(config.placeholderClass);
-            img.classList.add(config.loadedClass);
-
-            var loadTime = performance.now() - startTime;
-            metrics.loadedImages++;
-            metrics.totalLoadTime += loadTime;
-
-            if (config.loggingEnabled) {
-                console.log(config.logPrefix + ' Image loaded: ' + src.substring(0, 50) + '... (' + loadTime.toFixed(2) + 'ms)');
-            }
-
-            // Dispatch custom event for other scripts
-            img.dispatchEvent(new CustomEvent('lazyloaded', {
-                bubbles: true,
-                detail: { loadTime: loadTime }
-            }));
-        };
-
-        tempImg.onerror = function() {
-            img.classList.remove(config.placeholderClass);
-            img.classList.add('lazy-error');
-            console.warn(config.logPrefix + ' Failed to load: ' + src);
-        };
-
-        tempImg.src = src;
-    }
+    // Track loaded images
+    var loadedImages = [];
+    var totalImages = 0;
+    var observer = null;
 
     // Initialize lazy loading
     function init() {
-        metrics.observerStartTime = performance.now();
-
-        // Log before optimization state
-        logBeforeOptimization();
-
-        // Check for Intersection Observer support
-        if (!('IntersectionObserver' in window)) {
-            console.warn(config.logPrefix + ' IntersectionObserver not supported, loading all images immediately');
-            // Fallback: load all images immediately
-            var images = document.querySelectorAll(config.imageSelector);
-            images.forEach(function(img) {
-                var src = img.dataset.src;
-                if (src) {
-                    img.src = src;
-                    metrics.loadedImages++;
-                }
-            });
-            metrics.imagesSkipped = 0;
+        if (!config.enabled) {
+            console.log('[SweetTooth LazyLoad] Disabled - loading all images immediately');
+            loadAllImages();
             return;
         }
 
-        // Create observer
-        var observer = new IntersectionObserver(onIntersection, {
+        console.log('[SweetTooth LazyLoad] Initialized with rootMargin:', config.rootMargin);
+
+        // Count total images
+        var images = document.querySelectorAll('img[data-src], img[data-lazy]');
+        totalImages = images.length;
+
+        // Create intersection observer
+        observer = new IntersectionObserver(onIntersection, {
             rootMargin: config.rootMargin,
             threshold: config.threshold
         });
 
-        // Find all lazy-load images
-        var images = document.querySelectorAll(config.imageSelector);
-        metrics.totalImages = images.length;
-
-        console.log(config.logPrefix + ' === LAZY LOADING INITIALIZED ===');
-        console.log(config.logPrefix + ' Found ' + metrics.totalImages + ' images to lazy-load');
-
-        // Start observing
+        // Observe all lazy-load images
         images.forEach(function(img) {
-            // Check if image is already in viewport
-            var rect = img.getBoundingClientRect();
-            var isInViewport = (
-                rect.top >= -config.rootMargin &&
-                rect.left >= -config.rootMargin &&
-                rect.bottom <= (window.innerHeight + parseInt(config.rootMargin)) &&
-                rect.right <= (window.innerWidth + parseInt(config.rootMargin))
-            );
-
-            if (isInViewport) {
-                // Load immediately if in viewport
-                loadImage(img);
-                metrics.imagesSkipped++; // Count as "skipped" lazy loading
-            } else {
-                // Otherwise observe
-                observer.observe(img);
-            }
+            observer.observe(img);
         });
 
-        metrics.observerInitTime = performance.now();
+        // Also handle background images
+        var lazyBackgrounds = document.querySelectorAll('[data-bg]');
+        lazyBackgrounds.forEach(function(el) {
+            observer.observe(el);
+        });
 
-        console.log(config.logPrefix + ' Observer initialized in ' + (metrics.observerInitTime - metrics.observerStartTime).toFixed(2) + 'ms');
-        console.log(config.logPrefix + ' Images in viewport (loaded immediately): ' + metrics.imagesSkipped);
-        console.log(config.logPrefix + ' Images deferred (lazy loaded): ' + (metrics.totalImages - metrics.imagesSkipped));
-        console.log(config.logPrefix + ' ======================================');
+        logStats();
     }
 
-    // Log after optimization results
-    function logAfterOptimization() {
-        if (!config.loggingEnabled) return;
-
-        setTimeout(function() {
-            console.log(config.logPrefix + ' === AFTER OPTIMIZATION RESULTS ===');
-            console.log(config.logPrefix + ' Total images: ' + metrics.totalImages);
-            console.log(config.logPrefix + ' Images loaded: ' + metrics.loadedImages);
-            console.log(config.logPrefix + ' Average load time: ' + (metrics.loadedImages > 0 ? (metrics.totalLoadTime / metrics.loadedImages).toFixed(2) : 0) + 'ms');
-            console.log(config.logPrefix + ' Total load time: ' + metrics.totalLoadTime.toFixed(2) + 'ms');
-
-            // Calculate savings
-            var deferredImages = metrics.totalImages - metrics.imagesSkipped;
-            var estimatedSavings = deferredImages * 150; // ~150KB per image
-            console.log(config.logPrefix + ' Images deferred: ' + deferredImages);
-            console.log(config.logPrefix + ' Estimated initial payload savings: ~' + estimatedSavings + ' KB');
-            console.log(config.logPrefix + ' ====================================');
-        }, 2000); // Wait 2 seconds for most images to load
-    }
-
-    // Manual trigger for loading specific image
-    function loadImageManual(img) {
-        if (img && img.dataset.src) {
-            loadImage(img);
+    // Intersection callback
+    function onIntersection(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                var target = entry.target;
+                loadLazyImage(target);
+                observer.unobserve(target);
+            }
+        });
+        
+        // Log when significant changes occur
+        if (loadedImages.length > 0 && loadedImages.length % 5 === 0) {
+            console.log('[SweetTooth LazyLoad] Progress: ' + loadedImages.length + '/' + totalImages + ' images loaded (' + Math.round((loadedImages.length / totalImages) * 100) + '%)');
         }
     }
 
-    // Expose API globally
+    // Load a lazy image
+    function loadLazyImage(img) {
+        var src = img.getAttribute('data-src') || img.getAttribute('data-lazy');
+        var bg = img.getAttribute('data-bg');
+
+        if (!src && !bg) return;
+
+        // Skip if already loaded
+        if (img.classList.contains('lazy-loaded')) return;
+
+        if (bg) {
+            // Handle background image
+            img.style.backgroundImage = 'url(' + bg + ')';
+            img.classList.add('lazy-loaded');
+            loadedImages.push(img);
+            console.log('[SweetTooth LazyLoad] Background loaded:', bg);
+        } else {
+            // Handle regular image
+            var originalSrc = img.src;
+
+            // Set placeholder
+            if (!img.src || img.src === window.location.href) {
+                img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="' + config.placeholderColor + '" width="400" height="300"/%3E%3C/svg%3E';
+            }
+
+            // Create new image to preload
+            var preloadImg = new Image();
+            preloadImg.onload = function() {
+                img.src = src;
+                img.classList.add('lazy-loaded');
+                img.style.opacity = '0';
+                setTimeout(function() {
+                    img.style.transition = 'opacity ' + config.fadeInDuration + 'ms ease';
+                    img.style.opacity = '1';
+                }, 10);
+                loadedImages.push(img);
+                console.log('[SweetTooth LazyLoad] Image loaded:', src);
+            };
+            preloadImg.onerror = function() {
+                console.warn('[SweetTooth LazyLoad] Failed to load:', src);
+                img.src = originalSrc;
+            };
+            preloadImg.src = src;
+        }
+    }
+
+    // Load all images immediately (when disabled)
+    function loadAllImages() {
+        var images = document.querySelectorAll('img[data-src], img[data-lazy]');
+        images.forEach(function(img) {
+            var src = img.getAttribute('data-src') || img.getAttribute('data-lazy');
+            if (src) {
+                img.src = src;
+                img.classList.add('lazy-loaded');
+            }
+        });
+
+        var lazyBackgrounds = document.querySelectorAll('[data-bg]');
+        lazyBackgrounds.forEach(function(el) {
+            var bg = el.getAttribute('data-bg');
+            if (bg) {
+                el.style.backgroundImage = 'url(' + bg + ')';
+                el.classList.add('lazy-loaded');
+            }
+        });
+
+        loadedImages = Array.from(images);
+        console.log('[SweetTooth LazyLoad] All images loaded immediately (disabled mode)');
+    }
+
+    // Log statistics
+    function logStats() {
+        setTimeout(function() {
+            console.log('[SweetTooth LazyLoad] Total images:', totalImages);
+            console.log('[SweetTooth LazyLoad] Loaded images:', loadedImages.length);
+            console.log('[SweetTooth LazyLoad] Deferred images:', totalImages - loadedImages.length);
+            console.log('[SweetTooth LazyLoad] Deferral rate:', totalImages > 0 ? Math.round(((totalImages - loadedImages.length) / totalImages) * 100) + '%' : '0%');
+            console.log('[SweetTooth LazyLoad] Performance impact: Images deferred will load as user scrolls, reducing initial page load time');
+        }, 1000);
+    }
+
+    // Get statistics
+    function getStats() {
+        return {
+            total: totalImages,
+            loaded: loadedImages.length,
+            deferred: totalImages - loadedImages.length,
+            enabled: config.enabled
+        };
+    }
+
+    // Enable/disable lazy loading
+    function setEnabled(enabled) {
+        config.enabled = enabled;
+        console.log('[SweetTooth LazyLoad] ' + (enabled ? 'Enabled' : 'Disabled'));
+
+        if (!enabled && observer) {
+            // Disconnect observer and load all
+            observer.disconnect();
+            loadAllImages();
+        } else if (enabled) {
+            // Re-initialize
+            init();
+        }
+    }
+
+    // Set configuration
+    function setConfig(newConfig) {
+        for (var key in newConfig) {
+            if (config.hasOwnProperty(key)) {
+                config[key] = newConfig[key];
+            }
+        }
+        console.log('[SweetTooth LazyLoad] Config updated:', config);
+    }
+
+    // Expose API
     window.SweetToothLazyLoad = {
         init: init,
-        logAfter: logAfterOptimization,
-        load: loadImageManual,
-        getConfig: function() { return config; },
-        getMetrics: function() { return metrics; }
+        getStats: getStats,
+        setEnabled: setEnabled,
+        setConfig: setConfig,
+        isEnabled: function() { return config.enabled; },
+        loadAll: loadAllImages
     };
 
     // Auto-initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
-        document.addEventListener('DOMContentLoaded', logAfterOptimization);
     } else {
         init();
-        logAfterOptimization();
     }
 })();

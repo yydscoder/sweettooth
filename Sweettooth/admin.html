@@ -304,6 +304,65 @@
             transform: translateX(24px);
         }
 
+        /* Tooltip Icon */
+        .tooltip-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-color: var(--color-peach);
+            color: var(--color-dark);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 18px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 6px;
+            cursor: help;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+
+        .tooltip-icon:hover {
+            background-color: var(--color-pink);
+            color: white;
+        }
+
+        /* Tooltip Popup */
+        .tooltip-icon:hover::after,
+        .tooltip-icon:focus::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            max-width: 280px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-bottom: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+
+        /* Tooltip arrow */
+        .tooltip-icon:hover::before,
+        .tooltip-icon:focus::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-2px);
+            border: 6px solid transparent;
+            border-top-color: #333;
+            z-index: 10001;
+        }
+
         /* Stats Cards */
         .stats-grid {
             display: grid;
@@ -330,6 +389,11 @@
             font-size: 14px;
             color: #666;
             margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            flex-wrap: wrap;
         }
 
         /* Product Editor */
@@ -492,6 +556,19 @@
             font-size: 14px;
             color: #666;
         }
+
+        .lazy-placeholder {
+            color: #777;
+            font-size: 14px;
+        }
+
+        img[data-src] {
+            transition: opacity 0.3s ease;
+        }
+
+        img.lazy-loaded {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -505,7 +582,7 @@
             
             <div id="login-error" class="error-message">Invalid password. Please try again.</div>
             <div id="setup-notice" class="setup-notice" style="display: none;">
-                <h4>🔐 First Time Setup</h4>
+                <h4>First Time Setup</h4>
                 <p>No admin password is set. Enter a new password to secure your dashboard.</p>
             </div>
 
@@ -559,7 +636,7 @@
 
                 <div class="settings-grid">
                     <div class="settings-card">
-                        <h3>🚀 Quick Status</h3>
+                        <h3>Quick Status</h3>
                         <div class="toggle-row">
                             <div>
                                 <div class="toggle-label">Mapbox Token</div>
@@ -584,7 +661,7 @@
                     </div>
 
                     <div class="settings-card">
-                        <h3>📊 System Info</h3>
+                        <h3>System Info</h3>
                         <div class="toggle-row">
                             <div class="toggle-label">Last Data Backup</div>
                             <span id="last-backup" style="color: #666;">Never</span>
@@ -594,7 +671,7 @@
                             <span id="storage-used" style="color: #666;">Calculating...</span>
                         </div>
                         <button class="btn btn-secondary" onclick="exportData()" style="margin-top: 16px;">
-                            📥 Export All Data
+                            Export All Data
                         </button>
                     </div>
                 </div>
@@ -620,15 +697,49 @@
             <!-- Performance Section -->
             <section id="performance" class="dashboard-section">
                 <h2 class="section-title">Performance Optimization</h2>
-                
+
+                <div class="stats-grid" style="margin-bottom: 24px;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="perf-load-time">-- ms</div>
+                        <div class="stat-label">
+                            Page Load Time
+                            <span class="tooltip-icon" title="The total time from when the page starts loading until all resources are fully loaded. Measured using the browser Navigation Timing API.">?</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="perf-images-deferred">--</div>
+                        <div class="stat-label">
+                            Images Deferred
+                            <span class="tooltip-icon" title="Number of images that have not been loaded yet because they are off-screen. These will load automatically when the user scrolls near them.">?</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="perf-cache-size">-- KB</div>
+                        <div class="stat-label">
+                            Cache Size
+                            <span class="tooltip-icon" title="Amount of browser localStorage being used to cache SweetTooth data including settings, cart, and performance metrics.">?</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="perf-optimization-score">--%</div>
+                        <div class="stat-label">
+                            Optimization Score
+                            <span class="tooltip-icon" title="Overall optimization health based on enabled features: Lazy Loading (25pts), Minification (25pts), Caching (25pts), Performance Logging (25pts).">?</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="settings-grid">
                     <div class="settings-card">
-                        <h3>⚡ Optimization Toggles</h3>
-                        
+                        <h3>Optimization Toggles</h3>
+
                         <div class="toggle-row">
                             <div>
-                                <div class="toggle-label">Lazy Load Images</div>
-                                <div class="toggle-description">Load images only when visible</div>
+                                <div class="toggle-label">
+                                    Lazy Load Images
+                                    <span class="tooltip-icon" title="Uses Intersection Observer API to only load images when they enter the viewport. Reduces initial page load time and bandwidth usage.">?</span>
+                                </div>
+                                <div class="toggle-description">Load images only when visible using Intersection Observer</div>
                             </div>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="toggle-lazy-load" checked>
@@ -638,8 +749,11 @@
 
                         <div class="toggle-row">
                             <div>
-                                <div class="toggle-label">Enable Caching</div>
-                                <div class="toggle-description">Cache static assets</div>
+                                <div class="toggle-label">
+                                    Enable Caching
+                                    <span class="tooltip-icon" title="Stores static assets and configuration in browser localStorage for faster repeat visits. Reduces server requests.">?</span>
+                                </div>
+                                <div class="toggle-description">Cache static assets in localStorage</div>
                             </div>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="toggle-caching" checked>
@@ -649,8 +763,11 @@
 
                         <div class="toggle-row">
                             <div>
-                                <div class="toggle-label">Minify Resources</div>
-                                <div class="toggle-description">Reduce file sizes (requires build)</div>
+                                <div class="toggle-label">
+                                    Minify Resources
+                                    <span class="tooltip-icon" title="Uses minified CSS and JavaScript files with whitespace and comments removed. Reduces file sizes by approximately 50 percent.">?</span>
+                                </div>
+                                <div class="toggle-description">Use minified CSS and JS files</div>
                             </div>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="toggle-minify">
@@ -660,7 +777,24 @@
 
                         <div class="toggle-row">
                             <div>
-                                <div class="toggle-label">Image Quality</div>
+                                <div class="toggle-label">
+                                    Performance Logging
+                                    <span class="tooltip-icon" title="Tracks and stores performance metrics for each page view. Data is stored in localStorage and can be viewed in the dashboard.">?</span>
+                                </div>
+                                <div class="toggle-description">Track and log performance metrics</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-perf-logging" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-row">
+                            <div>
+                                <div class="toggle-label">
+                                    Image Quality
+                                    <span class="tooltip-icon" title="Compression quality for images. Lower values reduce file size but may impact visual quality. Recommended: 75-85 percent.">?</span>
+                                </div>
                                 <div class="toggle-description">Compression level for images</div>
                             </div>
                             <div style="width: 150px;">
@@ -669,19 +803,98 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-primary" onclick="savePerformanceSettings()" style="margin-top: 16px;">
-                            Save Performance Settings
-                        </button>
+                        <div style="margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="savePerformanceSettings()">
+                                Save Settings
+                            </button>
+                            <button class="btn btn-secondary" onclick="runPerformanceTest()">
+                                Run Test
+                            </button>
+                            <button class="btn btn-secondary" onclick="updateRealtimeMetrics()">
+                                Refresh Metrics
+                            </button>
+                            <button class="btn btn-secondary" onclick="location.reload()">
+                                Reload Page
+                            </button>
+                            <button class="btn btn-warning" onclick="clearOptimizationData()">
+                                Clear All Data
+                            </button>
+                            <button class="btn btn-secondary" onclick="clearCacheOnly()">
+                                Clear Cache Only
+                            </button>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="settings-card">
-                        <h3>📈 Performance Tips</h3>
-                        <ul style="padding-left: 20px; line-height: 2;">
-                            <li>Enable lazy loading for faster initial page load</li>
-                            <li>Use 80% image quality for best balance</li>
-                            <li>Enable caching for repeat visitors</li>
-                            <li>Minification requires a build step</li>
-                        </ul>
+                <div class="settings-card" style="margin-top: 24px;">
+                    <h3>Live Performance Metrics</h3>
+                    <p style="color: #666; margin-bottom: 16px;">Real-time metrics from the products page. Open products.html in another tab to see live data.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 16px;">
+                        <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 700; color: var(--color-pink);" id="live-total-images">0</div>
+                            <div style="font-size: 12px; color: #666;">Total Images</div>
+                        </div>
+                        <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 700; color: var(--color-success);" id="live-loaded-images">0</div>
+                            <div style="font-size: 12px; color: #666;">Loaded</div>
+                        </div>
+                        <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 700; color: var(--color-orange);" id="live-deferred-images">0</div>
+                            <div style="font-size: 12px; color: #666;">Deferred</div>
+                        </div>
+                        <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 700; color: var(--color-pink);" id="live-deferred-percent">0%</div>
+                            <div style="font-size: 12px; color: #666;">Deferred %</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 16px; padding: 16px; background: #f9f9f9; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="color: #666; font-size: 14px;">Lazy Load Impact</span>
+                            <span style="color: var(--color-success); font-weight: 700;" id="lazy-load-impact">--</span>
+                        </div>
+                        <div style="background: #e0e0e0; height: 20px; border-radius: 10px; overflow: hidden;">
+                            <div id="lazy-load-bar" style="background: linear-gradient(90deg, var(--color-peach), var(--color-orange)); height: 100%; width: 0%; transition: width 0.5s ease;"></div>
+                        </div>
+                        <p style="font-size: 12px; color: #666; margin-top: 8px;">
+                            Shows percentage of images deferred by lazy loading. Higher is better for initial load performance.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="settings-card" style="margin-top: 24px;">
+                    <h3>Cache Statistics</h3>
+                    <p style="color: #666; margin-bottom: 16px;">Resource caching performance and hit rates.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-top: 16px;">
+                        <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 700; color: var(--color-pink);" id="cache-assets">0</div>
+                            <div style="font-size: 11px; color: #666;">Cached Assets</div>
+                        </div>
+                        <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 700; color: var(--color-success);" id="cache-hits">0</div>
+                            <div style="font-size: 11px; color: #666;">Cache Hits</div>
+                        </div>
+                        <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 700; color: var(--color-orange);" id="cache-misses">0</div>
+                            <div style="font-size: 11px; color: #666;">Cache Misses</div>
+                        </div>
+                        <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 700; color: var(--color-peach);" id="cache-hit-rate">0%</div>
+                            <div style="font-size: 11px; color: #666;">Hit Rate</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 16px; padding: 12px; background: #f0f0f0; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="color: #666; font-size: 13px;">Cache Size</span>
+                            <span style="color: var(--color-pink); font-weight: 700;" id="cache-size-display">0 KB</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: #666; font-size: 13px;">Cache TTL</span>
+                            <span style="color: #666; font-size: 13px;">24 hours</span>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -717,14 +930,14 @@
                 </div>
 
                 <div class="settings-card">
-                    <h3>📊 Recent Activity</h3>
+                    <h3>Recent Activity</h3>
                     <div id="recent-activity" style="max-height: 300px; overflow-y: auto;">
                         <!-- Activity loaded dynamically -->
                     </div>
                 </div>
 
                 <button class="btn btn-warning" onclick="clearAnalyticsData()" style="margin-top: 16px;">
-                    🗑️ Clear Analytics Data
+                    Clear Analytics Data
                 </button>
             </section>
 
@@ -799,6 +1012,15 @@
                     <input type="number" id="product-price" step="0.01" min="0" required>
                 </div>
                 <div class="form-group">
+                    <label for="product-image">Product Image</label>
+                    <input type="file" id="product-image" accept="image/*">
+                    <div id="image-preview-container" style="margin-top: 10px; display: none;">
+                        <img id="image-preview" src="" alt="Preview" style="max-width: 100%; max-height: 150px; border-radius: 8px;">
+                        <button type="button" class="btn btn-secondary" onclick="clearImagePreview()" style="margin-top: 8px; padding: 6px 12px; font-size: 12px;">Remove Image</button>
+                    </div>
+                    <small style="color: #666; display: block; margin-top: 4px;">Images are stored in browser localStorage (max ~5MB)</small>
+                </div>
+                <div class="form-group">
                     <label for="product-description">Description</label>
                     <input type="text" id="product-description" placeholder="Optional description">
                 </div>
@@ -812,6 +1034,9 @@
     </div>
 
     <script src="assets/js/secure-config.js"></script>
+    <script src="assets/js/lazy-load.js"></script>
+    <script src="assets/js/performance-logger.js"></script>
+    <script src="assets/js/optimization-manager.js"></script>
     <script>
         // Admin Dashboard Logic
         (function() {
@@ -848,7 +1073,7 @@
                 document.getElementById('login-form').addEventListener('submit', function(e) {
                     e.preventDefault();
                     var password = document.getElementById('admin-password').value;
-                    
+
                     if (config.verifyAdminPassword(password)) {
                         showDashboard();
                     } else if (!config.isAdminPasswordSet()) {
@@ -865,11 +1090,27 @@
                     logout();
                 });
 
-                // Navigation
+                // Navigation with auto-refresh for performance tab
+                var metricsInterval = null;
+                
                 document.querySelectorAll('.dashboard-nav button[data-section]').forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         var section = this.getAttribute('data-section');
                         switchSection(section);
+                        
+                        // Clear any existing interval
+                        if (metricsInterval) {
+                            clearInterval(metricsInterval);
+                            metricsInterval = null;
+                        }
+                        
+                        // Auto-refresh metrics every 2 seconds when on performance tab
+                        if (section === 'performance') {
+                            // Initial update
+                            updateRealtimeMetrics();
+                            // Then update every 2 seconds
+                            metricsInterval = setInterval(updateRealtimeMetrics, 2000);
+                        }
                     });
                 });
 
@@ -952,6 +1193,12 @@
             function loadDashboardData() {
                 loadOverview();
                 loadSettings();
+                loadPerformanceSettings();
+                
+                // Update metrics after a short delay to ensure scripts are loaded
+                setTimeout(function() {
+                    updateRealtimeMetrics();
+                }, 500);
             }
 
             // Load overview stats
@@ -988,15 +1235,19 @@
             // Load settings
             function loadSettings() {
                 document.getElementById('mapbox-token').value = config.getMapboxToken() || '';
-                
+
                 var perfSettings = config.getPerformanceSettings();
-                document.getElementById('toggle-lazy-load').checked = perfSettings.enableLazyLoad;
-                document.getElementById('toggle-caching').checked = perfSettings.enableCaching;
-                document.getElementById('toggle-minify').checked = perfSettings.enableMinification;
-                document.getElementById('image-quality').value = perfSettings.imageQuality;
-                document.getElementById('image-quality-value').textContent = perfSettings.imageQuality;
-                
+                document.getElementById('toggle-lazy-load').checked = perfSettings.enableLazyLoad !== undefined ? perfSettings.enableLazyLoad : true;
+                document.getElementById('toggle-caching').checked = perfSettings.enableCaching !== undefined ? perfSettings.enableCaching : true;
+                document.getElementById('toggle-minify').checked = perfSettings.enableMinification || false;
+                document.getElementById('toggle-perf-logging').checked = perfSettings.perfLoggingEnabled !== undefined ? perfSettings.perfLoggingEnabled : true;
+                document.getElementById('image-quality').value = perfSettings.imageQuality || 80;
+                document.getElementById('image-quality-value').textContent = perfSettings.imageQuality || 80;
+
                 document.getElementById('toggle-analytics').checked = config.ENABLE_ANALYTICS;
+
+                // Load performance settings and metrics
+                loadPerformanceSettings();
             }
 
             // Load products
@@ -1015,10 +1266,21 @@
                     var product = products[name];
                     var item = document.createElement('div');
                     item.className = 'product-item';
-                    item.innerHTML = 
-                        '<div class="product-info">' +
-                            '<h4>' + escapeHtml(name) + '</h4>' +
-                            '<p>' + escapeHtml(product.description || '') + '</p>' +
+                    
+                    var imageHtml = '';
+                    if (product.image) {
+                        imageHtml = '<img src="' + product.image + '" alt="' + escapeHtml(name) + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; margin-right: 12px;">';
+                    } else {
+                        imageHtml = '<div style="width: 50px; height: 50px; background: #f0f0f0; border-radius: 6px; margin-right: 12px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px;">No Img</div>';
+                    }
+                    
+                    item.innerHTML =
+                        '<div style="display: flex; align-items: center; flex: 1;">' +
+                            imageHtml +
+                            '<div class="product-info">' +
+                                '<h4>' + escapeHtml(name) + '</h4>' +
+                                '<p>' + escapeHtml(product.description || '') + '</p>' +
+                            '</div>' +
                         '</div>' +
                         '<span>RM ' + (product.price / 100).toFixed(2) + '</span>' +
                         '<div class="product-actions">' +
@@ -1104,16 +1366,52 @@
             };
 
             // Product modal
+            var currentImageBase64 = null;
+
             window.openProductModal = function() {
                 document.getElementById('modal-title').textContent = 'Add Product';
                 document.getElementById('product-form').reset();
                 document.getElementById('edit-product-name').value = '';
                 document.getElementById('product-modal').classList.add('active');
+                currentImageBase64 = null;
+                document.getElementById('image-preview-container').style.display = 'none';
             };
 
             window.closeProductModal = function() {
                 document.getElementById('product-modal').classList.remove('active');
+                currentImageBase64 = null;
+                document.getElementById('image-preview-container').style.display = 'none';
             };
+
+            window.clearImagePreview = function() {
+                currentImageBase64 = null;
+                document.getElementById('product-image').value = '';
+                document.getElementById('image-preview-container').style.display = 'none';
+            };
+
+            // Handle image file selection and preview
+            document.getElementById('product-image').addEventListener('change', function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+
+                // Check file size (max 5MB for localStorage)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image size must be less than 5MB');
+                    this.value = '';
+                    return;
+                }
+
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    currentImageBase64 = event.target.result;
+                    document.getElementById('image-preview').src = currentImageBase64;
+                    document.getElementById('image-preview-container').style.display = 'block';
+                };
+                reader.onerror = function() {
+                    alert('Failed to load image');
+                };
+                reader.readAsDataURL(file);
+            });
 
             window.editProduct = function(name) {
                 var cmsData = config.getCMSData();
@@ -1126,6 +1424,17 @@
                 document.getElementById('product-price').value = (product.price / 100).toFixed(2);
                 document.getElementById('product-description').value = product.description || '';
                 document.getElementById('product-category').value = product.category || '';
+                
+                // Load existing image
+                if (product.image) {
+                    currentImageBase64 = product.image;
+                    document.getElementById('image-preview').src = product.image;
+                    document.getElementById('image-preview-container').style.display = 'block';
+                } else {
+                    currentImageBase64 = null;
+                    document.getElementById('image-preview-container').style.display = 'none';
+                }
+                
                 document.getElementById('product-modal').classList.add('active');
             };
 
@@ -1152,7 +1461,7 @@
                 }
 
                 var cmsData = config.getCMSData();
-                
+
                 // If editing and name changed, delete old entry
                 if (editName && editName !== name) {
                     delete cmsData.products[editName];
@@ -1161,7 +1470,8 @@
                 cmsData.products[name] = {
                     price: Math.round(price),
                     description: description,
-                    category: category
+                    category: category,
+                    image: currentImageBase64 || null
                 };
 
                 config.setCMSData(cmsData);
@@ -1246,13 +1556,354 @@
 
             // Reset all settings
             window.resetAllSettings = function() {
-                if (!confirm('⚠️ WARNING: This will reset ALL settings to defaults. Continue?')) return;
+                if (!confirm('WARNING: This will reset ALL settings to defaults. Continue?')) return;
                 if (!confirm('Are you REALLY sure? This cannot be undone.')) return;
-                
+
                 localStorage.clear();
                 alert('All settings reset. You will be logged out.');
                 location.reload();
             };
+
+            // Performance Optimization Functions
+            window.savePerformanceSettings = function() {
+                var lazyLoad = document.getElementById('toggle-lazy-load').checked;
+                var caching = document.getElementById('toggle-caching').checked;
+                var minify = document.getElementById('toggle-minify').checked;
+                var perfLogging = document.getElementById('toggle-perf-logging').checked;
+                var imageQuality = document.getElementById('image-quality').value;
+
+                // Update optimization manager
+                if (window.SweetToothOptimization) {
+                    window.SweetToothOptimization.toggleLazyLoad(lazyLoad);
+                    window.SweetToothOptimization.toggleCaching(caching);
+                    window.SweetToothOptimization.toggleMinification(minify);
+                    window.SweetToothOptimization.setImageQuality(parseInt(imageQuality));
+                }
+
+                // Update performance logger
+                if (window.SweetToothPerf) {
+                    window.SweetToothPerf.setEnabled(perfLogging);
+                }
+
+                // Update optimization manager
+                if (window.SweetToothOptimization) {
+                    window.SweetToothOptimization.toggleLazyLoad(lazyLoad);
+                    window.SweetToothOptimization.toggleCaching(caching);
+                    window.SweetToothOptimization.toggleMinification(minify);
+                    window.SweetToothOptimization.setImageQuality(parseInt(imageQuality));
+                }
+
+                // Save to config (secure-config.js)
+                config.setPerformanceSettings({
+                    lazyLoadEnabled: lazyLoad,
+                    cachingEnabled: caching,
+                    minificationEnabled: minify,
+                    perfLoggingEnabled: perfLogging,
+                    imageQuality: parseInt(imageQuality)
+                });
+
+                // Also save directly to optimization manager's storage key for consistency
+                try {
+                    localStorage.setItem('sweettooth_optimization_config', JSON.stringify({
+                        lazyLoadEnabled: lazyLoad,
+                        cachingEnabled: caching,
+                        minificationEnabled: minify,
+                        perfLoggingEnabled: perfLogging,
+                        imageQuality: parseInt(imageQuality)
+                    }));
+                } catch (e) {
+                    console.warn('[Admin] Could not save to optimization config:', e);
+                }
+
+                updateRealtimeMetrics();
+                alert('Performance settings saved successfully!');
+            };
+
+            window.runPerformanceTest = function() {
+                console.log('[Admin] === PERFORMANCE TEST STARTED ===');
+
+                // Force fresh performance measurement
+                var startTime = performance.now();
+
+                // Get REAL metrics from Performance API
+                var metrics = {};
+                if (window.performance) {
+                    // Clear old entries and get fresh ones
+                    var navEntry = performance.getEntriesByType('navigation')[0];
+                    if (navEntry) {
+                        metrics.loadTime = navEntry.loadEventEnd - navEntry.startTime;
+                        metrics.domContentLoaded = navEntry.domContentLoadedEventEnd - navEntry.startTime;
+                        metrics.firstByte = navEntry.responseStart - navEntry.startTime;
+                        console.log('[Admin] Navigation timing:', {
+                            loadTime: metrics.loadTime.toFixed(2) + ' ms',
+                            domContentLoaded: metrics.domContentLoaded.toFixed(2) + ' ms',
+                            firstByte: metrics.firstByte.toFixed(2) + ' ms'
+                        });
+                    }
+
+                    // Get resource metrics
+                    var resources = performance.getEntriesByType('resource');
+                    metrics.resourceCount = resources.length;
+                    metrics.totalSize = 0;
+                    resources.forEach(function(r) {
+                        if (r.transferSize) metrics.totalSize += r.transferSize;
+                    });
+                    console.log('[Admin] Resources:', metrics.resourceCount, 'Total size:', (metrics.totalSize / 1024).toFixed(2) + ' KB');
+                }
+
+                // Get lazy load stats
+                var lazyStats = { deferred: 0, loaded: 0, total: 0 };
+                if (window.SweetToothLazyLoad) {
+                    lazyStats = window.SweetToothLazyLoad.getStats();
+                    console.log('[Admin] Lazy load stats:', lazyStats);
+                } else {
+                    var allImages = document.querySelectorAll('img');
+                    var lazyImages = document.querySelectorAll('img[data-src], img[data-lazy], img[loading="lazy"]');
+                    lazyStats.total = allImages.length;
+                    lazyStats.deferred = lazyImages.length;
+                    lazyStats.loaded = allImages.length - lazyImages.length;
+                }
+
+                // Update UI with REAL values
+                document.getElementById('perf-load-time').textContent = (metrics.loadTime || 0).toFixed(2) + ' ms';
+                document.getElementById('perf-images-deferred').textContent = lazyStats.deferred;
+
+                // Update real-time metrics display
+                document.getElementById('rt-images-loaded').textContent = lazyStats.loaded;
+                document.getElementById('rt-images-total').textContent = lazyStats.total;
+
+                // Log real metrics to console
+                console.log('[Admin] === PERFORMANCE TEST RESULTS ===');
+                console.log('[Admin] Page Load Time:', (metrics.loadTime || 0).toFixed(2) + ' ms');
+                console.log('[Admin] DOM Content Loaded:', (metrics.domContentLoaded || 0).toFixed(2) + ' ms');
+                console.log('[Admin] First Byte:', (metrics.firstByte || 0).toFixed(2) + ' ms');
+                console.log('[Admin] Resources Loaded:', metrics.resourceCount);
+                console.log('[Admin] Total Resource Size:', (metrics.totalSize / 1024).toFixed(2) + ' KB');
+                console.log('[Admin] Images - Loaded:', lazyStats.loaded, 'Deferred:', lazyStats.deferred, 'Total:', lazyStats.total);
+                console.log('[Admin] === PERFORMANCE TEST COMPLETE ===');
+
+                updateOptimizationScore();
+                updateRealtimeMetrics();
+
+                alert('Performance test completed!\n\nPage Load: ' + (metrics.loadTime || 0).toFixed(2) + ' ms\nImages Deferred: ' + lazyStats.deferred + '\nResources: ' + metrics.resourceCount + '\n\nCheck browser console for detailed metrics.');
+            };
+
+            window.clearOptimizationData = function() {
+                if (!confirm('Clear all optimization data and metrics?')) return;
+
+                if (window.SweetToothOptimization) {
+                    window.SweetToothOptimization.clearData();
+                }
+                if (window.SweetToothPerf) {
+                    window.SweetToothPerf.clearMetrics();
+                }
+
+                updateRealtimeMetrics();
+                alert('Optimization data cleared!');
+            };
+
+            window.clearCacheOnly = function() {
+                if (!confirm('Clear cached resources? This will not affect settings.')) return;
+
+                if (window.SweetToothOptimization && window.SweetToothOptimization.clearCache) {
+                    window.SweetToothOptimization.clearCache();
+                    console.log('[Admin] Cache cleared');
+                    updateRealtimeMetrics();
+                    alert('Cache cleared! Reload page to see fresh resources.');
+                } else {
+                    // Fallback: clear localStorage manually
+                    var keys = Object.keys(localStorage).filter(k => k.includes('sweettooth_cache'));
+                    keys.forEach(k => localStorage.removeItem(k));
+                    updateRealtimeMetrics();
+                    alert('Cache cleared!');
+                }
+            };
+
+            window.enableAllOptimizations = function() {
+                document.getElementById('toggle-lazy-load').checked = true;
+                document.getElementById('toggle-caching').checked = true;
+                document.getElementById('toggle-minify').checked = true;
+                document.getElementById('toggle-perf-logging').checked = true;
+                document.getElementById('image-quality').value = 80;
+                document.getElementById('image-quality-value').textContent = '80';
+
+                savePerformanceSettings();
+                alert('All optimizations enabled!');
+            };
+
+            window.disableAllOptimizations = function() {
+                document.getElementById('toggle-lazy-load').checked = false;
+                document.getElementById('toggle-caching').checked = false;
+                document.getElementById('toggle-minify').checked = false;
+                document.getElementById('toggle-perf-logging').checked = false;
+                document.getElementById('image-quality').value = 100;
+                document.getElementById('image-quality-value').textContent = '100';
+
+                savePerformanceSettings();
+                alert('All optimizations disabled!');
+            };
+
+            function updateOptimizationScore() {
+                var score = 0;
+                var factors = 0;
+
+                if (document.getElementById('toggle-lazy-load').checked) { score += 25; factors++; }
+                if (document.getElementById('toggle-caching').checked) { score += 25; factors++; }
+                if (document.getElementById('toggle-minify').checked) { score += 25; factors++; }
+                if (document.getElementById('toggle-perf-logging').checked) { score += 25; factors++; }
+
+                document.getElementById('perf-optimization-score').textContent = score + '%';
+            }
+
+            function updateRealtimeMetrics() {
+                console.log('[Admin] Updating real-time metrics...');
+
+                // Get REAL page load time from Performance API RIGHT NOW
+                var currentLoadTime = 0;
+                if (window.performance) {
+                    var navEntry = performance.getEntriesByType('navigation')[0];
+                    if (navEntry) {
+                        currentLoadTime = navEntry.loadEventEnd - navEntry.startTime;
+                        console.log('[Admin] Real page load time:', currentLoadTime.toFixed(2), 'ms');
+                    }
+                }
+                document.getElementById('perf-load-time').textContent = currentLoadTime.toFixed(2) + ' ms';
+
+                // Update lazy load stats - REAL data
+                var lazyStats = { total: 0, loaded: 0, deferred: 0, enabled: false };
+                if (window.SweetToothLazyLoad) {
+                    lazyStats = window.SweetToothLazyLoad.getStats();
+                    document.getElementById('perf-images-deferred').textContent = lazyStats.deferred;
+                    console.log('[Admin] Lazy load stats:', lazyStats);
+                } else {
+                    // Fallback: count images manually
+                    var allImages = document.querySelectorAll('img');
+                    var lazyImages = document.querySelectorAll('img[data-src], img[data-lazy], img[loading="lazy"]');
+                    var loadedCount = allImages.length - lazyImages.length;
+                    lazyStats.total = allImages.length;
+                    lazyStats.loaded = loadedCount;
+                    lazyStats.deferred = lazyImages.length;
+                    document.getElementById('perf-images-deferred').textContent = lazyImages.length;
+                }
+
+                // Update live metrics display
+                document.getElementById('live-total-images').textContent = lazyStats.total;
+                document.getElementById('live-loaded-images').textContent = lazyStats.loaded;
+                document.getElementById('live-deferred-images').textContent = lazyStats.deferred;
+
+                // Calculate deferred percentage
+                var deferredPercent = lazyStats.total > 0 ? Math.round((lazyStats.deferred / lazyStats.total) * 100) : 0;
+                document.getElementById('live-deferred-percent').textContent = deferredPercent + '%';
+
+                // Update lazy load impact bar
+                document.getElementById('lazy-load-bar').style.width = deferredPercent + '%';
+                document.getElementById('lazy-load-impact').textContent = deferredPercent > 50 ? 'Excellent (' + deferredPercent + '% deferred)' : (deferredPercent > 20 ? 'Good (' + deferredPercent + '% deferred)' : 'Low (' + deferredPercent + '% deferred)');
+
+                // Update cache stats - REAL data from localStorage
+                var cacheSize = 0;
+                for (var key in localStorage) {
+                    if (localStorage.hasOwnProperty(key) && key.includes('sweettooth')) {
+                        cacheSize += localStorage[key].length;
+                    }
+                }
+                document.getElementById('perf-cache-size').textContent = (cacheSize / 1024).toFixed(2) + ' KB';
+
+                // Get detailed cache stats if available
+                var cacheStats = { assets: 0, hits: 0, misses: 0, hitRate: 0, totalSize: 0 };
+                if (window.SweetToothOptimization && window.SweetToothOptimization.getCacheStats) {
+                    cacheStats = window.SweetToothOptimization.getCacheStats();
+                }
+
+                // Update cache stats display
+                document.getElementById('cache-assets').textContent = cacheStats.assets;
+                document.getElementById('cache-hits').textContent = cacheStats.hits;
+                document.getElementById('cache-misses').textContent = cacheStats.misses;
+                document.getElementById('cache-hit-rate').textContent = cacheStats.hitRate + '%';
+                document.getElementById('cache-size-display').textContent = (cacheSize / 1024).toFixed(2) + ' KB';
+
+                updateOptimizationScore();
+                console.log('[Admin] Metrics update complete');
+            }
+
+            // Image quality slider
+            document.getElementById('image-quality').addEventListener('input', function() {
+                document.getElementById('image-quality-value').textContent = this.value;
+            });
+
+            // Load performance settings
+            function loadPerformanceSettings() {
+                var perfSettings = config.getPerformanceSettings();
+
+                document.getElementById('toggle-lazy-load').checked = perfSettings.lazyLoadEnabled !== false;
+                document.getElementById('toggle-caching').checked = perfSettings.cachingEnabled !== false;
+                document.getElementById('toggle-minify').checked = perfSettings.minificationEnabled || false;
+                document.getElementById('toggle-perf-logging').checked = perfSettings.perfLoggingEnabled !== false;
+                document.getElementById('image-quality').value = perfSettings.imageQuality || 80;
+                document.getElementById('image-quality-value').textContent = perfSettings.imageQuality || 80;
+
+                updateRealtimeMetrics();
+                
+                // Fetch real file sizes
+                setTimeout(fetchFileSizes, 1000);
+            }
+
+            // Fetch real file sizes
+            function fetchFileSizes() {
+                var files = [
+                    { name: 'css', original: 'assets/css/shared.css', minified: 'assets/css/shared.min.css' },
+                    { name: 'js', original: 'assets/js/cart.js', minified: 'assets/js/cart.min.js' }
+                ];
+
+                files.forEach(function(file) {
+                    fetch(file.original, { method: 'HEAD' })
+                        .then(function(response) {
+                            var size = parseInt(response.headers.get('content-length') || '0');
+                            if (file.name === 'css') {
+                                window.cssOriginalSize = size;
+                                document.getElementById('css-original').textContent = formatBytes(size);
+                            } else {
+                                window.jsOriginalSize = size;
+                                document.getElementById('js-original').textContent = formatBytes(size);
+                            }
+                        })
+                        .catch(function(e) { console.warn('Could not fetch:', file.original, e); });
+
+                    fetch(file.minified, { method: 'HEAD' })
+                        .then(function(response) {
+                            var size = parseInt(response.headers.get('content-length') || '0');
+                            if (file.name === 'css') {
+                                window.cssMinifiedSize = size;
+                                document.getElementById('css-minified').textContent = formatBytes(size);
+                                if (window.cssOriginalSize) {
+                                    var saved = window.cssOriginalSize - size;
+                                    var percent = ((saved / window.cssOriginalSize) * 100).toFixed(1);
+                                    document.getElementById('css-saved').textContent = formatBytes(saved);
+                                    document.getElementById('css-percent').textContent = percent + '%';
+                                }
+                            } else {
+                                window.jsMinifiedSize = size;
+                                document.getElementById('js-minified').textContent = formatBytes(size);
+                                if (window.jsOriginalSize) {
+                                    var saved = window.jsOriginalSize - size;
+                                    var percent = ((saved / window.jsOriginalSize) * 100).toFixed(1);
+                                    document.getElementById('js-saved').textContent = formatBytes(saved);
+                                    document.getElementById('js-percent').textContent = percent + '%';
+                                }
+                            }
+                        })
+                        .catch(function(e) { console.warn('Could not fetch:', file.minified, e); });
+                });
+            }
+
+            function formatBytes(bytes) {
+                if (bytes >= 1048576) {
+                    return (bytes / 1048576).toFixed(2) + ' MB';
+                }
+                if (bytes >= 1024) {
+                    return (bytes / 1024).toFixed(2) + ' KB';
+                }
+                return bytes + ' bytes';
+            }
 
             // Utility functions
             function showError(message) {

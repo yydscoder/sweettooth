@@ -664,7 +664,7 @@
                         <div id="cart-items-list"></div>
                         <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
                         <button class="checkout-btn poppins-bold" onclick="proceedToCheckout()">Proceed to Checkout</button>
-                        <button class="view-cart-btn poppins-bold" onclick="window.location.href='checkout.html'">View Full Cart</button>
+                        <button class="view-cart-btn poppins-bold" onclick="event.stopPropagation(); proceedToCheckout()">View Full Cart</button>
                     </div>
                 </div>
             </div>
@@ -1042,6 +1042,6 @@
             }
         }
     </script>
-    <script src="assets/js/cart.js"></script>
+    <script src="assets/js/cart.js?v=2"></script>
 </body>
 </html>

@@ -1,0 +1,189 @@
+/**
+ * SweetTooth Gelato - Blog Page Styles
+ */
+
+/* Blog Section */
+.blog {
+    padding: 5rem 2rem;
+    background-color: var(--color-light-cream);
+}
+
+.blog-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.blog-header h2 {
+    font-size: 2.5rem;
+    color: var(--color-pink);
+    margin-bottom: 1rem;
+}
+
+.blog-header p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+/* Blog Posts Grid */
+.blog-posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.blog-post {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.blog-post:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.post-image {
+    height: 200px;
+    background-color: var(--color-peach);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post-image-placeholder {
+    color: #777;
+    font-size: 1rem;
+}
+
+.post-content {
+    padding: 1.5rem;
+}
+
+.post-content h3 {
+    color: var(--color-pink);
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #999;
+    margin-bottom: 1rem;
+}
+
+.post-excerpt {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.read-more {
+    color: var(--color-pink);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: color 0.3s;
+}
+
+.read-more:hover {
+    color: var(--color-orange);
+    text-decoration: underline;
+}
+
+/* Social Media Section */
+.social-media {
+    padding: 5rem 2rem;
+    background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-peach) 100%);
+}
+
+.social-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.social-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.social-header h2 {
+    font-size: 2.5rem;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.social-header p {
+    color: white;
+    font-size: 1.1rem;
+}
+
+.social-feeds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.social-feed {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.social-feed h3 {
+    color: var(--color-pink);
+    margin-bottom: 1rem;
+}
+
+.social-feed p {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.social-feed a {
+    display: inline-block;
+    margin-top: 1rem;
+    background-color: var(--color-pink);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.social-feed a:hover {
+    background-color: #e05a5b;
+}
+
+.social-plugin {
+    background: var(--color-light-cream);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.social-plugin h3 {
+    color: var(--color-pink);
+    margin-bottom: 1rem;
+}
+
+.social-plugin p {
+    color: #666;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .blog-posts {
+        grid-template-columns: 1fr;
+    }
+    
+    .social-feeds {
+        grid-template-columns: 1fr;
+    }
+}

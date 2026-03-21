@@ -8,6 +8,10 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
+    <!-- Shared CSS -->
+    <link rel="stylesheet" href="assets/css/shared.css">
+    <link rel="stylesheet" href="assets/css/index.css">
+
     <!-- Custom CSS -->
     <style>
         :root {
@@ -178,6 +182,25 @@
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
                 <span class="cart-count" id="cart-count">0</span>
+
+                <!-- Cart Dropdown -->
+                <div class="cart-dropdown" id="cart-dropdown">
+                    <div class="cart-header">
+                        <h3 class="dealerplate">Your Cart</h3>
+                        <span class="cart-close" style="cursor: pointer;" onclick="event.stopPropagation(); toggleCartDropdown()">&times;</span>
+                    </div>
+                    <div class="cart-items-container" id="cart-items-container">
+                        <div class="empty-cart-message">
+                            <p>🛒 Cart is empty</p>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add some delicious gelato!</p>
+                        </div>
+                    </div>
+                    <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;">
+                        <div id="cart-items-list"></div>
+                        <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
+                        <button class="view-cart-btn poppins-bold" onclick="event.stopPropagation(); window.location.href='checkout.html'">Proceed to Checkout</button>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -267,16 +290,11 @@
         <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;">
             <div id="cart-items-list"></div>
             <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
-            <button class="view-cart-btn poppins-bold" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+            <button class="view-cart-btn poppins-bold" onclick="event.stopPropagation(); proceedToCheckout()">Proceed to Checkout</button>
         </div>
     </div>
 
-    <script>
-        // Minimal cart toggle for standalone page
-        function toggleCartDropdown() {
-            const dropdown = document.getElementById('cart-dropdown');
-            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-        }
-    </script>
+    <script src="assets/js/whatsapp-widget.js"></script>
+    <script src="assets/js/cart.js"></script>
 </body>
 </html>
