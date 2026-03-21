@@ -16,8 +16,11 @@
     <!-- Configuration (load BEFORE other scripts) -->
     <script src="assets/js/secure-config.js"></script>
 
+    <!-- Optimization Manager -->
+    <script src="assets/js/optimization-manager.js"></script>
+
     <!-- Cart Functionality -->
-    <script src="assets/js/cart.js?nocache=1"></script>
+    <script src="assets/js/cart.js?v=STANDARD"></script>
 
     <!-- Form Validation & Error Handling -->
     <script src="assets/js/form-validation.js"></script>
@@ -231,6 +234,12 @@
         .item-details h4 {
             color: var(--color-pink);
             margin-bottom: 0.2rem;
+        }
+
+        .item-quantity {
+            font-size: 0.85rem;
+            color: #666;
+            margin: 0;
         }
 
         .item-price {
@@ -527,18 +536,77 @@
             .checkout-steps {
                 flex-wrap: wrap;
             }
-            
+
             .step {
                 flex: 1 1 50%;
             }
-            
+
             .checkout-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .card-form {
                 grid-template-columns: 1fr;
             }
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+            margin-top: 5rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--color-peach);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-section img {
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #555;
+            color: #aaa;
         }
     </style>
 </head>
@@ -824,9 +892,7 @@
             'Dark Chocolate': 1600
         };
 
-        // Initialize cart from validated checkout cart or localStorage
-        let cart = [];
-        
+        // Cart is loaded from cart.js - just load the data
         function loadCheckoutCart() {
             // First try the validated checkout cart
             var checkoutCart = localStorage.getItem('sweettooth_checkout_cart');
@@ -1158,7 +1224,7 @@
             totalElement.textContent = `RM ${total.toFixed(2)}`;
         }
         
-        // Update order summary
+        // Update order summary with detailed items
         function updateOrderSummary() {
             itemsList.innerHTML = '';
 
@@ -1171,12 +1237,12 @@
 
             let subtotalCents = 0;
 
-            cart.forEach(item => {
+            cart.forEach((item, index) => {
                 // Use priceCents from the new cart format, or parse old format
                 var priceCents = item.priceCents || Math.round(parseFloat(item.price || '0') * 100);
                 var itemName = item.product || item.name || 'Unknown';
                 var quantity = item.quantity || 1;
-                
+
                 var itemTotalCents = priceCents * quantity;
                 subtotalCents += itemTotalCents;
 
@@ -1187,7 +1253,7 @@
                         <div class="item-image">${itemName.charAt(0)}</div>
                         <div class="item-details">
                             <h4>${escapeHTML(itemName)}</h4>
-                            <p>${quantity} × RM ${centsToRM(priceCents)}</p>
+                            <p class="item-quantity">Qty: ${quantity} × RM ${centsToRM(priceCents)}</p>
                         </div>
                     </div>
                     <div class="item-price">RM ${centsToRM(itemTotalCents)}</div>
@@ -1195,12 +1261,35 @@
                 itemsList.appendChild(itemRow);
             });
 
+            // Update subtotal
             subtotalElement.textContent = `RM ${centsToRM(subtotalCents)}`;
 
-            // Update total with delivery fee
-            const deliveryFee = parseFloat(deliveryFeeElement.textContent.replace('RM ', '').replace(',', ''));
-            const total = subtotalCents / 100 + deliveryFee;
+            // Get current delivery fee and update total
+            const currentDeliveryFeeText = deliveryFeeElement.textContent.replace('RM ', '').replace(',', '');
+            const deliveryFee = parseFloat(currentDeliveryFeeText) || 10;
+            const total = (subtotalCents / 100) + deliveryFee;
             totalElement.textContent = `RM ${total.toFixed(2)}`;
+            
+            console.log('[Checkout] Order summary updated:', {
+                items: cart.length,
+                subtotal: centsToRM(subtotalCents),
+                deliveryFee: deliveryFee,
+                total: total.toFixed(2)
+            });
+        }
+
+        // Set delivery fee and update total
+        function setDeliveryFee(fee, description) {
+            deliveryFeeElement.textContent = `RM ${fee.toFixed(2)}`;
+            deliveryFeeDescriptionElement.textContent = description;
+            
+            // Update total with new delivery fee
+            const subtotalText = subtotalElement.textContent.replace('RM ', '');
+            const subtotal = parseFloat(subtotalText) || 0;
+            const total = subtotal + fee;
+            totalElement.textContent = `RM ${total.toFixed(2)}`;
+            
+            console.log('[Checkout] Delivery fee set:', { fee, description, total: total.toFixed(2) });
         }
 
         // XSS prevention

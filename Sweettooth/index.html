@@ -52,7 +52,8 @@
                     <div class="cart-items-filled" id="cart-items-filled" style="display: none; padding: 1rem;">
                         <div id="cart-items-list"></div>
                         <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
-                        <button class="view-cart-btn poppins-bold" onclick="event.stopPropagation(); proceedToCheckout()">Proceed to Checkout</button>
+                        <button class="checkout-btn poppins-bold" onclick="event.stopPropagation(); proceedToCheckout()">Proceed to Checkout</button>
+                        <button class="view-cart-btn poppins-bold" onclick="event.stopPropagation(); window.location.href='products.html'">View Full Cart</button>
                     </div>
                 </div>
             </div>
@@ -455,7 +456,8 @@
         });
     </script>
     <script src="assets/js/secure-config.js"></script>
-    <script src="assets/js/cart.js?nocache=1"></script>
+    <script src="assets/js/optimization-manager.js"></script>
+    <script src="assets/js/cart.js?v=CARTFINAL2"></script>
     <script src="assets/js/lazy-load.js"></script>
 </body>
 </html>

@@ -1,7 +1,13 @@
-console.log('[Cart.js] LOADED');
 // SweetTooth Gelato - Shared Cart
 // localStorage-persistent, works on all pages.
 // Fixed: race condition, price manipulation, floating point, XSS, cross-tab sync, notifications
+
+// Performance metrics
+var CART_LOAD_START = performance.now();
+console.log('========================================');
+console.log('[SweetTooth Cart] Initializing...');
+console.log('[SweetTooth Cart] Timestamp:', new Date().toISOString());
+console.log('========================================');
 
 // Default product catalog (in cents to avoid floating point issues)
 // This is merged with CMS products if available
@@ -190,6 +196,8 @@ function addToCart(productName, priceHint) {
         return;
     }
 
+    var opStart = performance.now();
+
     // Get trusted price - ignore the priceHint from DOM (prevents manipulation from dev tools or anyone unauthorized/scriptkiddies)
     var trustedPriceCents = getTrustedPrice(productName);
 
@@ -210,11 +218,17 @@ function addToCart(productName, priceHint) {
     }
     saveCart();
     renderCart();
+    
+    var opTime = (performance.now() - opStart).toFixed(2);
+    console.log('[SweetTooth Cart] ADD:', productName, '| Qty:', cart.find(function(i) { return i.product === productName; })?.quantity || 1, '| Op time:', opTime, 'ms');
+    
     showCartNotification(productName + ' added to cart!');
 }
 
 // Remove item from cart
 function removeFromCart(productName) {
+    var opStart = performance.now();
+    
     var removed = false;
     for (var i = 0; i < cart.length; i++) {
         if (cart[i].product === productName) {
@@ -225,24 +239,39 @@ function removeFromCart(productName) {
     cart = cart.filter(function(i) { return i.product !== productName; });
     saveCart();
     renderCart();
+    
+    var opTime = (performance.now() - opStart).toFixed(2);
+    console.log('[SweetTooth Cart] REMOVE:', productName, '| Op time:', opTime, 'ms');
+    
     if (removed) {
         showCartNotification(productName + ' removed from cart!');
     }
 }
 
-// Update cart quantity in increments of 1, remove if the quantity drops to 0 or lower 
+// Update cart quantity in increments of 1, remove if the quantity drops to 0 or lower
 function updateCartQuantity(productName, delta) {
+    var opStart = performance.now();
+    
+    var oldQty = 0;
     for (var i = 0; i < cart.length; i++) {
         if (cart[i].product === productName) {
+            oldQty = cart[i].quantity;
             cart[i].quantity += delta;
             if (cart[i].quantity <= 0) {
                 cart.splice(i, 1);
+                console.log('[SweetTooth Cart] QTY:', productName, '|', oldQty, '→', 'REMOVED', '| Op time:', (performance.now() - opStart).toFixed(2), 'ms');
+                saveCart();
+                renderCart();
+                return;
             }
             break;
         }
     }
     saveCart();
     renderCart();
+    
+    var opTime = (performance.now() - opStart).toFixed(2);
+    console.log('[SweetTooth Cart] QTY:', productName, '|', oldQty, '→', oldQty + delta, '| Op time:', opTime, 'ms');
 }
 
 // Render cart UI
@@ -281,7 +310,7 @@ function renderCart() {
         grandTotalCents += itemTotalCents;
 
         var row = document.createElement('div');
-        row.className = 'cart-item-row';
+        row.className = 'cart-item';
         row.innerHTML =
             '<div class="cart-item-info">' +
               '<div class="cart-item-name">' + sanitizeHTML(item.product) + '</div>' +
@@ -393,13 +422,31 @@ function proceedToCheckout() { console.log('[Cart] proceedToCheckout called');
 
 // Initialize cart
 function cartInit() {
+    var initStart = performance.now();
+    
     // Initialize cart state from localStorage
     cart = loadCart();
     renderCart();
+    
+    // Log cart initialization metrics
+    var initTime = (performance.now() - initStart).toFixed(2);
+    var cartLoadTime = (performance.now() - CART_LOAD_START).toFixed(2);
+    
+    console.log('========================================');
+    console.log('[SweetTooth Cart] Initialized');
+    console.log('[SweetTooth Cart] Init time:', initTime, 'ms');
+    console.log('[SweetTooth Cart] Total load time:', cartLoadTime, 'ms');
+    console.log('[SweetTooth Cart] Cart items:', cart.length);
+    console.log('[SweetTooth Cart] Cart total:', cart.reduce(function(sum, item) { return sum + (item.quantity || 1); }, 0), 'items');
+    console.log('[SweetTooth Cart] Cart value: RM', cart.reduce(function(sum, item) { return sum + ((item.priceCents || 1500) * (item.quantity || 1)) / 100; }, 0).toFixed(2));
+    console.log('[SweetTooth Cart] Storage key:', STORAGE_KEY);
+    console.log('[SweetTooth Cart] LocalStorage size:', Math.round(JSON.stringify(localStorage.getItem(STORAGE_KEY)).length / 1024 * 100) / 100, 'KB');
+    console.log('========================================');
 
     // Listen for storage events from other tabs
     window.addEventListener('storage', function(e) {
         if (e.key === STORAGE_KEY) {
+            console.log('[SweetTooth Cart] Storage event detected - syncing cart from other tab');
             cart = loadCart();
             renderCart();
         }
@@ -407,6 +454,7 @@ function cartInit() {
 
     // Listen for same-tab cart updates
     window.addEventListener('sweettooth_cart_updated', function() {
+        console.log('[SweetTooth Cart] Cart updated event - refreshing');
         cart = loadCart();
         renderCart();
     });

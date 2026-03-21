@@ -822,6 +822,9 @@
                             <button class="btn btn-secondary" onclick="clearCacheOnly()">
                                 Clear Cache Only
                             </button>
+                            <button class="btn btn-success" onclick="testCachingDemo()">
+                                Test Caching (Demo)
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1716,6 +1719,21 @@
                     keys.forEach(k => localStorage.removeItem(k));
                     updateRealtimeMetrics();
                     alert('Cache cleared!');
+                }
+            };
+            
+            window.testCachingDemo = function() {
+                console.log('');
+                console.log('========================================');
+                console.log('  CACHE DEMONSTRATION');
+                console.log('  Watch the console for hits/misses');
+                console.log('========================================');
+                console.log('');
+                
+                if (window.SweetToothOptimization && window.SweetToothOptimization.testCaching) {
+                    window.SweetToothOptimization.testCaching();
+                } else {
+                    alert('Caching module not loaded. Make sure caching is enabled in the Performance tab.');
                 }
             };
 
