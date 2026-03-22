@@ -70,8 +70,7 @@
         console.log('  ────────────────────────────────────────────────────────────────────');
         console.log('  Lazy Load Images:   ' + (config.lazyLoadEnabled ? '[ENABLED] ' : '[DISABLED]') + ' (Defers offscreen images)');
         console.log('  Caching:            ' + (config.cachingEnabled ? '[ENABLED] ' : '[DISABLED]') + ' (24h TTL, localStorage)');
-        console.log('  Minification:       ' + (config.minificationEnabled ? '[ENABLED] ' : '[DISABLED]') + ' (CSS/JS compression)');
-        console.log('  Image Quality:      ' + config.imageQuality + '% (WebP compression)');
+        console.log('  Image Quality:      ' + config.imageQuality + '% (compression level)');
         console.log('  ────────────────────────────────────────────────────────────────────');
         
         // Output performance metrics if available
