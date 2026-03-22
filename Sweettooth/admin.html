@@ -838,7 +838,7 @@
 
                     <!-- Cache Performance Impact -->
                     <div style="margin-top: 16px; padding: 12px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #4CAF50;">
-                        <div style="color: #2e7d32; font-weight: 600; margin-bottom: 8px; font-size: 13px;">⚡ CACHE PERFORMANCE IMPACT</div>
+                        <div style="color: #2e7d32; font-weight: 600; margin-bottom: 8px; font-size: 13px;">CACHE PERFORMANCE IMPACT</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
                             <div>
                                 <span style="color: #666;">Time Saved (est):</span>
@@ -1536,9 +1536,9 @@
                 }
 
                 var message = 'CACHED ITEMS:\n\n';
-                message += '📦 Products: ' + products.length + '\n';
-                message += '📄 Product Details: ' + productDetails.length + '\n';
-                message += '🔧 Other: ' + other.length + '\n\n';
+                message += 'Products: ' + products.length + '\n';
+                message += 'Product Details: ' + productDetails.length + '\n';
+                message += 'Other: ' + other.length + '\n\n';
                 
                 if (products.length > 0) {
                     message += '--- PRODUCTS ---\n';
@@ -1590,8 +1590,8 @@
                 log.push('<div>Hit Rate: <span style="color: #d4d4d4;">' + hitRate + '%</span></div>');
                 log.push('<div>Cached Assets: <span style="color: #d4d4d4;">' + Object.keys(cacheData.assets || {}).length + '</span></div>');
                 log.push('<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #333;">');
-                log.push('<div style="color: #6a9955; margin-bottom: 6px;">⚡ PERFORMANCE IMPACT:</div>');
-                log.push('<div>Time Saved: <span style="color: #6a9955;">~' + totalTimeSaved + 'ms</span> (' + timeSavedPerHit + 'ms per hit × ' + cacheData.hitCount + ' hits)</div>');
+                log.push('<div style="color: #6a9955; margin-bottom: 6px;">PERFORMANCE IMPACT:</div>');
+                log.push('<div>Time Saved: <span style="color: #6a9955;">~' + totalTimeSaved + 'ms</span> (' + timeSavedPerHit + 'ms per hit x ' + cacheData.hitCount + ' hits)</div>');
                 log.push('<div>localStorage Reads Avoided: <span style="color: #6a9955;">' + (cacheData.hitCount || 0) + '</span></div>');
                 log.push('</div>');
                 log.push('<div style="margin-top: 8px; color: #666; font-size: 11px;">These are REAL stats from the products page. Open products.html and browse to see hits increase!</div>');
