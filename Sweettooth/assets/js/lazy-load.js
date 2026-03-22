@@ -47,6 +47,50 @@
     var totalImages = 0;
     var observer = null;
     var loadTimes = []; // Track individual image load times
+    var statsSaved = false; // Track if stats have been saved
+
+    // Save stats to localStorage
+    function saveStats() {
+        var pageLoadTime = (performance.now() - pageLoadStart).toFixed(2);
+        var cacheHitRate = cacheStats.hits + cacheStats.misses > 0
+            ? Math.round((cacheStats.hits / (cacheStats.hits + cacheStats.misses)) * 100)
+            : 0;
+
+        // Calculate average image load time
+        var avgLoadTime = 0;
+        if (loadTimes.length > 0) {
+            var totalTime = loadTimes.reduce(function(sum, item) { return sum + parseFloat(item.time); }, 0);
+            avgLoadTime = (totalTime / loadTimes.length).toFixed(2);
+        }
+
+        // Count successful vs failed loads
+        var successfulLoads = loadTimes.filter(function(item) { return !item.error; }).length;
+        var failedLoads = loadTimes.filter(function(item) { return item.error; }).length;
+        
+        // Calculate deferred percentage
+        var deferredPercent = totalImages > 0 ? Math.round(((totalImages - loadedImages.length) / totalImages) * 100) : 0;
+
+        // Save stats to localStorage for admin panel to read
+        var statsData = {
+            total: totalImages,
+            loaded: loadedImages.length,
+            deferred: totalImages - loadedImages.length,
+            deferredPercent: deferredPercent,
+            successfulLoads: successfulLoads,
+            failedLoads: failedLoads,
+            avgLoadTime: avgLoadTime,
+            pageLoadTime: pageLoadTime,
+            cacheHitRate: cacheHitRate,
+            timestamp: new Date().toISOString()
+        };
+        
+        try {
+            localStorage.setItem('sweettooth_lazyload_stats', JSON.stringify(statsData));
+            statsSaved = true;
+        } catch (e) {
+            console.warn('[LazyLoad] Could not save stats to localStorage:', e);
+        }
+    }
 
     // Initialize lazy loading
     function init() {
@@ -114,6 +158,7 @@
             loadedImages.push(img);
             var loadTime = (performance.now() - loadStart).toFixed(2);
             loadTimes.push({ src: bg, time: loadTime, timestamp: new Date().toISOString() });
+            saveStats(); // Save stats after each load
             console.log('[SweetTooth LazyLoad] Background loaded: ' + bg + ' (' + loadTime + 'ms)');
         } else {
             // Handle regular image
@@ -137,12 +182,14 @@
                 }, 10);
                 loadedImages.push(img);
                 loadTimes.push({ src: src, time: loadTime, timestamp: new Date().toISOString() });
+                saveStats(); // Save stats after each load
                 console.log('[SweetTooth LazyLoad] Image loaded: ' + src + ' (' + loadTime + 'ms)');
             };
             preloadImg.onerror = function() {
                 img.src = originalSrc;
                 var loadTime = (performance.now() - loadStart).toFixed(2);
                 loadTimes.push({ src: src, time: loadTime, error: true, timestamp: new Date().toISOString() });
+                saveStats(); // Save stats even on error
                 console.warn('[SweetTooth LazyLoad] Image failed to load: ' + src + ' (' + loadTime + 'ms)');
             };
             preloadImg.src = src;
@@ -174,6 +221,9 @@
 
     // Log statistics with accurate data and save to localStorage
     function logStats() {
+        // Save final stats
+        saveStats();
+
         var pageLoadTime = (performance.now() - pageLoadStart).toFixed(2);
         var cacheHitRate = cacheStats.hits + cacheStats.misses > 0
             ? Math.round((cacheStats.hits / (cacheStats.hits + cacheStats.misses)) * 100)
@@ -193,26 +243,6 @@
         // Calculate deferred percentage
         var deferredPercent = totalImages > 0 ? Math.round(((totalImages - loadedImages.length) / totalImages) * 100) : 0;
 
-        // Save stats to localStorage for admin panel to read
-        var statsData = {
-            total: totalImages,
-            loaded: loadedImages.length,
-            deferred: totalImages - loadedImages.length,
-            deferredPercent: deferredPercent,
-            successfulLoads: successfulLoads,
-            failedLoads: failedLoads,
-            avgLoadTime: avgLoadTime,
-            pageLoadTime: pageLoadTime,
-            cacheHitRate: cacheHitRate,
-            timestamp: new Date().toISOString()
-        };
-        
-        try {
-            localStorage.setItem('sweettooth_lazyload_stats', JSON.stringify(statsData));
-        } catch (e) {
-            console.warn('[LazyLoad] Could not save stats to localStorage:', e);
-        }
-
         console.log('');
         console.log('===============================================================');
         console.log('     SweetTooth Lazy Load Statistics');
@@ -229,6 +259,8 @@
         console.log('  Config Cache Hits:     ' + cacheStats.hits);
         console.log('  Config Cache Misses:   ' + cacheStats.misses);
         console.log('  Cache Hit Rate:        ' + cacheHitRate + '%');
+        console.log('  ───────────────────────────────────────────────────────────');
+        console.log('  Stats saved to localStorage for admin panel to read');
         console.log('===============================================================');
         console.log('');
     }
