@@ -837,20 +837,16 @@
                     </div>
 
                     <!-- Cache Performance Impact -->
-                    <div style="margin-top: 16px; padding: 12px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #4CAF50;">
-                        <div style="color: #2e7d32; font-weight: 600; margin-bottom: 8px; font-size: 13px;">CACHE PERFORMANCE IMPACT</div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
+                    <div style="margin-top: 16px; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;">
                             <div>
-                                <span style="color: #666;">Time Saved (est):</span>
-                                <span id="cache-time-saved" style="color: #2e7d32; font-weight: 600; margin-left: 6px;">-- ms</span>
+                                <div style="color: #666; font-size: 12px; margin-bottom: 4px;">Time Saved (est)</div>
+                                <div id="cache-time-saved" style="color: #333; font-weight: 600; font-size: 16px;">-- ms</div>
                             </div>
                             <div>
-                                <span style="color: #666;">localStorage Reads Saved:</span>
-                                <span id="cache-reads-saved" style="color: #2e7d32; font-weight: 600; margin-left: 6px;">--</span>
+                                <div style="color: #666; font-size: 12px; margin-bottom: 4px;">localStorage Reads Saved</div>
+                                <div id="cache-reads-saved" style="color: #333; font-weight: 600; font-size: 16px;">--</div>
                             </div>
-                        </div>
-                        <div style="color: #666; font-size: 11px; margin-top: 8px; line-height: 1.4;">
-                            Cache stores config in memory after first load. Each cache hit saves ~5-10ms vs reading from localStorage.
                         </div>
                     </div>
                 </div>
