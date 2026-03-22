@@ -172,7 +172,7 @@
         loadedImages = Array.from(images);
     }
 
-    // Log statistics with accurate data
+    // Log statistics with accurate data and save to localStorage
     function logStats() {
         var pageLoadTime = (performance.now() - pageLoadStart).toFixed(2);
         var cacheHitRate = cacheStats.hits + cacheStats.misses > 0
@@ -189,6 +189,29 @@
         // Count successful vs failed loads
         var successfulLoads = loadTimes.filter(function(item) { return !item.error; }).length;
         var failedLoads = loadTimes.filter(function(item) { return item.error; }).length;
+        
+        // Calculate deferred percentage
+        var deferredPercent = totalImages > 0 ? Math.round(((totalImages - loadedImages.length) / totalImages) * 100) : 0;
+
+        // Save stats to localStorage for admin panel to read
+        var statsData = {
+            total: totalImages,
+            loaded: loadedImages.length,
+            deferred: totalImages - loadedImages.length,
+            deferredPercent: deferredPercent,
+            successfulLoads: successfulLoads,
+            failedLoads: failedLoads,
+            avgLoadTime: avgLoadTime,
+            pageLoadTime: pageLoadTime,
+            cacheHitRate: cacheHitRate,
+            timestamp: new Date().toISOString()
+        };
+        
+        try {
+            localStorage.setItem('sweettooth_lazyload_stats', JSON.stringify(statsData));
+        } catch (e) {
+            console.warn('[LazyLoad] Could not save stats to localStorage:', e);
+        }
 
         console.log('');
         console.log('===============================================================');
@@ -196,7 +219,7 @@
         console.log('===============================================================');
         console.log('  Total Images:          ' + totalImages);
         console.log('  Loaded:                ' + loadedImages.length + ' (' + (totalImages > 0 ? Math.round((loadedImages.length / totalImages) * 100) : 0) + '%)');
-        console.log('  Deferred:              ' + (totalImages - loadedImages.length) + ' (' + (totalImages > 0 ? Math.round(((totalImages - loadedImages.length) / totalImages) * 100) : 0) + '%)');
+        console.log('  Deferred:              ' + (totalImages - loadedImages.length) + ' (' + deferredPercent + '%)');
         console.log('  Successful Loads:      ' + successfulLoads);
         console.log('  Failed Loads:          ' + failedLoads);
         if (loadTimes.length > 0) {

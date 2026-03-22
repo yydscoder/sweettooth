@@ -873,9 +873,12 @@
                 <div class="settings-card" style="margin-top: 24px;">
                     <h3>Performance Logs</h3>
                     <p style="color: #666; margin-bottom: 16px;">Real-time logs from lazy loading and caching. Open products.html in another tab to see live activity.</p>
+                    <div style="text-align: right; font-size: 11px; color: #666; margin-bottom: 8px;">
+                        Last updated: <span id="logs-last-updated">Never</span>
+                    </div>
 
                     <div style="background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 12px;" id="logs-container">
-                        <div style="color: #666; text-align: center; padding: 20px;">No logs yet. Navigate to products page to see lazy loading and caching activity.</div>
+                        <div style="color: #666; text-align: center; padding: 20px;">No logs yet. Open products.html in another tab and browse to see lazy loading activity.</div>
                     </div>
 
                     <div style="margin-top: 12px; display: flex; gap: 8px;">
@@ -1669,75 +1672,92 @@
 
             window.refreshLogs = function() {
                 var logsContainer = document.getElementById('logs-container');
+                var lastUpdatedEl = document.getElementById('logs-last-updated');
                 if (!logsContainer) return;
+                
+                // Update timestamp
+                if (lastUpdatedEl) {
+                    lastUpdatedEl.textContent = new Date().toLocaleTimeString();
+                }
 
                 var logs = [];
 
-                // Get lazy load logs from stats
-                if (window.SweetToothLazyLoad && window.SweetToothLazyLoad.getStats) {
-                    var lazyStats = window.SweetToothLazyLoad.getStats();
-                    logs.push({
-                        type: 'info',
-                        source: 'LazyLoad',
-                        message: 'Total: ' + lazyStats.total + ' | Loaded: ' + lazyStats.loaded + ' | Deferred: ' + lazyStats.deferred,
-                        timestamp: new Date().toLocaleTimeString()
-                    });
-                    if (lazyStats.avgLoadTime && parseFloat(lazyStats.avgLoadTime) > 0) {
+                // Read lazy load stats from localStorage (set by products page)
+                try {
+                    var lazyLoadLogs = localStorage.getItem('sweettooth_lazyload_stats');
+                    if (lazyLoadLogs) {
+                        var stats = JSON.parse(lazyLoadLogs);
                         logs.push({
                             type: 'info',
                             source: 'LazyLoad',
-                            message: 'Avg load time: ' + lazyStats.avgLoadTime + 'ms',
-                            timestamp: new Date().toLocaleTimeString()
+                            message: 'Total: ' + (stats.total || 0) + ' | Loaded: ' + (stats.loaded || 0) + ' | Deferred: ' + (stats.deferred || 0) + ' (' + (stats.deferredPercent || 0) + '%)',
+                            timestamp: stats.timestamp || new Date().toLocaleTimeString()
                         });
+                        if (stats.avgLoadTime) {
+                            logs.push({
+                                type: 'info',
+                                source: 'LazyLoad',
+                                message: 'Avg Load Time: ' + stats.avgLoadTime + 'ms | Successful: ' + (stats.successfulLoads || 0) + ' | Failed: ' + (stats.failedLoads || 0),
+                                timestamp: stats.timestamp || new Date().toLocaleTimeString()
+                            });
+                        }
                     }
+                } catch (e) {
+                    console.warn('[Admin] Could not read lazy load stats:', e);
                 }
 
-                // Get cache stats
-                if (window.SweetToothOptimization && window.SweetToothOptimization.getCacheStats) {
-                    var cacheStats = window.SweetToothOptimization.getCacheStats();
-                    logs.push({
-                        type: 'info',
-                        source: 'Cache',
-                        message: 'Assets: ' + cacheStats.assets + ' | Hits: ' + cacheStats.hits + ' | Misses: ' + cacheStats.misses + ' | Hit Rate: ' + cacheStats.hitRate + '%',
-                        timestamp: new Date().toLocaleTimeString()
-                    });
-                }
-
-                // Get performance metrics
-                if (window.SweetToothPerf && window.SweetToothPerf.getMetrics) {
-                    var perfMetrics = window.SweetToothPerf.getMetrics();
-                    if (perfMetrics && perfMetrics.pageLoadTime) {
-                        logs.push({
-                            type: 'success',
-                            source: 'Performance',
-                            message: 'Page load: ' + perfMetrics.pageLoadTime.toFixed(2) + 'ms | Resources: ' + perfMetrics.resourceCount,
-                            timestamp: new Date().toLocaleTimeString()
-                        });
-                    }
-                }
-
-                // Also check localStorage for any stored logs
+                // Read cache stats from localStorage
                 try {
-                    var storedLogs = localStorage.getItem('sweettooth_perf_logs');
-                    if (storedLogs) {
-                        var parsedLogs = JSON.parse(storedLogs);
+                    var cacheData = JSON.parse(localStorage.getItem('sweettooth_asset_cache') || '{}');
+                    if (cacheData.assets || cacheData.hitCount !== undefined) {
+                        var totalRequests = (cacheData.hitCount || 0) + (cacheData.missCount || 0);
+                        var hitRate = totalRequests > 0 ? Math.round((cacheData.hitCount || 0) / totalRequests * 100) : 0;
+                        var assetCount = Object.keys(cacheData.assets || {}).length;
+                        
+                        logs.push({
+                            type: 'info',
+                            source: 'Cache',
+                            message: 'Assets: ' + assetCount + ' | Hits: ' + (cacheData.hitCount || 0) + ' | Misses: ' + (cacheData.missCount || 0) + ' | Hit Rate: ' + hitRate + '%',
+                            timestamp: cacheData.lastUpdate ? new Date(cacheData.lastUpdate).toLocaleTimeString() : new Date().toLocaleTimeString()
+                        });
+                        
+                        // Calculate cache size
+                        var cacheSize = JSON.stringify(cacheData.assets || {}).length;
+                        logs.push({
+                            type: 'info',
+                            source: 'Cache',
+                            message: 'Cache Size: ' + (cacheSize / 1024).toFixed(2) + ' KB',
+                            timestamp: new Date().toLocaleTimeString()
+                        });
+                    }
+                } catch (e) {
+                    console.warn('[Admin] Could not read cache stats:', e);
+                }
+
+                // Read performance logs from localStorage
+                try {
+                    var perfLogs = localStorage.getItem('sweettooth_perf_logs');
+                    if (perfLogs) {
+                        var parsedLogs = JSON.parse(perfLogs);
                         if (Array.isArray(parsedLogs) && parsedLogs.length > 0) {
-                            // Add last 5 stored logs
-                            parsedLogs.slice(-5).forEach(function(log) {
+                            // Show last 10 performance logs
+                            parsedLogs.slice(-10).forEach(function(log) {
                                 logs.push({
                                     type: log.type || 'info',
-                                    source: log.source || 'System',
+                                    source: log.source || 'Performance',
                                     message: log.message,
                                     timestamp: log.timestamp || new Date().toLocaleTimeString()
                                 });
                             });
                         }
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.warn('[Admin] Could not read perf logs:', e);
+                }
 
                 // Render logs
                 if (logs.length === 0) {
-                    logsContainer.innerHTML = '<div style="color: #666; text-align: center; padding: 20px;">No logs yet. Navigate to products page to see lazy loading and caching activity.</div>';
+                    logsContainer.innerHTML = '<div style="color: #666; text-align: center; padding: 20px;">No logs yet. Open products.html in another tab and browse to see lazy loading activity.</div>';
                 } else {
                     logsContainer.innerHTML = logs.map(function(log) {
                         var color = log.type === 'success' ? '#6a9955' : (log.type === 'warn' ? '#ce9178' : '#4ec9b0');

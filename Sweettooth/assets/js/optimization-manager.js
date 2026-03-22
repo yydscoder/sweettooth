@@ -172,6 +172,7 @@
         var cache = {
             version: '1.0.0',
             timestamp: Date.now(),
+            lastUpdate: new Date().toISOString(),
             ttl: 86400000, // 24 hours
             assets: {},
             hitCount: 0,
@@ -297,6 +298,7 @@
                 timestamp: Date.now(),
                 size: typeof data === 'string' ? data.length : JSON.stringify(data).length
             };
+            cache.lastUpdate = new Date().toISOString();
             localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
             
             // Track operation
@@ -323,6 +325,7 @@
             if (!asset) {
                 // Cache MISS
                 cache.missCount = (cache.missCount || 0) + 1;
+                cache.lastUpdate = new Date().toISOString();
                 cache.operations = cache.operations || [];
                 cache.operations.push({ type: 'miss', url: url, timestamp: Date.now() });
                 localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
@@ -334,6 +337,7 @@
             if ((Date.now() - asset.timestamp) > cache.ttl) {
                 delete cache.assets[url];
                 cache.missCount = (cache.missCount || 0) + 1;
+                cache.lastUpdate = new Date().toISOString();
                 cache.operations.push({ type: 'expired', url: url, timestamp: Date.now() });
                 localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
                 console.log('[SweetTooth Cache] EXPIRED:', url);
@@ -342,6 +346,7 @@
 
             // Cache HIT
             cache.hitCount = (cache.hitCount || 0) + 1;
+            cache.lastUpdate = new Date().toISOString();
             cache.operations.push({ type: 'hit', url: url, size: asset.size, timestamp: Date.now() });
             localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
             console.log('[SweetTooth Cache] HIT:', url, '(' + asset.type + ', ' + asset.size + ' bytes)');
