@@ -781,6 +781,12 @@
                             <button class="btn btn-secondary" onclick="clearCacheOnly()">
                                 Clear Cache Only
                             </button>
+                            <button class="btn btn-secondary" onclick="resetCacheCounters()">
+                                Reset Cache Counters
+                            </button>
+                            <button class="btn btn-success" onclick="testCacheDemo()">
+                                Test Cache (See It Work!)
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1435,16 +1441,37 @@
                     window.SweetToothOptimization.clearCache();
                     console.log('[Admin] Cache cleared');
                     updateRealtimeMetrics();
-                    alert('Cache cleared! Reload page to see fresh resources.');
+                    refreshLogs();
+                    alert('Cache cleared!');
                 } else {
                     // Fallback: clear localStorage manually
                     var keys = Object.keys(localStorage).filter(k => k.includes('sweettooth_cache'));
                     keys.forEach(k => localStorage.removeItem(k));
                     updateRealtimeMetrics();
+                    refreshLogs();
                     alert('Cache cleared!');
                 }
             };
-            
+
+            // Reset cache hit/miss counters without clearing cached data
+            window.resetCacheCounters = function() {
+                if (!confirm('Reset cache hit/miss counters? Cached data will remain.')) return;
+
+                try {
+                    var cacheData = JSON.parse(localStorage.getItem('sweettooth_asset_cache') || '{}');
+                    cacheData.hitCount = 0;
+                    cacheData.missCount = 0;
+                    cacheData.lastUpdate = new Date().toISOString();
+                    localStorage.setItem('sweettooth_asset_cache', JSON.stringify(cacheData));
+                    updateRealtimeMetrics();
+                    refreshLogs();
+                    alert('Cache counters reset! Hits and misses now start from 0.');
+                } catch (e) {
+                    console.error('[Admin] Failed to reset cache counters:', e);
+                    alert('Failed to reset counters.');
+                }
+            };
+
             window.enableAllOptimizations = function() {
                 document.getElementById('toggle-lazy-load').checked = true;
                 document.getElementById('toggle-caching').checked = true;

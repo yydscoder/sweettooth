@@ -228,7 +228,7 @@
         try {
             var cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
             var imageCount = 0;
-            
+
             // Cache product catalog images
             if (window.PRODUCT_IMAGES) {
                 for (var name in PRODUCT_IMAGES) {
@@ -245,12 +245,13 @@
                     }
                 }
             }
-            
-            // Update cache
+
+            // Update cache - DON'T increment missCount for caching new items
             cache.hitCount = cache.hitCount || 0;
-            cache.missCount = (cache.missCount || 0) + imageCount;
+            cache.missCount = cache.missCount || 0;
+            cache.lastUpdate = new Date().toISOString();
             localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-            
+
             if (imageCount > 0) {
                 console.log('[SweetTooth Opt] Cached', imageCount, 'product images');
             }
