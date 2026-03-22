@@ -1590,8 +1590,6 @@
                 log.push('<div>Time Saved: <span style="color: #6a9955;">~' + totalTimeSaved + 'ms</span> (' + timeSavedPerHit + 'ms per hit x ' + cacheData.hitCount + ' hits)</div>');
                 log.push('<div>localStorage Reads Avoided: <span style="color: #6a9955;">' + (cacheData.hitCount || 0) + '</span></div>');
                 log.push('</div>');
-                log.push('<div style="margin-top: 8px; color: #666; font-size: 11px;">These are REAL stats from the products page. Open products.html and browse to see hits increase!</div>');
-
                 output.innerHTML = log.join('');
 
                 // Update the performance impact display
