@@ -17,6 +17,17 @@
     var STORAGE_KEY = 'sweettooth_optimization_config';
     var CACHE_KEY = 'sweettooth_asset_cache';
 
+    // Format bytes to human readable
+    function formatBytes(bytes) {
+        if (bytes >= 1048576) {
+            return (bytes / 1048576).toFixed(2) + ' MB';
+        }
+        if (bytes >= 1024) {
+            return (bytes / 1024).toFixed(2) + ' KB';
+        }
+        return bytes + ' bytes';
+    }
+
     // Load saved configuration
     function loadConfig() {
         try {
