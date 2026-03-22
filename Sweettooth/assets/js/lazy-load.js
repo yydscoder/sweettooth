@@ -34,15 +34,12 @@
     }
 
     // Configuration - reads from admin dashboard settings
-    // Optimized for Vercel: larger rootMargin preloads images before visible
     var config = {
         enabled: configLoaded ? (savedConfig.lazyLoadEnabled !== false) : true,
-        rootMargin: '200px', // Increased from 50px - preload images 200px before viewport
+        rootMargin: '50px',
         threshold: 0.01,
         placeholderColor: '#FFDC9F',
-        fadeInDuration: 200, // Reduced from 300ms for faster perceived load
-        maxConcurrentLoads: 3, // Limit concurrent image loads to prevent blocking
-        priorityAboveFold: true // Load above-fold images immediately
+        fadeInDuration: 300
     };
 
     // Track loaded images with timestamps
@@ -50,10 +47,8 @@
     var totalImages = 0;
     var observer = null;
     var loadTimes = []; // Track individual image load times
-    var pendingLoads = 0; // Track concurrent loads
-    var loadQueue = []; // Queue for images waiting to load
 
-    // Initialize lazy loading with priority loading for above-fold images
+    // Initialize lazy loading
     function init() {
         if (!config.enabled) {
             loadAllImages();
@@ -70,32 +65,15 @@
         totalImages = images.length;
         console.log('[SweetTooth LazyLoad] Found ' + totalImages + ' lazy-load images to observe');
 
-        // Priority load: Load above-fold images immediately
-        if (config.priorityAboveFold) {
-            images.forEach(function(img, index) {
-                var rect = img.getBoundingClientRect();
-                if (rect.top < window.innerHeight && !img.classList.contains('lazy-loaded')) {
-                    // Above fold - load immediately with priority
-                    var src = img.getAttribute('data-src') || img.getAttribute('data-lazy');
-                    if (src) {
-                        console.log('[SweetTooth LazyLoad] Priority loading above-fold image ' + (index + 1) + ': ' + src);
-                        loadLazyImage(img);
-                    }
-                }
-            });
-        }
-
-        // Create intersection observer with optimized rootMargin
+        // Create intersection observer
         observer = new IntersectionObserver(onIntersection, {
             rootMargin: config.rootMargin,
             threshold: config.threshold
         });
 
-        // Observe all lazy-load images that aren't already loaded
+        // Observe all lazy-load images
         images.forEach(function(img) {
-            if (!img.classList.contains('lazy-loaded')) {
-                observer.observe(img);
-            }
+            observer.observe(img);
         });
 
         // Also handle background images
@@ -118,7 +96,7 @@
         });
     }
 
-    // Load a lazy image with accurate timing, concurrent limiting, and async decoding
+    // Load a lazy image with accurate timing
     function loadLazyImage(img) {
         var src = img.getAttribute('data-src') || img.getAttribute('data-lazy');
         var bg = img.getAttribute('data-bg');
@@ -129,15 +107,6 @@
         // Skip if already loaded
         if (img.classList.contains('lazy-loaded')) return;
 
-        // Check concurrent load limit
-        if (pendingLoads >= config.maxConcurrentLoads) {
-            // Queue this image for later loading
-            loadQueue.push({ img: img, src: src, bg: bg, loadStart: loadStart });
-            return;
-        }
-
-        pendingLoads++;
-
         if (bg) {
             // Handle background image
             img.style.backgroundImage = 'url(' + bg + ')';
@@ -145,11 +114,9 @@
             loadedImages.push(img);
             var loadTime = (performance.now() - loadStart).toFixed(2);
             loadTimes.push({ src: bg, time: loadTime, timestamp: new Date().toISOString() });
-            pendingLoads--;
             console.log('[SweetTooth LazyLoad] Background loaded: ' + bg + ' (' + loadTime + 'ms)');
-            processQueue();
         } else {
-            // Handle regular image with async decoding
+            // Handle regular image
             var originalSrc = img.src;
 
             // Set placeholder if no src
@@ -157,15 +124,11 @@
                 img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="' + config.placeholderColor + '" width="400" height="300"/%3E%3C/svg%3E';
             }
 
-            // Create new image to preload with async decoding
+            // Create new image to preload
             var preloadImg = new Image();
-            preloadImg.decoding = 'async'; // Non-blocking decode
-            preloadImg.fetchPriority = 'low'; // Low priority fetch
-            
             preloadImg.onload = function() {
                 var loadTime = (performance.now() - loadStart).toFixed(2);
                 img.src = src;
-                img.decoding = 'async'; // Also set on main image
                 img.classList.add('lazy-loaded');
                 img.style.opacity = '0';
                 setTimeout(function() {
@@ -174,30 +137,15 @@
                 }, 10);
                 loadedImages.push(img);
                 loadTimes.push({ src: src, time: loadTime, timestamp: new Date().toISOString() });
-                pendingLoads--;
                 console.log('[SweetTooth LazyLoad] Image loaded: ' + src + ' (' + loadTime + 'ms)');
-                processQueue();
             };
             preloadImg.onerror = function() {
                 img.src = originalSrc;
                 var loadTime = (performance.now() - loadStart).toFixed(2);
                 loadTimes.push({ src: src, time: loadTime, error: true, timestamp: new Date().toISOString() });
-                pendingLoads--;
                 console.warn('[SweetTooth LazyLoad] Image failed to load: ' + src + ' (' + loadTime + 'ms)');
-                processQueue();
             };
             preloadImg.src = src;
-        }
-    }
-
-    // Process queued image loads
-    function processQueue() {
-        if (loadQueue.length > 0 && pendingLoads < config.maxConcurrentLoads) {
-            var next = loadQueue.shift();
-            // Small delay to prevent burst loading
-            setTimeout(function() {
-                loadLazyImage(next.img);
-            }, 50);
         }
     }
 
@@ -224,7 +172,7 @@
         loadedImages = Array.from(images);
     }
 
-    // Log statistics with accurate data and performance summary
+    // Log statistics with accurate data
     function logStats() {
         var pageLoadTime = (performance.now() - pageLoadStart).toFixed(2);
         var cacheHitRate = cacheStats.hits + cacheStats.misses > 0
@@ -233,78 +181,44 @@
 
         // Calculate average image load time
         var avgLoadTime = 0;
-        var minLoadTime = Infinity;
-        var maxLoadTime = 0;
         if (loadTimes.length > 0) {
             var totalTime = loadTimes.reduce(function(sum, item) { return sum + parseFloat(item.time); }, 0);
             avgLoadTime = (totalTime / loadTimes.length).toFixed(2);
-            loadTimes.forEach(function(item) {
-                var time = parseFloat(item.time);
-                if (time < minLoadTime) minLoadTime = time;
-                if (time > maxLoadTime) maxLoadTime = time;
-            });
-            if (loadTimes.length === 0) minLoadTime = 0;
         }
 
         // Count successful vs failed loads
         var successfulLoads = loadTimes.filter(function(item) { return !item.error; }).length;
         var failedLoads = loadTimes.filter(function(item) { return item.error; }).length;
 
-        // Estimate bandwidth saved (placeholder vs actual image)
-        var estimatedBandwidthSaved = (totalImages - loadedImages.length) * 50; // ~50KB per image average
-
         console.log('');
-        console.log('========================================================================');
-        console.log('           SweetTooth Lazy Load Statistics');
-        console.log('========================================================================');
-        console.log('  IMAGES:');
-        console.log('  ────────────────────────────────────────────────────────────────────');
+        console.log('===============================================================');
+        console.log('     SweetTooth Lazy Load Statistics');
+        console.log('===============================================================');
         console.log('  Total Images:          ' + totalImages);
         console.log('  Loaded:                ' + loadedImages.length + ' (' + (totalImages > 0 ? Math.round((loadedImages.length / totalImages) * 100) : 0) + '%)');
         console.log('  Deferred:              ' + (totalImages - loadedImages.length) + ' (' + (totalImages > 0 ? Math.round(((totalImages - loadedImages.length) / totalImages) * 100) : 0) + '%)');
         console.log('  Successful Loads:      ' + successfulLoads);
         console.log('  Failed Loads:          ' + failedLoads);
-        console.log('');
-        console.log('  PERFORMANCE:');
-        console.log('  ────────────────────────────────────────────────────────────────────');
         if (loadTimes.length > 0) {
-            console.log('  Avg Load Time:         ' + avgLoadTime + 'ms');
-            console.log('  Min Load Time:         ' + minLoadTime.toFixed(2) + 'ms');
-            console.log('  Max Load Time:         ' + maxLoadTime.toFixed(2) + 'ms');
+            console.log('  Avg Load Time:       ' + avgLoadTime + 'ms');
         }
         console.log('  Page Load Time:        ' + pageLoadTime + 'ms');
-        console.log('  Concurrent Loads:      Max ' + config.maxConcurrentLoads);
-        console.log('  Root Margin:           ' + config.rootMargin);
-        console.log('');
-        console.log('  OPTIMIZATION:');
-        console.log('  ────────────────────────────────────────────────────────────────────');
-        console.log('  Above-fold Priority:   ' + (config.priorityAboveFold ? 'Enabled' : 'Disabled'));
-        console.log('  Async Decoding:        Enabled');
-        console.log('  Est. Bandwidth Saved:  ~' + estimatedBandwidthSaved + 'KB (deferred images)');
         console.log('  Config Cache Hits:     ' + cacheStats.hits);
         console.log('  Config Cache Misses:   ' + cacheStats.misses);
         console.log('  Cache Hit Rate:        ' + cacheHitRate + '%');
-        console.log('========================================================================');
+        console.log('===============================================================');
         console.log('');
     }
 
-    // Get statistics - returns accurate real-time data for dashboard
+    // Get statistics - returns accurate real-time data
     function getStats() {
         var successfulLoads = loadTimes.filter(function(item) { return !item.error; }).length;
         var failedLoads = loadTimes.filter(function(item) { return item.error; }).length;
         var avgLoadTime = 0;
-        var minLoadTime = 0;
-        var maxLoadTime = 0;
-        
         if (loadTimes.length > 0) {
             var totalTime = loadTimes.reduce(function(sum, item) { return sum + parseFloat(item.time); }, 0);
             avgLoadTime = totalTime / loadTimes.length;
-            minLoadTime = Math.min.apply(null, loadTimes.map(function(item) { return parseFloat(item.time); }));
-            maxLoadTime = Math.max.apply(null, loadTimes.map(function(item) { return parseFloat(item.time); }));
         }
-
-        // Estimate bandwidth saved
-        var estimatedBandwidthSaved = (totalImages - loadedImages.length) * 50;
 
         return {
             total: totalImages,
@@ -314,19 +228,9 @@
             successfulLoads: successfulLoads,
             failedLoads: failedLoads,
             avgLoadTime: avgLoadTime.toFixed(2),
-            minLoadTime: minLoadTime.toFixed(2),
-            maxLoadTime: maxLoadTime.toFixed(2),
             loadTimes: loadTimes,
             cacheHits: cacheStats.hits,
-            cacheMisses: cacheStats.misses,
-            pendingLoads: pendingLoads,
-            queueLength: loadQueue.length,
-            estimatedBandwidthSaved: estimatedBandwidthSaved,
-            config: {
-                rootMargin: config.rootMargin,
-                maxConcurrentLoads: config.maxConcurrentLoads,
-                priorityAboveFold: config.priorityAboveFold
-            }
+            cacheMisses: cacheStats.misses
         };
     }
 

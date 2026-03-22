@@ -565,20 +565,8 @@ function renderProducts(containerId, options) {
             } catch (e) { console.warn('[Cart] Could not check lazy load setting:', e); }
 
             if (lazyLoadEnabled) {
-                // Use lazy loading with BOTH native loading="lazy" AND data-src for IntersectionObserver
-                // Native loading="lazy" provides browser-level lazy loading
-                // data-src allows our custom lazy-load.js to track and log loading
-                // decoding="async" prevents blocking the main thread
-                imageHtml = '<a href="' + productUrl + '">' +
-                    '<img data-src="' + product.image + '" ' +
-                    'src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 400 300\'%3E%3Crect fill=\'%23FFDC9F\' width=\'400\' height=\'300\'/%3E%3C/svg%3E" ' +
-                    'alt="' + sanitizeHTML(product.name) + '" ' +
-                    'style="width: 100%; height: 200px; object-fit: cover;" ' +
-                    'class="lazy-image" ' +
-                    'loading="lazy" ' +
-                    'decoding="async" ' +
-                    'fetchpriority="low">' +
-                    '</a>';
+                // Use lazy loading - image won't load until scrolled into view
+                imageHtml = '<a href="' + productUrl + '"><img data-src="' + product.image + '" alt="' + sanitizeHTML(product.name) + '" style="width: 100%; height: 200px; object-fit: cover;" class="lazy-image"></a>';
             } else {
                 // Load image immediately (lazy load disabled)
                 imageHtml = '<a href="' + productUrl + '"><img src="' + product.image + '" alt="' + sanitizeHTML(product.name) + '" style="width: 100%; height: 200px; object-fit: cover;"></a>';

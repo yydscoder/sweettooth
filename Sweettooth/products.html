@@ -5,21 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products - SweetTooth Gelato</title>
 
-    <!-- Preconnect to Vercel CDN for faster image loading -->
-    <link rel="preconnect" href="https://images.ctfassets.net" crossorigin>
-    <link rel="preconnect" href="https://assets.vercel.com" crossorigin>
-    
-    <!-- DNS prefetch for external resources -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-
-    <!-- Preload critical CSS -->
-    <link rel="preload" href="assets/css/shared.css" as="style">
-
-    <!-- Preload critical JavaScript -->
-    <link rel="preload" href="assets/js/cart.js" as="script">
-    <link rel="preload" href="assets/js/lazy-load.js" as="script">
-
     <!-- Google Fonts - Poppins and Playfair Display -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/shared.css">
@@ -607,11 +592,18 @@
             });
         });
 
+        // Render products when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (window.SweetToothCart && SweetToothCart.renderProducts) {
+                    SweetToothCart.renderProducts('products-grid');
+                    console.log('[Products] Products rendered');
+                }
+            }, 100);
+        });
     </script>
     <script src="assets/js/secure-config.js"></script>
-    <script src="assets/js/lazy-load.js"></script>
     <script src="assets/js/cart.js?v=CARTFINAL2"></script>
-    <script src="assets/js/optimization-manager.js"></script>
-    <script src="assets/js/products-init.js"></script>
+    <script src="assets/js/lazy-load.js"></script>
 </body>
 </html>
