@@ -1,15 +1,15 @@
 /**
  * SweetTooth Gelato - Index Page Styles
- * Extracted from inline CSS for better maintainability
+ * Page-specific styles only. Header/nav/cart styles are in shared.css
  */
 
 /* CSS Variables for SweetTooth Colors */
 :root {
-    --color-cream: #FFF6CC; /* RGB 255 246 204 */
-    --color-pink: #F37273; /* RGB 243 114 115 */
-    --color-light-cream: #FEFAE8; /* RGB 254 250 232 */
-    --color-peach: #FFDC9F; /* RGB 255 220 160 */
-    --color-orange: #F2BA72; /* RGB 242 186 114 */
+    --color-cream: #FFF6CC;
+    --color-pink: #F37273;
+    --color-light-cream: #FEFAE8;
+    --color-peach: #FFDC9F;
+    --color-orange: #F2BA72;
 }
 
 * {
@@ -27,118 +27,7 @@ body {
     scroll-padding-top: 80px;
 }
 
-/* Header Styles */
-header {
-    background-color: var(--color-cream);
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-}
-
-.logo {
-    height: 50px;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-}
-
-nav a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-nav a:hover {
-    color: var(--color-pink);
-}
-
-nav a.active {
-    color: var(--color-pink);
-}
-
-/* Cart Icon */
-.cart-icon {
-    position: relative;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    margin-left: 1.5rem;
-}
-
-.cart-icon svg {
-    width: 24px;
-    height: 24px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-}
-
-.cart-icon .cart-count {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: var(--color-pink);
-    color: white;
-    font-size: 0.75rem;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-}
-
-/* Cart Dropdown */
-.cart-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 380px;
-    max-width: 90vw;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-    z-index: 9999;
-    display: none;
-    overflow: hidden;
-    overflow-y: auto;
-    max-height: 500px;
-    animation: slideDown 0.3s ease;
-    margin-top: 10px;
-}
-
-.cart-dropdown.active {
-    display: block;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Custom fonts - DEALERPLATE and POPPINS BOLD would go here if available */
+/* Custom fonts */
 .dealerplate {
     font-family: 'Playfair Display', serif;
 }
@@ -153,7 +42,7 @@ nav a.active {
     font-weight: 400;
 }
 
-/* Additional styles for blending design elements */
+/* Layout utility */
 .blend-design {
     max-width: 1200px;
     margin: 0 auto;
@@ -176,47 +65,7 @@ nav a.active {
     font-weight: 700;
 }
 
-/* Header Styles */
-header {
-    background-color: var(--color-cream);
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--color-pink);
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-}
-
-nav a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-nav a:hover {
-    color: var(--color-pink);
-}
-
+/* CTA Button */
 .cta-button {
     background-color: var(--color-pink);
     color: white;
@@ -342,63 +191,6 @@ nav a:hover {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
-}
-
-.product-card {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.product-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-}
-
-.product-image {
-    height: 200px;
-    background-color: var(--color-peach);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.product-image-placeholder {
-    color: #777;
-}
-
-.product-info {
-    padding: 1.5rem;
-}
-
-.product-info h3 {
-    color: var(--color-pink);
-    margin-bottom: 0.5rem;
-}
-
-.product-price {
-    font-weight: 700;
-    color: var(--color-orange);
-    font-size: 1.2rem;
-}
-
-.add-to-cart-btn {
-    background-color: var(--color-pink);
-    color: white;
-    border: none;
-    padding: 0.6rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 600;
-    margin-top: 1rem;
-    transition: background-color 0.3s;
-    width: 100%;
-}
-
-.add-to-cart-btn:hover {
-    background-color: #e05a5b;
 }
 
 /* Pricing Section */
@@ -648,74 +440,6 @@ nav a:hover {
     color: white;
 }
 
-/* Footer */
-footer {
-    background-color: #333;
-    color: white;
-    padding: 3rem 2rem 1rem;
-}
-
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.footer-section h3 {
-    color: var(--color-peach);
-    margin-bottom: 1rem;
-}
-
-.footer-section ul {
-    list-style: none;
-}
-
-.footer-section ul li {
-    margin-bottom: 0.5rem;
-}
-
-.footer-section a {
-    color: #ccc;
-    text-decoration: none;
-}
-
-.footer-section a:hover {
-    color: white;
-}
-
-.copyright {
-    text-align: center;
-    padding-top: 2rem;
-    border-top: 1px solid #555;
-    color: #aaa;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .philosophy-container {
-        grid-template-columns: 1fr;
-    }
-
-    .hero h1 {
-        font-size: 2.5rem;
-    }
-}
-
-/* Cart Dropdown Styles */
-.header-container {
-    align-items: center;
-}
-
-/* Cart styling is in shared.css */
-
 /* Notification Styles */
 .notification {
     position: fixed;
@@ -754,5 +478,21 @@ footer {
     to {
         transform: translateX(100%);
         opacity: 0;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .philosophy-container {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
     }
 }

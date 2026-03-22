@@ -1,0 +1,56 @@
+<!-- SweetTooth Gelato - Shared Header Component -->
+<!-- Include this file in all pages for consistent header/navigation/cart -->
+<!-- Usage: <div id="shared-header"></div> then load via JS -->
+
+<header>
+    <div class="header-container blend-design">
+        <div class="logo">
+            <a href="index.html">
+                <img src="Images/SweetTooth+Logo.png" alt="SweetTooth Logo" style="height: 50px;">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="our-story.html">Our Story</a></li>
+                <li><a href="products.html">Flavors</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="feed.html">Feed</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="cart-icon">
+            <div class="cart-icon-wrapper" onclick="toggleCartDropdown()" style="display: flex; align-items: center; cursor: pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count" id="cart-count">0</span>
+            </div>
+
+            <!-- Cart Dropdown -->
+            <div class="cart-dropdown" id="cart-dropdown">
+                <div class="cart-header">
+                    <h3 class="dealerplate">Your Cart</h3>
+                    <span class="cart-close" style="cursor: pointer;" onclick="event.stopPropagation(); toggleCartDropdown()">&times;</span>
+                </div>
+                <div class="cart-items-container" id="cart-items-container">
+                    <div class="empty-cart-message">
+                        <p>🛒 Cart is empty</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add some delicious gelato!</p>
+                    </div>
+                </div>
+                <div class="cart-items-filled" id="cart-items-filled" style="display: none;">
+                    <div id="cart-items-list" style="padding: 0;"></div>
+                    <div class="cart-total">Total: RM<span id="cart-total">0.00</span></div>
+                    <div class="cart-actions">
+                        <button class="checkout-btn poppins-bold" onclick="event.stopPropagation(); proceedToCheckout()">Proceed to Checkout</button>
+                        <button class="view-cart-btn poppins-bold" onclick="event.stopPropagation(); window.location.href='products.html'">View Full Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
