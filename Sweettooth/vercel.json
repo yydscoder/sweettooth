@@ -1,5 +1,10 @@
 {
   "version": 2,
+  "images": {
+    "domains": ["images.ctfassets.net", "assets.vercel.com"],
+    "sizes": [64, 128, 256, 384, 512, 768, 1080],
+    "formats": ["image/webp", "image/avif"]
+  },
   "headers": [
     {
       "source": "/Images/(.*)",
@@ -11,6 +16,10 @@
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
+        },
+        {
+          "key": "Content-Type",
+          "value": "image/png"
         }
       ]
     },
@@ -37,6 +46,10 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
         }
       ]
     }
