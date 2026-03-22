@@ -592,18 +592,23 @@
             });
         });
 
-        // Render products when DOM is ready
+    </script>
+    <script src="assets/js/secure-config.js"></script>
+    <script src="assets/js/lazy-load.js"></script>
+    <script src="assets/js/cart.js?v=CARTFINAL2"></script>
+    <script src="assets/js/optimization-manager.js"></script>
+    <script>
+        // Render products after all scripts are loaded
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 if (window.SweetToothCart && SweetToothCart.renderProducts) {
                     SweetToothCart.renderProducts('products-grid');
-                    console.log('[Products] Products rendered');
+                    console.log('[Products] Products rendered with images');
+                } else {
+                    console.warn('[Products] SweetToothCart not loaded - check script includes');
                 }
-            }, 100);
+            }, 200);
         });
     </script>
-    <script src="assets/js/secure-config.js"></script>
-    <script src="assets/js/cart.js?v=CARTFINAL2"></script>
-    <script src="assets/js/lazy-load.js"></script>
 </body>
 </html>

@@ -8,7 +8,9 @@
 
     // Page load timing
     var pageLoadStart = performance.now();
-    var cacheStats = { hits: 0, misses: 0 };
+    
+    // Accurate cache stats - tracks actual localStorage operations
+    var cacheStats = { hits: 0, misses: 0, operations: [] };
 
     // Load saved configuration from admin dashboard
     var savedConfig = {};
@@ -20,12 +22,15 @@
             savedConfig = JSON.parse(stored);
             configLoaded = true;
             cacheStats.hits++;
+            cacheStats.operations.push({ type: 'config_load', result: 'hit', timestamp: Date.now() });
         } else {
             cacheStats.misses++;
+            cacheStats.operations.push({ type: 'config_load', result: 'miss', timestamp: Date.now() });
         }
     } catch (e) {
         console.warn('[LazyLoad] Could not load config:', e);
         cacheStats.misses++;
+        cacheStats.operations.push({ type: 'config_load', result: 'error', error: e.message, timestamp: Date.now() });
     }
 
     // Configuration - reads from admin dashboard settings
@@ -37,10 +42,11 @@
         fadeInDuration: 300
     };
 
-    // Track loaded images
+    // Track loaded images with timestamps
     var loadedImages = [];
     var totalImages = 0;
     var observer = null;
+    var loadTimes = []; // Track individual image load times
 
     // Initialize lazy loading
     function init() {
@@ -49,9 +55,15 @@
             return;
         }
 
+        // Disconnect existing observer if reinitializing
+        if (observer) {
+            observer.disconnect();
+        }
+
         // Count total images
         var images = document.querySelectorAll('img[data-src], img[data-lazy]');
         totalImages = images.length;
+        console.log('[SweetTooth LazyLoad] Found ' + totalImages + ' lazy-load images to observe');
 
         // Create intersection observer
         observer = new IntersectionObserver(onIntersection, {
@@ -70,7 +82,7 @@
             observer.observe(el);
         });
 
-        logStats();
+        setTimeout(logStats, 1000);
     }
 
     // Intersection callback
@@ -84,10 +96,11 @@
         });
     }
 
-    // Load a lazy image
+    // Load a lazy image with accurate timing
     function loadLazyImage(img) {
         var src = img.getAttribute('data-src') || img.getAttribute('data-lazy');
         var bg = img.getAttribute('data-bg');
+        var loadStart = performance.now();
 
         if (!src && !bg) return;
 
@@ -99,12 +112,14 @@
             img.style.backgroundImage = 'url(' + bg + ')';
             img.classList.add('lazy-loaded');
             loadedImages.push(img);
-            console.log('[SweetTooth LazyLoad] Background loaded:', bg);
+            var loadTime = (performance.now() - loadStart).toFixed(2);
+            loadTimes.push({ src: bg, time: loadTime, timestamp: new Date().toISOString() });
+            console.log('[SweetTooth LazyLoad] Background loaded: ' + bg + ' (' + loadTime + 'ms)');
         } else {
             // Handle regular image
             var originalSrc = img.src;
 
-            // Set placeholder
+            // Set placeholder if no src
             if (!img.src || img.src === window.location.href) {
                 img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="' + config.placeholderColor + '" width="400" height="300"/%3E%3C/svg%3E';
             }
@@ -112,6 +127,7 @@
             // Create new image to preload
             var preloadImg = new Image();
             preloadImg.onload = function() {
+                var loadTime = (performance.now() - loadStart).toFixed(2);
                 img.src = src;
                 img.classList.add('lazy-loaded');
                 img.style.opacity = '0';
@@ -120,9 +136,14 @@
                     img.style.opacity = '1';
                 }, 10);
                 loadedImages.push(img);
+                loadTimes.push({ src: src, time: loadTime, timestamp: new Date().toISOString() });
+                console.log('[SweetTooth LazyLoad] Image loaded: ' + src + ' (' + loadTime + 'ms)');
             };
             preloadImg.onerror = function() {
                 img.src = originalSrc;
+                var loadTime = (performance.now() - loadStart).toFixed(2);
+                loadTimes.push({ src: src, time: loadTime, error: true, timestamp: new Date().toISOString() });
+                console.warn('[SweetTooth LazyLoad] Image failed to load: ' + src + ' (' + loadTime + 'ms)');
             };
             preloadImg.src = src;
         }
@@ -151,26 +172,66 @@
         loadedImages = Array.from(images);
     }
 
-    // Log statistics
+    // Log statistics with accurate data
     function logStats() {
-        setTimeout(function() {
-            var pageLoadTime = (performance.now() - pageLoadStart).toFixed(2);
-            var cacheHitRate = cacheStats.hits + cacheStats.misses > 0 
-                ? Math.round((cacheStats.hits / (cacheStats.hits + cacheStats.misses)) * 100) 
-                : 0;
-            
-            console.log('[LazyLoad] Total:', totalImages, '| Loaded:', loadedImages.length, '| Deferred:', totalImages - loadedImages.length);
-            console.log('[Performance] Page load:', pageLoadTime, 'ms | Cache hits:', cacheStats.hits, '| Cache misses:', cacheStats.misses, '| Hit rate:', cacheHitRate + '%');
-        }, 1000);
+        var pageLoadTime = (performance.now() - pageLoadStart).toFixed(2);
+        var cacheHitRate = cacheStats.hits + cacheStats.misses > 0
+            ? Math.round((cacheStats.hits / (cacheStats.hits + cacheStats.misses)) * 100)
+            : 0;
+
+        // Calculate average image load time
+        var avgLoadTime = 0;
+        if (loadTimes.length > 0) {
+            var totalTime = loadTimes.reduce(function(sum, item) { return sum + parseFloat(item.time); }, 0);
+            avgLoadTime = (totalTime / loadTimes.length).toFixed(2);
+        }
+
+        // Count successful vs failed loads
+        var successfulLoads = loadTimes.filter(function(item) { return !item.error; }).length;
+        var failedLoads = loadTimes.filter(function(item) { return item.error; }).length;
+
+        console.log('');
+        console.log('===============================================================');
+        console.log('     SweetTooth Lazy Load Statistics');
+        console.log('===============================================================');
+        console.log('  Total Images:          ' + totalImages);
+        console.log('  Loaded:                ' + loadedImages.length + ' (' + (totalImages > 0 ? Math.round((loadedImages.length / totalImages) * 100) : 0) + '%)');
+        console.log('  Deferred:              ' + (totalImages - loadedImages.length) + ' (' + (totalImages > 0 ? Math.round(((totalImages - loadedImages.length) / totalImages) * 100) : 0) + '%)');
+        console.log('  Successful Loads:      ' + successfulLoads);
+        console.log('  Failed Loads:          ' + failedLoads);
+        if (loadTimes.length > 0) {
+            console.log('  Avg Load Time:       ' + avgLoadTime + 'ms');
+            console.log('  Load Times:          ' + loadTimes.map(function(item) { return item.time + 'ms'; }).join(', '));
+        }
+        console.log('  Page Load Time:        ' + pageLoadTime + 'ms');
+        console.log('  Config Cache Hits:     ' + cacheStats.hits);
+        console.log('  Config Cache Misses:   ' + cacheStats.misses);
+        console.log('  Cache Hit Rate:        ' + cacheHitRate + '%');
+        console.log('===============================================================');
+        console.log('');
     }
 
-    // Get statistics
+    // Get statistics - returns accurate real-time data
     function getStats() {
+        var successfulLoads = loadTimes.filter(function(item) { return !item.error; }).length;
+        var failedLoads = loadTimes.filter(function(item) { return item.error; }).length;
+        var avgLoadTime = 0;
+        if (loadTimes.length > 0) {
+            var totalTime = loadTimes.reduce(function(sum, item) { return sum + parseFloat(item.time); }, 0);
+            avgLoadTime = totalTime / loadTimes.length;
+        }
+
         return {
             total: totalImages,
             loaded: loadedImages.length,
             deferred: totalImages - loadedImages.length,
-            enabled: config.enabled
+            enabled: config.enabled,
+            successfulLoads: successfulLoads,
+            failedLoads: failedLoads,
+            avgLoadTime: avgLoadTime.toFixed(2),
+            loadTimes: loadTimes,
+            cacheHits: cacheStats.hits,
+            cacheMisses: cacheStats.misses
         };
     }
 

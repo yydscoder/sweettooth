@@ -85,21 +85,35 @@
             }, 500);
         }
         
-        // Output cache stats if available
+        // Output cache stats if available - uses accurate data from actual cache
         setTimeout(function() {
             try {
-                var cacheData = JSON.parse(localStorage.getItem('sweettooth_cache') || '{}');
+                var cacheData = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
                 var totalRequests = (cacheData.hitCount || 0) + (cacheData.missCount || 0);
                 var hitRate = totalRequests > 0 ? ((cacheData.hitCount || 0) / totalRequests * 100).toFixed(1) : 0;
+                var totalSize = 0;
+                var assetCount = 0;
+                
+                for (var url in cacheData.assets) {
+                    if (cacheData.assets.hasOwnProperty(url)) {
+                        totalSize += cacheData.assets[url].size || 0;
+                        assetCount++;
+                    }
+                }
+                
                 console.log('');
                 console.log('  CACHE STATISTICS:');
                 console.log('  ────────────────────────────────────────────────────────────────────');
-                console.log('  Cache Hits:    ' + (cacheData.hitCount || 0));
-                console.log('  Cache Misses:  ' + (cacheData.missCount || 0));
-                console.log('  Hit Rate:      ' + hitRate + '%');
-                console.log('  Cache Size:    ' + formatBytes(JSON.stringify(cacheData.assets || {}).length));
+                console.log('  Cache Hits:        ' + (cacheData.hitCount || 0));
+                console.log('  Cache Misses:      ' + (cacheData.missCount || 0));
+                console.log('  Hit Rate:          ' + hitRate + '%');
+                console.log('  Total Assets:      ' + assetCount);
+                console.log('  Cache Size:        ' + totalSize + ' bytes');
+                console.log('  Operations Logged: ' + (cacheData.operations || []).length);
                 console.log('  ────────────────────────────────────────────────────────────────────');
-            } catch(e) {}
+            } catch(e) {
+                console.warn('[SweetTooth Opt] Could not read cache stats:', e);
+            }
             
             // Output lazy loading stats
             if (window.SweetToothLazyLoad && window.SweetToothLazyLoad.getStats) {
@@ -140,7 +154,7 @@
         applyOptimizations();
     }
 
-    // Initialize caching strategy
+    // Initialize caching strategy with accurate tracking
     function initCaching() {
         if (!config.cachingEnabled) return;
 
@@ -151,7 +165,8 @@
             ttl: 86400000, // 24 hours
             assets: {},
             hitCount: 0,
-            missCount: 0
+            missCount: 0,
+            operations: [] // Track all cache operations for accurate logging
         };
 
         // Load existing cache or create new
@@ -162,7 +177,9 @@
                 cache.version = parsed.version || cache.version;
                 cache.hitCount = parsed.hitCount || 0;
                 cache.missCount = parsed.missCount || 0;
-                
+                cache.assets = parsed.assets || {};
+                cache.operations = parsed.operations || [];
+
                 // Clean expired cache entries
                 var now = Date.now();
                 var expiredCount = 0;
@@ -172,24 +189,26 @@
                         expiredCount++;
                     }
                 }
-                
+
                 if (expiredCount > 0) {
                     console.log('[SweetTooth Opt] Cleaned', expiredCount, 'expired cache entries');
+                    cache.operations.push({ type: 'cleanup', removed: expiredCount, timestamp: Date.now() });
                 }
-                
+
                 console.log('[SweetTooth Opt] Cache loaded - Hits:', cache.hitCount, 'Misses:', cache.missCount, 'Assets:', Object.keys(cache.assets).length);
             }
 
             // Store cache metadata
             localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
             console.log('[SweetTooth Opt] Caching enabled with 24h TTL');
-            
+
             // Actually cache some resources to demonstrate
             cacheProductImages();
             cacheConfiguration();
-            
+
         } catch (e) {
             console.warn('[SweetTooth Opt] Caching failed:', e);
+            cache.operations.push({ type: 'error', error: e.message, timestamp: Date.now() });
         }
     }
     
@@ -256,7 +275,7 @@
         }
     }
 
-    // Cache a resource
+    // Cache a resource with accurate tracking
     function cacheResource(url, data, type) {
         if (!config.cachingEnabled) return false;
 
@@ -266,10 +285,16 @@
                 data: data,
                 type: type,
                 timestamp: Date.now(),
-                size: data.length
+                size: typeof data === 'string' ? data.length : JSON.stringify(data).length
             };
             localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-            console.log('[SweetTooth Cache] Cached:', url, '(' + type + ')');
+            
+            // Track operation
+            cache.operations = cache.operations || [];
+            cache.operations.push({ type: 'cache', url: url, size: cache.assets[url].size, timestamp: Date.now() });
+            localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+            
+            console.log('[SweetTooth Cache] CACHED:', url, '(' + type + ', ' + cache.assets[url].size + ' bytes)');
             return true;
         } catch (e) {
             console.warn('[SweetTooth Cache] Failed to cache:', e);
@@ -277,7 +302,7 @@
         }
     }
 
-    // Get cached resource with hit/miss tracking
+    // Get cached resource with accurate hit/miss tracking
     function getCachedResource(url) {
         if (!config.cachingEnabled) return null;
 
@@ -288,6 +313,8 @@
             if (!asset) {
                 // Cache MISS
                 cache.missCount = (cache.missCount || 0) + 1;
+                cache.operations = cache.operations || [];
+                cache.operations.push({ type: 'miss', url: url, timestamp: Date.now() });
                 localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
                 console.log('[SweetTooth Cache] MISS:', url);
                 return null;
@@ -297,6 +324,7 @@
             if ((Date.now() - asset.timestamp) > cache.ttl) {
                 delete cache.assets[url];
                 cache.missCount = (cache.missCount || 0) + 1;
+                cache.operations.push({ type: 'expired', url: url, timestamp: Date.now() });
                 localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
                 console.log('[SweetTooth Cache] EXPIRED:', url);
                 return null;
@@ -304,8 +332,9 @@
 
             // Cache HIT
             cache.hitCount = (cache.hitCount || 0) + 1;
+            cache.operations.push({ type: 'hit', url: url, size: asset.size, timestamp: Date.now() });
             localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-            console.log('[SweetTooth Cache] HIT:', url, '(' + asset.type + ')');
+            console.log('[SweetTooth Cache] HIT:', url, '(' + asset.type + ', ' + asset.size + ' bytes)');
             return asset.data;
         } catch (e) {
             console.warn('[SweetTooth Cache] Get failed:', e);
@@ -346,22 +375,32 @@
             console.log('  Result: HIT (expected) - Cache working!');
         }
         
-        // Show final stats
+        // Show final stats with accurate data
         setTimeout(function() {
             var cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
             var totalRequests = (cache.hitCount || 0) + (cache.missCount || 0);
             var hitRate = totalRequests > 0 ? ((cache.hitCount || 0) / totalRequests * 100).toFixed(1) : 0;
+            var totalSize = 0;
+            var assetCount = Object.keys(cache.assets || {}).length;
             
+            for (var url in cache.assets) {
+                if (cache.assets.hasOwnProperty(url)) {
+                    totalSize += cache.assets[url].size || 0;
+                }
+            }
+
             console.log('');
             console.log('  CACHE TEST RESULTS:');
             console.log('  ────────────────────────────────────────');
-            console.log('  Cache Hits:    ' + (cache.hitCount || 0));
-            console.log('  Cache Misses:  ' + (cache.missCount || 0));
-            console.log('  Hit Rate:      ' + hitRate + '%');
-            console.log('  Total Assets:  ' + Object.keys(cache.assets || {}).length);
+            console.log('  Cache Hits:        ' + (cache.hitCount || 0));
+            console.log('  Cache Misses:      ' + (cache.missCount || 0));
+            console.log('  Hit Rate:          ' + hitRate + '%');
+            console.log('  Total Assets:      ' + assetCount);
+            console.log('  Total Cache Size:  ' + totalSize + ' bytes');
+            console.log('  Recent Operations: ' + (cache.operations || []).length);
             console.log('  ────────────────────────────────────────');
             console.log('  To see live stats: Open admin.html → Performance tab');
-            console.log('  To clear cache:  Open admin.html → Performance → Clear Cache');
+            console.log('  To clear cache:    Open admin.html → Performance → Clear Cache');
             console.log('========================================');
             console.log('');
         }, 100);
