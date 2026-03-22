@@ -604,7 +604,11 @@ function renderProducts(containerId, options) {
 
 // Cache rendered products for offline access and faster loading
 function cacheRenderedProducts(products) {
-    if (!window.SweetToothOptimization || !window.SweetToothOptimization.cacheResource) return;
+    // Check if optimization manager is available
+    if (!window.SweetToothOptimization || !window.SweetToothOptimization.cacheResource) {
+        console.warn('[SweetTooth Cart] Optimization manager not loaded - skipping product caching');
+        return;
+    }
 
     try {
         // Cache each product's data
