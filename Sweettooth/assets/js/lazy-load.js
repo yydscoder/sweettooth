@@ -6,33 +6,26 @@
 (function() {
     'use strict';
 
+    // Page load timing
+    var pageLoadStart = performance.now();
+    var cacheStats = { hits: 0, misses: 0 };
+
     // Load saved configuration from admin dashboard
     var savedConfig = {};
     var configLoaded = false;
-    
+
     try {
-        // Try optimization manager key first
         var stored = localStorage.getItem('sweettooth_optimization_config');
         if (stored) {
             savedConfig = JSON.parse(stored);
             configLoaded = true;
-            console.log('[SweetTooth LazyLoad] Loaded from optimization_config:', savedConfig);
-        }
-        
-        // Also check secure-config key
-        if (!configLoaded) {
-            stored = localStorage.getItem('sweettooth_config');
-            if (stored) {
-                var fullConfig = JSON.parse(stored);
-                if (fullConfig && fullConfig.PERFORMANCE_SETTINGS) {
-                    savedConfig = fullConfig.PERFORMANCE_SETTINGS;
-                    configLoaded = true;
-                    console.log('[SweetTooth LazyLoad] Loaded from secure_config:', savedConfig);
-                }
-            }
+            cacheStats.hits++;
+        } else {
+            cacheStats.misses++;
         }
     } catch (e) {
-        console.warn('[SweetTooth LazyLoad] Could not load config:', e);
+        console.warn('[LazyLoad] Could not load config:', e);
+        cacheStats.misses++;
     }
 
     // Configuration - reads from admin dashboard settings
@@ -44,9 +37,6 @@
         fadeInDuration: 300
     };
 
-    console.log('[SweetTooth LazyLoad] Final config:', config);
-    console.log('[SweetTooth LazyLoad] Lazy load is:', config.enabled ? 'ENABLED' : 'DISABLED');
-
     // Track loaded images
     var loadedImages = [];
     var totalImages = 0;
@@ -55,12 +45,9 @@
     // Initialize lazy loading
     function init() {
         if (!config.enabled) {
-            console.log('[SweetTooth LazyLoad] Disabled - loading all images immediately');
             loadAllImages();
             return;
         }
-
-        console.log('[SweetTooth LazyLoad] Initialized with rootMargin:', config.rootMargin);
 
         // Count total images
         var images = document.querySelectorAll('img[data-src], img[data-lazy]');
@@ -95,11 +82,6 @@
                 observer.unobserve(target);
             }
         });
-        
-        // Log when significant changes occur
-        if (loadedImages.length > 0 && loadedImages.length % 5 === 0) {
-            console.log('[SweetTooth LazyLoad] Progress: ' + loadedImages.length + '/' + totalImages + ' images loaded (' + Math.round((loadedImages.length / totalImages) * 100) + '%)');
-        }
     }
 
     // Load a lazy image
@@ -138,10 +120,8 @@
                     img.style.opacity = '1';
                 }, 10);
                 loadedImages.push(img);
-                console.log('[SweetTooth LazyLoad] Image loaded:', src);
             };
             preloadImg.onerror = function() {
-                console.warn('[SweetTooth LazyLoad] Failed to load:', src);
                 img.src = originalSrc;
             };
             preloadImg.src = src;
@@ -169,17 +149,18 @@
         });
 
         loadedImages = Array.from(images);
-        console.log('[SweetTooth LazyLoad] All images loaded immediately (disabled mode)');
     }
 
     // Log statistics
     function logStats() {
         setTimeout(function() {
-            console.log('[SweetTooth LazyLoad] Total images:', totalImages);
-            console.log('[SweetTooth LazyLoad] Loaded images:', loadedImages.length);
-            console.log('[SweetTooth LazyLoad] Deferred images:', totalImages - loadedImages.length);
-            console.log('[SweetTooth LazyLoad] Deferral rate:', totalImages > 0 ? Math.round(((totalImages - loadedImages.length) / totalImages) * 100) + '%' : '0%');
-            console.log('[SweetTooth LazyLoad] Performance impact: Images deferred will load as user scrolls, reducing initial page load time');
+            var pageLoadTime = (performance.now() - pageLoadStart).toFixed(2);
+            var cacheHitRate = cacheStats.hits + cacheStats.misses > 0 
+                ? Math.round((cacheStats.hits / (cacheStats.hits + cacheStats.misses)) * 100) 
+                : 0;
+            
+            console.log('[LazyLoad] Total:', totalImages, '| Loaded:', loadedImages.length, '| Deferred:', totalImages - loadedImages.length);
+            console.log('[Performance] Page load:', pageLoadTime, 'ms | Cache hits:', cacheStats.hits, '| Cache misses:', cacheStats.misses, '| Hit rate:', cacheHitRate + '%');
         }, 1000);
     }
 
@@ -196,14 +177,11 @@
     // Enable/disable lazy loading
     function setEnabled(enabled) {
         config.enabled = enabled;
-        console.log('[SweetTooth LazyLoad] ' + (enabled ? 'Enabled' : 'Disabled'));
 
         if (!enabled && observer) {
-            // Disconnect observer and load all
             observer.disconnect();
             loadAllImages();
         } else if (enabled) {
-            // Re-initialize
             init();
         }
     }
@@ -215,7 +193,6 @@
                 config[key] = newConfig[key];
             }
         }
-        console.log('[SweetTooth LazyLoad] Config updated:', config);
     }
 
     // Expose API

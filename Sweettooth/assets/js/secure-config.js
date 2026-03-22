@@ -78,24 +78,24 @@
 
     // Get admin password hash
     function getAdminPasswordHash() {
-        return getConfigValue('ADMIN_PASSWORD_HASH', null);
+        // Hardcoded password: Flavourtown123
+        return simpleHash('Flavourtown123');
     }
 
-    // Set admin password (stores hash)
+    // Set admin password (disabled - password is hardcoded)
     function setAdminPassword(password) {
-        return setConfigValue('ADMIN_PASSWORD_HASH', simpleHash(password));
+        console.warn('[SecureConfig] Password change disabled - using hardcoded password');
+        return false;
     }
 
     // Verify admin password
     function verifyAdminPassword(password) {
-        var storedHash = getAdminPasswordHash();
-        if (!storedHash) return false;
-        return simpleHash(password) === storedHash;
+        return password === 'Flavourtown123';
     }
 
     // Check if admin password is set
     function isAdminPasswordSet() {
-        return getAdminPasswordHash() !== null;
+        return true; // Always true since password is hardcoded
     }
 
     // Get CMS data

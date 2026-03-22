@@ -1,13 +1,8 @@
 // SweetTooth Gelato - Shared Cart
 // localStorage-persistent, works on all pages.
-// Fixed: race condition, price manipulation, floating point, XSS, cross-tab sync, notifications
 
 // Performance metrics
 var CART_LOAD_START = performance.now();
-console.log('========================================');
-console.log('[SweetTooth Cart] Initializing...');
-console.log('[SweetTooth Cart] Timestamp:', new Date().toISOString());
-console.log('========================================');
 
 // Default product catalog (in cents to avoid floating point issues)
 // This is merged with CMS products if available
@@ -269,143 +264,13 @@ function updateCartQuantity(productName, delta) {
     }
     saveCart();
     renderCart();
-    
+
     var opTime = (performance.now() - opStart).toFixed(2);
-    console.log('[SweetTooth Cart] QTY:', productName, '|', oldQty, '→', oldQty + delta, '| Op time:', opTime, 'ms');
+    console.log('[Cart] QTY:', productName, '|', oldQty, '->', oldQty + delta, '| Op time:', opTime, 'ms');
 }
 
 // Render cart UI
 function renderCart() {
-    console.log('[Cart DEBUG] renderCart called');
-    console.log('[Cart DEBUG] Current page:', window.location.pathname);
-    console.log('[Cart DEBUG] Cart data:', cart);
-    
-    // Check which CSS is loaded
-    var stylesheets = Array.from(document.styleSheets);
-    console.log('[Cart DEBUG] Loaded stylesheets:', stylesheets.map(function(s) { 
-        try { return s.href; } catch(e) { return 'inline'; }
-    }));
-    
-    // Log CSS rules for cart-related and header-related classes
-    console.log('[Cart DEBUG] CSS Rules Analysis:');
-    stylesheets.forEach(function(sheet) {
-        try {
-            var href = sheet.href || 'inline';
-            var rules = Array.from(sheet.cssRules || []);
-            var headerRules = rules.filter(function(r) { 
-                return r.selectorText && (
-                    r.selectorText === 'header' || 
-                    r.selectorText === '.header-container' ||
-                    r.selectorText === 'nav ul' ||
-                    r.selectorText === 'nav a'
-                );
-            });
-            if (headerRules.length > 0) {
-                console.log('  ★★★ File:', href);
-                headerRules.forEach(function(rule) {
-                    console.log('    ' + rule.selectorText + ':', {
-                        display: rule.style.display,
-                        'flex-direction': rule.style.flexDirection,
-                        'align-items': rule.style.alignItems,
-                        'justify-content': rule.style.justifyContent,
-                        'list-style': rule.style.listStyle,
-                        gap: rule.style.gap,
-                        margin: rule.style.margin,
-                        padding: rule.style.padding
-                    });
-                });
-            }
-        } catch(e) {
-            console.log('  File:', href, '(cross-origin - cannot read rules)');
-        }
-    });
-    
-    // Log computed styles for header elements
-    console.log('[Cart DEBUG] Computed Styles:');
-    var header = document.querySelector('header');
-    var headerContainer = document.querySelector('.header-container');
-    var nav = document.querySelector('nav');
-    if (header) {
-        var headerStyle = window.getComputedStyle(header);
-        console.log('  header:', {
-            position: headerStyle.position,
-            'z-index': headerStyle.zIndex,
-            display: headerStyle.display,
-            'flex-direction': headerStyle.flexDirection,
-            'align-items': headerStyle.alignItems,
-            'justify-content': headerStyle.justifyContent,
-            'box-shadow': headerStyle.boxShadow,
-            background: headerStyle.background,
-            padding: headerStyle.padding,
-            top: headerStyle.top
-        });
-    }
-    if (headerContainer) {
-        var containerStyle = window.getComputedStyle(headerContainer);
-        console.log('  .header-container:', {
-            display: containerStyle.display,
-            'flex-direction': containerStyle.flexDirection,
-            'align-items': containerStyle.alignItems,
-            'justify-content': containerStyle.justifyContent,
-            'max-width': containerStyle.maxWidth,
-            margin: containerStyle.margin,
-            gap: containerStyle.gap
-        });
-    }
-    if (nav) {
-        var navStyle = window.getComputedStyle(nav);
-        console.log('  nav:', {
-            display: navStyle.display,
-            'flex-direction': navStyle.flexDirection
-        });
-    }
-    var navUl = document.querySelector('nav ul');
-    if (navUl) {
-        var ulStyle = window.getComputedStyle(navUl);
-        console.log('  nav ul:', {
-            display: ulStyle.display,
-            'flex-direction': ulStyle.flexDirection,
-            gap: ulStyle.gap,
-            'list-style': ulStyle.listStyle,
-            margin: ulStyle.margin,
-            padding: ulStyle.padding
-        });
-    }
-    var navLis = document.querySelectorAll('nav ul li');
-    console.log('  nav ul li count:', navLis.length);
-    navLis.forEach(function(li, i) {
-        var liStyle = window.getComputedStyle(li);
-        console.log('    nav ul li[' + i + ']:', {
-            display: liStyle.display,
-            'list-style': liStyle.listStyle
-        });
-    });
-    
-    // Check header structure
-    var header = document.querySelector('header');
-    var cartIcon = document.querySelector('.cart-icon');
-    var cartWrapper = document.querySelector('.cart-icon-wrapper');
-    var cartDropdown = document.getElementById('cart-dropdown');
-    console.log('[Cart DEBUG] Header exists:', !!header);
-    console.log('[Cart DEBUG] .cart-icon exists:', !!cartIcon);
-    console.log('[Cart DEBUG] .cart-icon-wrapper exists:', !!cartWrapper);
-    console.log('[Cart DEBUG] #cart-dropdown exists:', !!cartDropdown);
-    
-    if (cartIcon) {
-        var computedStyle = window.getComputedStyle(cartIcon);
-        console.log('[Cart DEBUG] .cart-icon position:', computedStyle.position);
-        console.log('[Cart DEBUG] .cart-icon display:', computedStyle.display);
-    }
-    
-    if (cartDropdown) {
-        var dropdownStyle = window.getComputedStyle(cartDropdown);
-        console.log('[Cart DEBUG] #cart-dropdown display:', dropdownStyle.display);
-        console.log('[Cart DEBUG] #cart-dropdown position:', dropdownStyle.position);
-        console.log('[Cart DEBUG] #cart-dropdown top:', dropdownStyle.top);
-        console.log('[Cart DEBUG] #cart-dropdown right:', dropdownStyle.right);
-        console.log('[Cart DEBUG] #cart-dropdown z-index:', dropdownStyle.zIndex);
-    }
-    
     if (!cart) return;
 
     // Badge
@@ -415,26 +280,16 @@ function renderCart() {
         for (var i = 0; i < cart.length; i++) total += cart[i].quantity;
         badge.textContent = total;
         badge.style.display = total === 0 ? 'none' : 'flex';
-        console.log('[Cart DEBUG] Badge updated, count:', total);
     }
-
     // Dropdown
     var container = document.getElementById('cart-items-container');
     var filled = document.getElementById('cart-items-filled');
     var list = document.getElementById('cart-items-list');
-    if (!container || !filled || !list) {
-        console.log('[Cart DEBUG] Missing cart elements:', {
-            container: !!container,
-            filled: !!filled,
-            list: !!list
-        });
-        return;
-    }
+    if (!container || !filled || !list) return;
 
     if (cart.length === 0) {
         container.style.display = 'block';
         filled.style.display = 'none';
-        console.log('[Cart DEBUG] Cart is empty, showing empty message');
         return;
     }
 
@@ -492,14 +347,9 @@ function showCartNotification(message) {
 
 // Toggle cart dropdown
 function toggleCartDropdown() {
-    console.log('[Cart DEBUG] toggleCartDropdown called');
     var d = document.getElementById('cart-dropdown');
-    if (!d) {
-        console.error('[Cart DEBUG] #cart-dropdown not found!');
-        return;
-    }
+    if (!d) return;
     d.classList.toggle('active');
-    console.log('[Cart DEBUG] #cart-dropdown.active =', d.classList.contains('active'));
 
     var icon = document.querySelector('.cart-icon');
     if (icon) {
@@ -566,52 +416,21 @@ function proceedToCheckout() { console.log('[Cart] proceedToCheckout called');
 
 // Initialize cart
 function cartInit() {
-    console.log('[Cart DEBUG] cartInit called on page:', window.location.pathname);
     var initStart = performance.now();
 
     // Initialize cart state from localStorage
     cart = loadCart();
-    
-    // Log CSS files loaded
-    console.log('[Cart DEBUG] CSS files loaded:');
-    Array.from(document.styleSheets).forEach(function(sheet, i) {
-        try {
-            console.log('  [' + i + ']', sheet.href || 'inline');
-        } catch(e) {
-            console.log('  [' + i + ']', 'cross-origin (cannot read)');
-        }
-    });
-    
-    // Log header structure
-    var header = document.querySelector('header');
-    var cartIcon = document.querySelector('.cart-icon');
-    var cartWrapper = document.querySelector('.cart-icon-wrapper');
-    console.log('[Cart DEBUG] Header structure:');
-    console.log('  - header:', header ? 'FOUND' : 'MISSING');
-    console.log('  - .cart-icon:', cartIcon ? 'FOUND' : 'MISSING');
-    console.log('  - .cart-icon-wrapper:', cartWrapper ? 'FOUND' : 'MISSING');
-    
     renderCart();
-    
+
     // Log cart initialization metrics
     var initTime = (performance.now() - initStart).toFixed(2);
     var cartLoadTime = (performance.now() - CART_LOAD_START).toFixed(2);
-    
-    console.log('========================================');
-    console.log('[SweetTooth Cart] Initialized');
-    console.log('[SweetTooth Cart] Init time:', initTime, 'ms');
-    console.log('[SweetTooth Cart] Total load time:', cartLoadTime, 'ms');
-    console.log('[SweetTooth Cart] Cart items:', cart.length);
-    console.log('[SweetTooth Cart] Cart total:', cart.reduce(function(sum, item) { return sum + (item.quantity || 1); }, 0), 'items');
-    console.log('[SweetTooth Cart] Cart value: RM', cart.reduce(function(sum, item) { return sum + ((item.priceCents || 1500) * (item.quantity || 1)) / 100; }, 0).toFixed(2));
-    console.log('[SweetTooth Cart] Storage key:', STORAGE_KEY);
-    console.log('[SweetTooth Cart] LocalStorage size:', Math.round(JSON.stringify(localStorage.getItem(STORAGE_KEY)).length / 1024 * 100) / 100, 'KB');
-    console.log('========================================');
+
+    console.log('[Cart] Initialized - Items:', cart.length, '| Init time:', initTime, 'ms');
 
     // Listen for storage events from other tabs
     window.addEventListener('storage', function(e) {
         if (e.key === STORAGE_KEY) {
-            console.log('[SweetTooth Cart] Storage event detected - syncing cart from other tab');
             cart = loadCart();
             renderCart();
         }
@@ -619,7 +438,6 @@ function cartInit() {
 
     // Listen for same-tab cart updates
     window.addEventListener('sweettooth_cart_updated', function() {
-        console.log('[SweetTooth Cart] Cart updated event - refreshing');
         cart = loadCart();
         renderCart();
     });
