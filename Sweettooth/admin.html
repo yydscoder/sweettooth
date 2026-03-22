@@ -692,28 +692,21 @@
                         <div class="stat-value" id="perf-load-time">-- ms</div>
                         <div class="stat-label">
                             Page Load Time
-                            <span class="tooltip-icon" title="The total time from when the page starts loading until all resources are fully loaded. Measured using the browser Navigation Timing API.">?</span>
+                            <span class="tooltip-icon" title="Page load time from the products page (updated when products.html is open).">?</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value" id="perf-images-deferred">--</div>
                         <div class="stat-label">
                             Images Deferred
-                            <span class="tooltip-icon" title="Number of images that have not been loaded yet because they are off-screen. These will load automatically when the user scrolls near them.">?</span>
+                            <span class="tooltip-icon" title="Number of images not yet loaded because they are off-screen. Updated from products page.">?</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value" id="perf-cache-size">-- KB</div>
                         <div class="stat-label">
                             Cache Size
-                            <span class="tooltip-icon" title="Amount of browser localStorage being used to cache SweetTooth data including settings, cart, and performance metrics.">?</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="perf-optimization-score">--%</div>
-                        <div class="stat-label">
-                            Optimization Score
-                            <span class="tooltip-icon" title="Overall optimization health based on enabled features: Lazy Loading (25pts), Minification (25pts), Caching (25pts), Performance Logging (25pts).">?</span>
+                            <span class="tooltip-icon" title="localStorage used for caching configuration and assets.">?</span>
                         </div>
                     </div>
                 </div>
@@ -782,12 +775,6 @@
                             <button class="btn btn-primary" onclick="savePerformanceSettings()">
                                 Save Settings
                             </button>
-                            <button class="btn btn-secondary" onclick="runPerformanceTest()">
-                                Run Test
-                            </button>
-                            <button class="btn btn-secondary" onclick="updateRealtimeMetrics()">
-                                Refresh Metrics
-                            </button>
                             <button class="btn btn-warning" onclick="clearOptimizationData()">
                                 Clear All Data
                             </button>
@@ -795,43 +782,6 @@
                                 Clear Cache Only
                             </button>
                         </div>
-                    </div>
-                </div>
-
-                <div class="settings-card" style="margin-top: 24px;">
-                    <h3>Live Performance Metrics</h3>
-                    <p style="color: #666; margin-bottom: 16px;">Real-time metrics from the products page. Open products.html in another tab to see live data.</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 16px;">
-                        <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 700; color: var(--color-pink);" id="live-total-images">0</div>
-                            <div style="font-size: 12px; color: #666;">Total Images</div>
-                        </div>
-                        <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 700; color: var(--color-success);" id="live-loaded-images">0</div>
-                            <div style="font-size: 12px; color: #666;">Loaded</div>
-                        </div>
-                        <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 700; color: var(--color-orange);" id="live-deferred-images">0</div>
-                            <div style="font-size: 12px; color: #666;">Deferred</div>
-                        </div>
-                        <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 700; color: var(--color-pink);" id="live-deferred-percent">0%</div>
-                            <div style="font-size: 12px; color: #666;">Deferred %</div>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 16px; padding: 16px; background: #f9f9f9; border-radius: 8px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span style="color: #666; font-size: 14px;">Lazy Load Impact</span>
-                            <span style="color: var(--color-success); font-weight: 700;" id="lazy-load-impact">--</span>
-                        </div>
-                        <div style="background: #e0e0e0; height: 20px; border-radius: 10px; overflow: hidden;">
-                            <div id="lazy-load-bar" style="background: linear-gradient(90deg, var(--color-peach), var(--color-orange)); height: 100%; width: 0%; transition: width 0.5s ease;"></div>
-                        </div>
-                        <p style="font-size: 12px; color: #666; margin-top: 8px;">
-                            Shows percentage of images deferred by lazy loading. Higher is better for initial load performance.
-                        </p>
                     </div>
                 </div>
 
@@ -1464,75 +1414,6 @@
                 alert('Performance settings saved successfully!');
             };
 
-            window.runPerformanceTest = function() {
-                console.log('[Admin] === PERFORMANCE TEST STARTED ===');
-
-                // Force fresh performance measurement
-                var startTime = performance.now();
-
-                // Get REAL metrics from Performance API
-                var metrics = {};
-                if (window.performance) {
-                    // Clear old entries and get fresh ones
-                    var navEntry = performance.getEntriesByType('navigation')[0];
-                    if (navEntry) {
-                        metrics.loadTime = navEntry.loadEventEnd - navEntry.startTime;
-                        metrics.domContentLoaded = navEntry.domContentLoadedEventEnd - navEntry.startTime;
-                        metrics.firstByte = navEntry.responseStart - navEntry.startTime;
-                        console.log('[Admin] Navigation timing:', {
-                            loadTime: metrics.loadTime.toFixed(2) + ' ms',
-                            domContentLoaded: metrics.domContentLoaded.toFixed(2) + ' ms',
-                            firstByte: metrics.firstByte.toFixed(2) + ' ms'
-                        });
-                    }
-
-                    // Get resource metrics
-                    var resources = performance.getEntriesByType('resource');
-                    metrics.resourceCount = resources.length;
-                    metrics.totalSize = 0;
-                    resources.forEach(function(r) {
-                        if (r.transferSize) metrics.totalSize += r.transferSize;
-                    });
-                    console.log('[Admin] Resources:', metrics.resourceCount, 'Total size:', (metrics.totalSize / 1024).toFixed(2) + ' KB');
-                }
-
-                // Get lazy load stats
-                var lazyStats = { deferred: 0, loaded: 0, total: 0 };
-                if (window.SweetToothLazyLoad) {
-                    lazyStats = window.SweetToothLazyLoad.getStats();
-                    console.log('[Admin] Lazy load stats:', lazyStats);
-                } else {
-                    var allImages = document.querySelectorAll('img');
-                    var lazyImages = document.querySelectorAll('img[data-src], img[data-lazy], img[loading="lazy"]');
-                    lazyStats.total = allImages.length;
-                    lazyStats.deferred = lazyImages.length;
-                    lazyStats.loaded = allImages.length - lazyImages.length;
-                }
-
-                // Update UI with REAL values
-                document.getElementById('perf-load-time').textContent = (metrics.loadTime || 0).toFixed(2) + ' ms';
-                document.getElementById('perf-images-deferred').textContent = lazyStats.deferred;
-
-                // Update real-time metrics display
-                document.getElementById('rt-images-loaded').textContent = lazyStats.loaded;
-                document.getElementById('rt-images-total').textContent = lazyStats.total;
-
-                // Log real metrics to console
-                console.log('[Admin] === PERFORMANCE TEST RESULTS ===');
-                console.log('[Admin] Page Load Time:', (metrics.loadTime || 0).toFixed(2) + ' ms');
-                console.log('[Admin] DOM Content Loaded:', (metrics.domContentLoaded || 0).toFixed(2) + ' ms');
-                console.log('[Admin] First Byte:', (metrics.firstByte || 0).toFixed(2) + ' ms');
-                console.log('[Admin] Resources Loaded:', metrics.resourceCount);
-                console.log('[Admin] Total Resource Size:', (metrics.totalSize / 1024).toFixed(2) + ' KB');
-                console.log('[Admin] Images - Loaded:', lazyStats.loaded, 'Deferred:', lazyStats.deferred, 'Total:', lazyStats.total);
-                console.log('[Admin] === PERFORMANCE TEST COMPLETE ===');
-
-                updateOptimizationScore();
-                updateRealtimeMetrics();
-
-                alert('Performance test completed!\n\nPage Load: ' + (metrics.loadTime || 0).toFixed(2) + ' ms\nImages Deferred: ' + lazyStats.deferred + '\nResources: ' + metrics.resourceCount + '\n\nCheck browser console for detailed metrics.');
-            };
-
             window.clearOptimizationData = function() {
                 if (!confirm('Clear all optimization data and metrics?')) return;
 
@@ -1586,75 +1467,49 @@
                 alert('All optimizations disabled!');
             };
 
-            function updateOptimizationScore() {
-                var score = 0;
-                var maxScore = 75; // Lazy load (25) + Caching (25) + Perf logging (25)
-
-                if (document.getElementById('toggle-lazy-load').checked) { score += 25; }
-                if (document.getElementById('toggle-caching').checked) { score += 25; }
-                if (document.getElementById('toggle-perf-logging').checked) { score += 25; }
-
-                document.getElementById('perf-optimization-score').textContent = score + '%';
-            }
-
             function updateRealtimeMetrics() {
-                console.log('[Admin] Updating real-time metrics...');
+                console.log('[Admin] Updating real-time metrics from products page...');
 
-                // Get REAL page load time from Performance API RIGHT NOW
-                var currentLoadTime = 0;
-                if (window.performance) {
-                    var navEntry = performance.getEntriesByType('navigation')[0];
-                    if (navEntry) {
-                        currentLoadTime = navEntry.loadEventEnd - navEntry.startTime;
-                        console.log('[Admin] Real page load time:', currentLoadTime.toFixed(2), 'ms');
+                // Read page load time from products page (stored in localStorage by lazy-load.js)
+                var pageLoadTime = '-- ms';
+                try {
+                    var lazyLoadStats = JSON.parse(localStorage.getItem('sweettooth_lazyload_stats') || '{}');
+                    if (lazyLoadStats && lazyLoadStats.pageLoadTime) {
+                        pageLoadTime = lazyLoadStats.pageLoadTime + ' ms';
                     }
-                }
-                document.getElementById('perf-load-time').textContent = currentLoadTime.toFixed(2) + ' ms';
+                } catch (e) {}
+                document.getElementById('perf-load-time').textContent = pageLoadTime;
 
-                // Update lazy load stats - REAL data
-                var lazyStats = { total: 0, loaded: 0, deferred: 0, enabled: false };
-                if (window.SweetToothLazyLoad) {
-                    lazyStats = window.SweetToothLazyLoad.getStats();
-                    document.getElementById('perf-images-deferred').textContent = lazyStats.deferred;
-                    console.log('[Admin] Lazy load stats:', lazyStats);
-                } else {
-                    // Fallback: count images manually
-                    var allImages = document.querySelectorAll('img');
-                    var lazyImages = document.querySelectorAll('img[data-src], img[data-lazy], img[loading="lazy"]');
-                    var loadedCount = allImages.length - lazyImages.length;
-                    lazyStats.total = allImages.length;
-                    lazyStats.loaded = loadedCount;
-                    lazyStats.deferred = lazyImages.length;
-                    document.getElementById('perf-images-deferred').textContent = lazyImages.length;
-                }
-
-                // Update live metrics display
-                document.getElementById('live-total-images').textContent = lazyStats.total;
-                document.getElementById('live-loaded-images').textContent = lazyStats.loaded;
-                document.getElementById('live-deferred-images').textContent = lazyStats.deferred;
-
-                // Calculate deferred percentage
-                var deferredPercent = lazyStats.total > 0 ? Math.round((lazyStats.deferred / lazyStats.total) * 100) : 0;
-                document.getElementById('live-deferred-percent').textContent = deferredPercent + '%';
-
-                // Update lazy load impact bar
-                document.getElementById('lazy-load-bar').style.width = deferredPercent + '%';
-                document.getElementById('lazy-load-impact').textContent = deferredPercent > 50 ? 'Excellent (' + deferredPercent + '% deferred)' : (deferredPercent > 20 ? 'Good (' + deferredPercent + '% deferred)' : 'Low (' + deferredPercent + '% deferred)');
+                // Read images deferred from products page
+                var imagesDeferred = '--';
+                try {
+                    var lazyLoadStats = JSON.parse(localStorage.getItem('sweettooth_lazyload_stats') || '{}');
+                    if (lazyLoadStats && lazyLoadStats.deferred !== undefined) {
+                        imagesDeferred = lazyLoadStats.deferred + ' / ' + lazyLoadStats.total + ' (' + (lazyLoadStats.deferredPercent || 0) + '%)';
+                    }
+                } catch (e) {}
+                document.getElementById('perf-images-deferred').textContent = imagesDeferred;
 
                 // Update cache stats - REAL data from localStorage
                 var cacheSize = 0;
-                for (var key in localStorage) {
-                    if (localStorage.hasOwnProperty(key) && key.includes('sweettooth')) {
-                        cacheSize += localStorage[key].length;
+                try {
+                    var cacheData = JSON.parse(localStorage.getItem('sweettooth_asset_cache') || '{}');
+                    if (cacheData.assets) {
+                        cacheSize = JSON.stringify(cacheData.assets).length;
                     }
-                }
+                } catch (e) {}
                 document.getElementById('perf-cache-size').textContent = (cacheSize / 1024).toFixed(2) + ' KB';
 
-                // Get detailed cache stats if available
-                var cacheStats = { assets: 0, hits: 0, misses: 0, hitRate: 0, totalSize: 0 };
-                if (window.SweetToothOptimization && window.SweetToothOptimization.getCacheStats) {
-                    cacheStats = window.SweetToothOptimization.getCacheStats();
-                }
+                // Get detailed cache stats
+                var cacheStats = { assets: 0, hits: 0, misses: 0, hitRate: 0 };
+                try {
+                    var cacheData = JSON.parse(localStorage.getItem('sweettooth_asset_cache') || '{}');
+                    var totalRequests = (cacheData.hitCount || 0) + (cacheData.missCount || 0);
+                    cacheStats.assets = Object.keys(cacheData.assets || {}).length;
+                    cacheStats.hits = cacheData.hitCount || 0;
+                    cacheStats.misses = cacheData.missCount || 0;
+                    cacheStats.hitRate = totalRequests > 0 ? Math.round((cacheData.hitCount || 0) / totalRequests * 100) : 0;
+                } catch (e) {}
 
                 // Update cache stats display
                 document.getElementById('cache-assets').textContent = cacheStats.assets;
@@ -1663,8 +1518,7 @@
                 document.getElementById('cache-hit-rate').textContent = cacheStats.hitRate + '%';
                 document.getElementById('cache-size-display').textContent = (cacheSize / 1024).toFixed(2) + ' KB';
 
-                updateOptimizationScore();
-                console.log('[Admin] Metrics update complete');
+                console.log('[Admin] Metrics updated from products page data');
             }
 
             // Logs management functions
@@ -1805,61 +1659,21 @@
                 document.getElementById('image-quality').value = perfSettings.imageQuality || 80;
                 document.getElementById('image-quality-value').textContent = perfSettings.imageQuality || 80;
 
+                // Update metrics immediately
                 updateRealtimeMetrics();
                 refreshLogs();
 
-                // Start auto-refresh for logs when on performance tab
+                // Start auto-refresh for metrics and logs when on performance tab
                 toggleAutoRefresh(true);
+                
+                // Also refresh metrics every 2 seconds to catch products page updates
+                setInterval(function() {
+                    updateRealtimeMetrics();
+                    refreshLogs();
+                }, 2000);
             }
 
-            // Fetch real file sizes
-            function fetchFileSizes() {
-                var files = [
-                    { name: 'css', original: 'assets/css/shared.css', minified: 'assets/css/shared.min.css' },
-                    { name: 'js', original: 'assets/js/cart.js', minified: 'assets/js/cart.min.js' }
-                ];
-
-                files.forEach(function(file) {
-                    fetch(file.original, { method: 'HEAD' })
-                        .then(function(response) {
-                            var size = parseInt(response.headers.get('content-length') || '0');
-                            if (file.name === 'css') {
-                                window.cssOriginalSize = size;
-                                document.getElementById('css-original').textContent = formatBytes(size);
-                            } else {
-                                window.jsOriginalSize = size;
-                                document.getElementById('js-original').textContent = formatBytes(size);
-                            }
-                        })
-                        .catch(function(e) { console.warn('Could not fetch:', file.original, e); });
-
-                    fetch(file.minified, { method: 'HEAD' })
-                        .then(function(response) {
-                            var size = parseInt(response.headers.get('content-length') || '0');
-                            if (file.name === 'css') {
-                                window.cssMinifiedSize = size;
-                                document.getElementById('css-minified').textContent = formatBytes(size);
-                                if (window.cssOriginalSize) {
-                                    var saved = window.cssOriginalSize - size;
-                                    var percent = ((saved / window.cssOriginalSize) * 100).toFixed(1);
-                                    document.getElementById('css-saved').textContent = formatBytes(saved);
-                                    document.getElementById('css-percent').textContent = percent + '%';
-                                }
-                            } else {
-                                window.jsMinifiedSize = size;
-                                document.getElementById('js-minified').textContent = formatBytes(size);
-                                if (window.jsOriginalSize) {
-                                    var saved = window.jsOriginalSize - size;
-                                    var percent = ((saved / window.jsOriginalSize) * 100).toFixed(1);
-                                    document.getElementById('js-saved').textContent = formatBytes(saved);
-                                    document.getElementById('js-percent').textContent = percent + '%';
-                                }
-                            }
-                        })
-                        .catch(function(e) { console.warn('Could not fetch:', file.minified, e); });
-                });
-            }
-
+            // Format bytes helper
             function formatBytes(bytes) {
                 if (bytes >= 1048576) {
                     return (bytes / 1048576).toFixed(2) + ' MB';
