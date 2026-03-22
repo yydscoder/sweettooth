@@ -588,6 +588,9 @@ function renderProducts(containerId, options) {
     
     cartLog('[Cart] Rendered ' + maxProducts + ' products with lazy loading images');
 
+    // Cache all rendered products
+    cacheRenderedProducts(products.slice(0, maxProducts));
+
     // Reinitialize lazy loader to pick up new images
     // This is critical - lazy loader needs to observe the newly created img elements
     if (window.SweetToothLazyLoad) {
@@ -596,6 +599,34 @@ function renderProducts(containerId, options) {
             window.SweetToothLazyLoad.init();
             console.log('[SweetTooth Cart] Lazy loader reinitialized for ' + maxProducts + ' product images');
         }, 50);
+    }
+}
+
+// Cache rendered products for offline access and faster loading
+function cacheRenderedProducts(products) {
+    if (!window.SweetToothOptimization || !window.SweetToothOptimization.cacheResource) return;
+
+    try {
+        // Cache each product's data
+        products.forEach(function(product) {
+            var productData = {
+                name: product.name,
+                price: product.price,
+                priceRM: product.priceRM,
+                image: product.image,
+                cachedAt: new Date().toISOString()
+            };
+            var cacheKey = 'product_' + product.name.toLowerCase().replace(/\s+/g, '_');
+            window.SweetToothOptimization.cacheResource(cacheKey, JSON.stringify(productData), 'product');
+        });
+
+        // Cache product list
+        var productList = products.map(function(p) { return p.name; });
+        window.SweetToothOptimization.cacheResource('sweettooth_product_list', JSON.stringify(productList), 'product_list');
+
+        console.log('[SweetTooth Cart] Cached', products.length, 'products');
+    } catch (e) {
+        console.warn('[SweetTooth Cart] Failed to cache products:', e);
     }
 }
 

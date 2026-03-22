@@ -171,6 +171,29 @@
     <script src="assets/js/cart.js"></script>
     <script src="assets/js/whatsapp-widget.js"></script>
     <script>
+    // Cache this product detail page
+    (function() {
+        try {
+            // Wait for optimization manager to load
+            setTimeout(function() {
+                if (window.SweetToothOptimization && window.SweetToothOptimization.cacheResource) {
+                    // Cache the current product
+                    var currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+                    var productKey = 'product_detail_' + currentPage;
+                    
+                    // Get product data from the database
+                    var productData = null;
+                    if (typeof productDatabase !== 'undefined' && productDatabase[currentPage]) {
+                        productData = productDatabase[currentPage];
+                        SweetToothOptimization.cacheResource(productKey, JSON.stringify(productData), 'product_detail');
+                        console.log('[Product Cache] Cached product detail:', productData.name);
+                    }
+                }
+            }, 500);
+        } catch (e) {
+            console.warn('[Product Cache] Failed to cache:', e);
+        }
+    })();
     console.log('[Product Detail Template] Script loaded');
     try {
     (function() {

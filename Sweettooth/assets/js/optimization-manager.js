@@ -223,20 +223,20 @@
         }
     }
     
-    // Cache product images metadata
+    // Cache product images metadata - called after cart.js loads
     function cacheProductImages() {
         try {
             var cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
             var imageCount = 0;
 
-            // Cache product catalog images
-            if (window.PRODUCT_IMAGES) {
-                for (var name in PRODUCT_IMAGES) {
-                    var imgUrl = PRODUCT_IMAGES[name];
+            // Cache product catalog images - check if PRODUCT_IMAGES exists
+            if (typeof window.PRODUCT_IMAGES !== 'undefined' && window.PRODUCT_IMAGES) {
+                for (var name in window.PRODUCT_IMAGES) {
+                    var imgUrl = window.PRODUCT_IMAGES[name];
                     if (imgUrl && !cache.assets[imgUrl]) {
                         cache.assets[imgUrl] = {
                             data: imgUrl,
-                            type: 'image',
+                            type: 'image_url',
                             timestamp: Date.now(),
                             size: imgUrl.length,
                             productName: name
@@ -253,7 +253,9 @@
             localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
 
             if (imageCount > 0) {
-                console.log('[SweetTooth Opt] Cached', imageCount, 'product images');
+                console.log('[SweetTooth Opt] Cached', imageCount, 'product image URLs');
+            } else {
+                console.log('[SweetTooth Opt] Product images already cached or PRODUCT_IMAGES not available');
             }
         } catch (e) {
             console.warn('[SweetTooth Opt] Image caching failed:', e);
@@ -654,7 +656,8 @@
         getCachedResource: getCachedResource,
         clearCache: clearCache,
         getCacheStats: getCacheStats,
-        testCaching: testCaching  // For demonstrating cache works
+        testCaching: testCaching,  // For demonstrating cache works
+        cacheProductImages: cacheProductImages  // Cache product image URLs
     };
 
     // Auto-initialize when DOM is ready
