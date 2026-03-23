@@ -1,7 +1,16 @@
-## Optimization
+# Sweettooth
+
+Sweettooth is a full featured ice cream storefront built as my first serious step into web development and into working with real configuration and API keys. The site is designed to feel like a small but complete ecommerce experience where people can browse flavors, read about the brand, and purchase ice cream. It is both a portfolio project and a practical playground for learning how front end pages, data flows, and admin controls work together.
+
+The customer experience covers the full journey from discovery to checkout, of which I have read about extensively and modelled Sweettooth after some examples that fit my vision goal. Visitors land on a rich home page with featured flavors and collections, then dive into dedicated product detail pages for each flavor. Every product page highlights descriptions, imagery, and purchase actions so the site feels like a real shop. A full cart and checkout flow supports selecting items, reviewing totals, and completing a purchase. The experience is supported by pages that build a brand story, including the About and Our Story pages, an Events page for community presence, and a blog with individual posts that highlight ingredients, seasonal releases, and behind the scenes updates. Reminder that some images will be blank, the product page is the only one with actual images. The rest in regards to the home page have been deliberately left empty as I do not have a reference picture for it but am considering to put a generated photo in order to complete the user experience. 
+
+The project also includes a data and content layer that supports a modern storefront. The feed page represents an always on stream of updates, while blog and events pages are structured as their own content hubs. The API configuration file is templated in config.template.js so that sensitive keys can be provided locally while the rest of the site stays consistent across environments. This is part of my learning process around handling configuration safely, understanding how client side code uses keys, and practicing clean separation between content and settings.
+
+Sweettooth includes an admin dashboard to control performance and diagnostics. The admin page is available at admin.html and is protected by a password for basic access control which is "Flavourtown123" . From there, performance options can be enabled or disabled to compare user experience and load behavior. One feature is image lazy loading using the Intersection Observer API so that off screen product images are only loaded when they are needed. Another feature is client side caching using localStorage so cart data, configuration, and performance metrics can persist for repeat visits and faster interactions. These features are intentionally visible in the admin so they can be tested and understood as part of the learning journey.
+
 
 ### Overview
-The Sweettooth website implements **two core performance optimization techniques** (which are lazy loading and caching) with comprehensive metrics tracking. All optimizations can be toggled on/off via the Admin Dashboard to compare performance. This is for the FlavourTown optimization sidequest. The admin page can be accessed by typign in admin.html and then entering "Flavourtown123" as the password. 
+The Sweettooth website implements *two core performance optimization techniques* (which are lazy loading and caching) with comprehensive metrics tracking. All optimizations can be toggled on/off via the Admin Dashboard to compare performance. This is for the FlavourTown optimization sidequest.
 
 ### Optimization Technique 1: Image Lazy Loading
 
@@ -56,3 +65,5 @@ The Sweettooth website implements **two core performance optimization techniques
 3. **Image CDN:** Use responsive images with srcset
 4. **Code Splitting:** Split large JS bundles by route
 5. **Critical CSS:** Inline above-fold CSS for faster FCP
+
+There are recorded demonstrations which I will need to compress and upload later.
