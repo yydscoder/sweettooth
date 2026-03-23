@@ -1,3 +1,5 @@
+
+https://github.com/user-attachments/assets/18cd303c-efe9-443a-a20d-71c15832d094
 # Sweettooth
 
 Sweettooth is a full featured ice cream storefront built as my first serious step into web development and into working with real configuration and API keys. The site is designed to feel like a small but complete ecommerce experience where people can browse flavors, read about the brand, and purchase ice cream. It is both a portfolio project and a practical playground for learning how front end pages, data flows, and admin controls work together.
@@ -68,12 +70,18 @@ The Sweettooth website implements *two core performance optimization techniques*
 
 There are recorded demonstrations which I will need to compress and upload later.
 
+Lazy loading in different window form factors
 
-
+Smaller window
 https://github.com/user-attachments/assets/f54fe38a-5730-42cc-96db-7be8e54a363e
 
-
+Bigger window
 https://github.com/user-attachments/assets/af6f6c07-4424-400d-a2b2-9522891b57c7
+
+
+Caching demonstration
+
+https://github.com/user-attachments/assets/d681678d-89a4-4ded-a721-6f07ca2dbe09
 
 
 
