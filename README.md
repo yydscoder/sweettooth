@@ -51,7 +51,15 @@ The Sweettooth website implements *two core performance optimization techniques*
 **Toggle:** Admin Dashboard → Performance → Enable Caching
 
 **How to Test:**
-1. Open DevTools → Application → Local Storage → http://localhost:3000 or you can do the same thing on vercel
+1. Open DevTools → Application
+
+https://github.com/user-attachments/assets/0c6d8a1e-351d-456b-9c56-89ecaa3d01e2
+
+
+
+https://github.com/user-attachments/assets/b0e73464-c866-4ac9-a63e-a942aea73340
+
+ → Local Storage → http://localhost:3000 or you can do the same thing on vercel
 2. Look for `sweettooth_*` keys (cart, config, cache, perf_metrics)
 3. Enable Caching in admin → Save → Reload page
 4. Check localStorage for cached data
@@ -61,8 +69,16 @@ The Sweettooth website implements *two core performance optimization techniques*
 ### Next Steps for Full Implementation or plans for production
 
 1. **Build Pipeline:** Add Webpack/Gulp for automatic minification
-2. **Service Worker:** Implement for offline caching
-3. **Image CDN:** Use responsive images with srcset
+2. **Service Worke
+
+https://github.com/user-attachments/assets/5016e8cc-2410-4c28-86c3-5d1b256ee63d
+
+r:** Implement for offline caching
+3. **Image CDN:** Us
+
+https://github.com/user-attachments/assets/6a85d48d-a96c-4a57-9fa1-4b64caa22ea9
+
+e responsive images with srcset
 4. **Code Splitting:** Split large JS bundles by route
 5. **Critical CSS:** Inline above-fold CSS for faster FCP
 
