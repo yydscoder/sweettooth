@@ -1,5 +1,4 @@
 
-https://github.com/user-attachments/assets/18cd303c-efe9-443a-a20d-71c15832d094
 # Sweettooth
 
 Sweettooth is a full featured ice cream storefront built as my first serious step into web development and into working with real configuration and API keys. The site is designed to feel like a small but complete ecommerce experience where people can browse flavors, read about the brand, and purchase ice cream. It is both a portfolio project and a practical playground for learning how front end pages, data flows, and admin controls work together.
